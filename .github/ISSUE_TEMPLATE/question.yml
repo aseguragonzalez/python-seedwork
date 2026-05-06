@@ -1,0 +1,29 @@
+name: Question / Discussion
+description: Ask a question or start a discussion about usage or design
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening a question, please check the README and existing issues.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to accomplish? Include any relevant code snippets.
+      render: python
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What Have You Tried
+      description: What have you already tried or found in the docs?
