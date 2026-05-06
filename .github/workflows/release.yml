@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload artifacts to GitHub Release
         if: steps.release.outputs.released == 'true'
-        uses: python-semantic-release/upload-to-gh-release@v8
+        uses: python-semantic-release/publish-action@v10
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.release.outputs.tag }}
