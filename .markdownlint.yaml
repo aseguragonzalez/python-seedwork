@@ -1,0 +1,27 @@
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+default: true
+
+# Allow both ATX (#) and setext (===) headings
+MD003:
+  style: atx
+
+# Line length — disable (code blocks make this impractical)
+MD013: false
+
+# Allow inline HTML (used for badges etc.)
+MD033: false
+
+# Ordered list item prefix — allow "ordered" style (1. 2. 3.)
+MD029:
+  style: ordered
+
+# Allow duplicate headings in different sections
+MD024:
+  siblings_only: true
+
+# Code block style — fenced preferred
+MD046:
+  style: fenced
+
+# Table column separator style — allow compact |---|---| (valid CommonMark)
+MD060: false

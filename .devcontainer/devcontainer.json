@@ -1,0 +1,26 @@
+{
+  "name": "python-seedwork",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13",
+  "features": {
+    "ghcr.io/astral-sh/uv": {}
+  },
+  "postCreateCommand": "uv sync && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "astral-sh.ruff"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "astral-sh.ruff",
+        "[python]": {
+          "editor.defaultFormatter": "astral-sh.ruff"
+        },
+        "ruff.lint.enable": true
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+name: Pre-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version with pre-release suffix (e.g. 1.2.3a1, 1.2.3rc1)"
+        required: true
+        type: string
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  pre-release:
+    needs: ci
+    runs-on: ubuntu-latest
+    concurrency: release
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - run: uv sync
+
+      - name: Set version
+        run: sed -i 's/^version = ".*"/version = "${{ inputs.version }}"/' pyproject.toml
+
+      - name: Build
+        run: uv build
+
+      - name: Commit and tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml
+          git diff --staged --quiet || git commit -m "chore: pre-release v${{ inputs.version }} [skip ci]"
+          git tag "v${{ inputs.version }}"
+          git push origin HEAD --tags
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Publish to GitHub Packages
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://pypi.pkg.github.com/${{ github.repository_owner }}/
+          password: ${{ secrets.GITHUB_TOKEN }}
+          attestations: false
+
+      - name: Create GitHub Pre-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ inputs.version }}"
+          generate_release_notes: true
+          prerelease: true
+          files: dist/*
