@@ -110,7 +110,7 @@ result.errors[0].code  # "INSUFFICIENT_FUNDS"
 
 ### `RegistryQueryBus`
 
-- Same registry pattern for queries. `register(query_type, handler)`, `ask(query) -> Any`.
+- Same registry pattern for queries. `register(query_type, handler)`, `ask(query) -> TResult | None`. The bus is generically typed, so the return type matches the registered query handler result type.
 - Raises `KeyError` when no handler is registered for the query type.
 
 ```python
