@@ -126,8 +126,8 @@ balance = await bus.ask(GetBalanceQuery(account_id="acc-1"))
 - Decorator. Wraps dispatch in the `UnitOfWork` context manager (`async with unit_of_work`). Commit and rollback are the context manager's responsibility.
 
 ```python
-bus = TransactionalCommandBus(inner_bus=registry_bus, unit_of_work=uow)
-# Every dispatch runs inside: async with uow: inner_bus.dispatch(command)
+bus = TransactionalCommandBus(inner=registry_bus, unit_of_work=uow)
+# Every dispatch runs inside: async with uow: inner.dispatch(command)
 ```
 
 ### `DomainEventPublishingRepository[TId, TAggregate]`
