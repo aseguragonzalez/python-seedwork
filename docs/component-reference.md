@@ -95,18 +95,52 @@ class MoneyDeposited(DomainEventRecord[MoneyDepositedPayload]):
 - `register(command_type, handler)`, `dispatch(command) -> Result`.
 - Catches `DomainError` and converts to `Result.failed`. All other exceptions propagate.
 
+```python
+bus = RegistryCommandBus()
+bus.register(OpenAccountCommand, OpenAccountHandler(repo))
+
+result = await bus.dispatch(OpenAccountCommand(account_id="acc-1", initial_balance=100.0))
+result.ok  # True
+
+# DomainError → Result.failed
+result = await bus.dispatch(...)  # handler raises InsufficientFundsError
+result.ok              # False
+result.errors[0].code  # "INSUFFICIENT_FUNDS"
+```
+
 ### `RegistryQueryBus`
 
-- Same registry pattern for queries. `register(query_type, handler)`, `ask(query) -> Any`.
+- Same registry pattern for queries. `register(query_type, handler)`, `ask(query) -> TResult | None`. The bus is generically typed, so the return type matches the registered query handler result type.
 - Raises `KeyError` when no handler is registered for the query type.
+
+```python
+bus = RegistryQueryBus()
+bus.register(GetBalanceQuery, GetBalanceHandler(read_repo))
+
+balance = await bus.ask(GetBalanceQuery(account_id="acc-1"))
+# balance: BalanceResponse | None
+```
 
 ### `TransactionalCommandBus`
 
 - Decorator. Wraps dispatch in the `UnitOfWork` context manager (`async with unit_of_work`). Commit and rollback are the context manager's responsibility.
 
+```python
+bus = TransactionalCommandBus(inner=registry_bus, unit_of_work=uow)
+# Every dispatch runs inside: async with uow: inner.dispatch(command)
+```
+
 ### `DomainEventPublishingRepository[TId, TAggregate]`
 
 - Decorator. Reads `aggregate.domain_events` and calls `publisher.publish(aggregate.domain_events)` after every `save`. `delete_by_id` and `find_by_id` delegate without side effects.
+
+```python
+repo = DomainEventPublishingRepository(inner=BankAccountRepositoryImpl(), publisher=my_publisher)
+
+account = BankAccount.open(BankAccountId("acc-1"), Money(amount=100.0, currency="EUR"))
+await repo.save(account)
+# inner_repo.save is called first, then publisher.publish(account.domain_events)
+```
 
 ### `CommandBusBuilder`
 
@@ -116,11 +150,33 @@ class MoneyDeposited(DomainEventRecord[MoneyDepositedPayload]):
 - `.build() -> CommandBus` — return assembled bus.
 - Declaration order = stack order; first declared = outermost.
 
+```python
+bus = (
+    CommandBusBuilder()
+    .register(OpenAccountCommand, OpenAccountHandler(repo))
+    .register(DepositMoneyCommand, DepositMoneyHandler(repo))
+    .with_transaction(uow)
+    .build()
+)
+
+result = await bus.dispatch(DepositMoneyCommand(account_id="acc-1", amount=50.0, currency="EUR"))
+```
+
 ### `QueryBusBuilder`
 
 - `.register(query_type, handler)` — wire handler.
 - `.use(middleware: Callable[[QueryBus], QueryBus])` — add custom middleware.
 - `.build() -> QueryBus` — return assembled bus.
+
+```python
+bus = (
+    QueryBusBuilder()
+    .register(GetBalanceQuery, GetBalanceHandler(read_repo))
+    .build()
+)
+
+balance = await bus.ask(GetBalanceQuery(account_id="acc-1"))
+```
 
 ### `InMemoryRepository[TId, TAggregate]`
 
