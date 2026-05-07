@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from examples.bank_account.application.get_balance.balance_response import BalanceResponse
+from bank_account.application.get_balance.balance_response import BalanceResponse
 
 
 class BankAccountReadRepository(Protocol):

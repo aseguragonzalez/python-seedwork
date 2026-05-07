@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 make install        # uv sync + install pre-commit hooks (run once after clone)
 make check          # lint + typecheck + tests (what CI runs)
-make lint           # ruff check src tests examples
+make lint           # ruff check src tests docs/examples
 make format         # ruff format + ruff check --fix
 make typecheck      # pyright
 make test           # pytest with coverage (fails below 90%)
@@ -36,7 +36,7 @@ seedwork.application   → CQRS contracts + Result
 seedwork.infrastructure → concrete bus/repository implementations
 ```
 
-`examples/bank_account/` is the canonical reference implementation — a complete bounded context that exercises every building block. Tests in `tests/` exercise the seedwork internals; `examples/` is consumed by those tests as fixtures.
+`docs/examples/bank_account/` is the canonical reference implementation — a complete bounded context that exercises every building block. Tests in `tests/` exercise the seedwork internals; `docs/examples/` is consumed by those tests as fixtures.
 
 ## Key design decisions
 

@@ -57,7 +57,7 @@ model. Once a fix is shipped we will:
 
 This policy covers the `seedwork` package published on PyPI.
 It does **not** cover vulnerabilities in downstream applications built on top of
-this library, third-party dependencies, or example code in `examples/`.
+this library, third-party dependencies, or example code in `docs/examples/`.
 
 ## Out of Scope
 

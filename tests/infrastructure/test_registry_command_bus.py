@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 import pytest
+from bank_account.domain.errors import InsufficientFundsError
 
-from examples.bank_account.domain.errors import InsufficientFundsError
 from seedwork.application.commands import Command, CommandHandler
 from seedwork.infrastructure.registry_command_bus import RegistryCommandBus
 

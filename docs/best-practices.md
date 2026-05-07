@@ -213,7 +213,7 @@ async def test_deposit_credits_account() -> None:
     assert len(publisher.published) == 1
 ```
 
-See `examples/bank_account/` for complete examples.
+See `docs/examples/bank_account/` for complete examples.
 
 **Integration: wire real buses and in-memory repositories** to validate the full stack (`TransactionalCommandBus → RegistryCommandBus`) when you need to verify bus composition.
 

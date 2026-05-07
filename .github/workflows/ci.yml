@@ -55,10 +55,10 @@ jobs:
         run: uv sync
       
       - name: Run Ruff check
-        run: uv run ruff check src tests examples
-      
+        run: uv run ruff check src tests docs/examples
+
       - name: Run Ruff format check
-        run: uv run ruff format --check src tests examples
+        run: uv run ruff format --check src tests docs/examples
 
   typecheck:
     needs: setup

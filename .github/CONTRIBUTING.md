@@ -21,8 +21,8 @@ make install
 
 ```bash
 make check          # lint + typecheck + tests (recommended before pushing)
-make lint           # ruff check src tests examples
-make format         # ruff format + auto-fix src tests examples
+make lint           # ruff check src tests docs/examples
+make format         # ruff format + auto-fix src tests docs/examples
 make typecheck      # pyright
 make test           # pytest with coverage
 make test-no-cov    # pytest without coverage
