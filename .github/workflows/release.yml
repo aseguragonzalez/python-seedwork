@@ -17,7 +17,7 @@ jobs:
       id-token: write
       packages: write
     steps:
-      # App token is used to satisfy branch protection / ruleset requirements
+      
       - name: Create GitHub App token
         id: app-token
         uses: actions/create-github-app-token@v1
@@ -25,17 +25,20 @@ jobs:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: astral-sh/setup-uv@v4
+      - name: Setup UV
+        uses: astral-sh/setup-uv@v4
         with:
           python-version: "3.12"
           enable-cache: true
 
-      - run: uv sync
+      - name: Install dependencies
+        run: uv sync
 
       - name: Semantic Release
         id: release
@@ -50,14 +53,6 @@ jobs:
       - name: Publish to PyPI
         if: steps.release.outputs.released == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
-
-      - name: Publish to GitHub Packages
-        if: steps.release.outputs.released == 'true'
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://pypi.pkg.github.com/${{ github.repository_owner }}/
-          password: ${{ secrets.GITHUB_TOKEN }}
-          attestations: false
 
       - name: Upload artifacts to GitHub Release
         if: steps.release.outputs.released == 'true'

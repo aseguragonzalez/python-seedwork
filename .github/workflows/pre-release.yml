@@ -50,13 +50,6 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 
-      - name: Publish to GitHub Packages
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://pypi.pkg.github.com/${{ github.repository_owner }}/
-          password: ${{ secrets.GITHUB_TOKEN }}
-          attestations: false
-
       - name: Create GitHub Pre-release
         uses: softprops/action-gh-release@v2
         with:
