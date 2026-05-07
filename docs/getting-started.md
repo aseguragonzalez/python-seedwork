@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide walks through building a minimal bounded context with python-seedwork. The running example is a bank account domain that can open accounts, deposit money, and read the balance — the same domain used in [`examples/bank_account/`](../examples/bank_account/).
+This guide walks through building a minimal bounded context with python-seedwork. The running example is a bank account domain that can open accounts, deposit money, and read the balance. For a more complete bank account example, see [`examples/bank_account/`](../examples/bank_account/).
 
 ## 1. Install
 
