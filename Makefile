@@ -10,11 +10,11 @@ install: ## Install all dependencies and pre-commit hooks
 	uv run pre-commit install --hook-type pre-commit --hook-type commit-msg
 
 lint: ## Run ruff linter
-	uv run ruff check src tests examples
+	uv run ruff check src tests docs/examples
 
 format: ## Format and auto-fix with ruff
-	uv run ruff format src tests examples
-	uv run ruff check --fix src tests examples
+	uv run ruff format src tests docs/examples
+	uv run ruff check --fix src tests docs/examples
 
 typecheck: ## Run pyright type checker
 	uv run pyright

@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide walks through building a minimal bounded context with python-seedwork. The running example is a bank account domain that can open accounts, deposit money, and read the balance. For a more complete bank account example, see [`examples/bank_account/`](../examples/bank_account/).
+This guide walks through building a minimal bounded context with python-seedwork. The running example is a bank account domain that can open accounts, deposit money, and read the balance. For a more complete bank account example, see [`docs/examples/bank_account/`](examples/bank_account/).
 
 ## 1. Install
 
@@ -294,7 +294,7 @@ if balance is None:
 
 ## Next steps
 
-- [`examples/bank_account/`](../examples/bank_account/) — complete, self-contained bounded context exercising every building block.
+- [`docs/examples/bank_account/`](examples/bank_account/) — complete, self-contained bounded context exercising every building block.
 - [Component Reference](component-reference.md) — detailed documentation on every class and protocol.
 - [Best Practices](best-practices.md) — design guidelines and patterns for effective use.
 - [Coding Standards](coding-standards.md) — conventions aligned with DDD and Clean Architecture.

@@ -1,6 +1,6 @@
 import pytest
+from bank_account.domain.errors import AccountNotFoundError, InsufficientFundsError
 
-from examples.bank_account.domain.errors import AccountNotFoundError, InsufficientFundsError
 from seedwork.domain.domain_error import DomainError
 
 

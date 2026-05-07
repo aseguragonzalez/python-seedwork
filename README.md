@@ -28,7 +28,7 @@ Requires Python 3.12+. Ships a `py.typed` marker (PEP 561) — mypy and pyright 
 
 See [Getting Started](docs/getting-started.md) for a step-by-step walkthrough: define a value object, build an aggregate root, create a command handler, and wire a bus.
 
-The [Component Reference](docs/component-reference.md) covers every class and protocol in detail. A complete working example lives in [`examples/bank_account/`](examples/bank_account/).
+The [Component Reference](docs/component-reference.md) covers every class and protocol in detail. A complete working example lives in [`docs/examples/bank_account/`](docs/examples/bank_account/).
 
 ## What's Included
 

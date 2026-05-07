@@ -2,8 +2,8 @@ from dataclasses import FrozenInstanceError, dataclass
 from datetime import UTC, datetime
 
 import pytest
+from bank_account.domain.money import EmptyCurrencyError, Money, NegativeAmountError
 
-from examples.bank_account.domain.money import EmptyCurrencyError, Money, NegativeAmountError
 from seedwork.domain.value_object import ValueObject
 
 

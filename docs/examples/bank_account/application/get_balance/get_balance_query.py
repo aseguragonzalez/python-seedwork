@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from examples.bank_account.application.get_balance.balance_response import BalanceResponse
+from bank_account.application.get_balance.balance_response import BalanceResponse
+
 from seedwork.application.queries import Query
 
 

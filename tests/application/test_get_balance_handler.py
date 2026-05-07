@@ -1,6 +1,6 @@
-from examples.bank_account.application.get_balance.balance_response import BalanceResponse
-from examples.bank_account.application.get_balance.get_balance_handler import GetBalanceHandler
-from examples.bank_account.application.get_balance.get_balance_query import GetBalanceQuery
+from bank_account.application.get_balance.balance_response import BalanceResponse
+from bank_account.application.get_balance.get_balance_handler import GetBalanceHandler
+from bank_account.application.get_balance.get_balance_query import GetBalanceQuery
 
 
 class InMemoryBankAccountReadRepository:

@@ -1,6 +1,7 @@
-from examples.bank_account.domain.bank_account import BankAccount
-from examples.bank_account.domain.bank_account_id import BankAccountId
-from examples.bank_account.domain.money import Money
+from bank_account.domain.bank_account import BankAccount
+from bank_account.domain.bank_account_id import BankAccountId
+from bank_account.domain.money import Money
+
 from seedwork.infrastructure.in_memory_repository import InMemoryRepository
 
 

@@ -1,18 +1,19 @@
 from dataclasses import dataclass
 from typing import Self
 
-from examples.bank_account.domain.bank_account_id import BankAccountId
-from examples.bank_account.domain.errors import CurrencyMismatchError, InsufficientFundsError
-from examples.bank_account.domain.events.account_credited import (
+from bank_account.domain.bank_account_id import BankAccountId
+from bank_account.domain.errors import CurrencyMismatchError, InsufficientFundsError
+from bank_account.domain.events.account_credited import (
     AccountCredited,
     AccountCreditedPayload,
 )
-from examples.bank_account.domain.events.account_debited import (
+from bank_account.domain.events.account_debited import (
     AccountDebited,
     AccountDebitedPayload,
 )
-from examples.bank_account.domain.events.account_opened import AccountOpened, AccountOpenedPayload
-from examples.bank_account.domain.money import Money
+from bank_account.domain.events.account_opened import AccountOpened, AccountOpenedPayload
+from bank_account.domain.money import Money
+
 from seedwork.domain.aggregate_root import AggregateRoot
 
 

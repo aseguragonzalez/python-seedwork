@@ -13,7 +13,7 @@ This package provides DDD and Hexagonal Architecture building blocks for Python 
 
 A full, self-contained example that exercises all building blocks lives in the test suite:
 
-- **[examples/bank_account/](../examples/bank_account/)** — Domain (aggregate root, value objects, domain events, repository interface, errors). Use it as a reference when building a new bounded context.
+- **[examples/bank_account/](examples/bank_account/)** — Domain (aggregate root, value objects, domain events, repository interface, errors). Use it as a reference when building a new bounded context.
 
 ## Quick links
 

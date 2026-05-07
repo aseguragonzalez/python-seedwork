@@ -65,7 +65,7 @@ upload_to_pypi = false  # publishing is handled by pypa/gh-action-pypi-publish v
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
-pythonpath = [".", "examples"]
+pythonpath = [".", "docs/examples"]
 addopts = "--cov=src/seedwork --cov-report=term-missing --cov-fail-under=90"
 
 [tool.coverage.run]
@@ -90,6 +90,7 @@ ignore = ["ANN401"]  # Any is necessary at generic boundaries (e.g. _evolve **ch
 pythonVersion = "3.12"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
-include = ["src", "tests", "examples"]
+include = ["src", "tests", "docs/examples"]
+extraPaths = ["docs/examples"]
 venvPath = "."
 venv = ".venv"

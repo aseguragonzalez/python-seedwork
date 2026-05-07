@@ -1,12 +1,11 @@
 from dataclasses import FrozenInstanceError
 
 import pytest
-
-from examples.bank_account.domain.bank_account import BankAccount
-from examples.bank_account.domain.bank_account_id import BankAccountId
-from examples.bank_account.domain.errors import CurrencyMismatchError, InsufficientFundsError
-from examples.bank_account.domain.events.account_opened import AccountOpened
-from examples.bank_account.domain.money import Money
+from bank_account.domain.bank_account import BankAccount
+from bank_account.domain.bank_account_id import BankAccountId
+from bank_account.domain.errors import CurrencyMismatchError, InsufficientFundsError
+from bank_account.domain.events.account_opened import AccountOpened
+from bank_account.domain.money import Money
 
 
 def make_account(balance: float = 100.0, currency: str = "EUR") -> BankAccount:
