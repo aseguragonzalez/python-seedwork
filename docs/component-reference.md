@@ -135,7 +135,7 @@ bus = TransactionalCommandBus(inner=registry_bus, unit_of_work=uow)
 - Decorator. Reads `aggregate.domain_events` and calls `publisher.publish(aggregate.domain_events)` after every `save`. `delete_by_id` and `find_by_id` delegate without side effects.
 
 ```python
-repo = DomainEventPublishingRepository(inner_repo=BankAccountRepositoryImpl(), publisher=my_publisher)
+repo = DomainEventPublishingRepository(inner=BankAccountRepositoryImpl(), publisher=my_publisher)
 
 account = BankAccount.open(BankAccountId("acc-1"), Money(amount=100.0, currency="EUR"))
 await repo.save(account)
