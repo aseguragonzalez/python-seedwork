@@ -115,4 +115,12 @@ jobs:
         run: uv sync
       
       - name: Run tests
-        run: uv run pytest --tb=short -q
+        run: uv run pytest --tb=short -q --cov=src/seedwork --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
+          flags: python-${{ matrix.python-version }}
+          fail_ci_if_error: false

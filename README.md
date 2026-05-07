@@ -1,5 +1,13 @@
 # python-seedwork
 
+[![PyPI version](https://img.shields.io/pypi/v/python-seedwork)](https://pypi.org/project/python-seedwork/)
+[![Python](https://img.shields.io/pypi/pyversions/python-seedwork)](https://pypi.org/project/python-seedwork/)
+[![License: MIT](https://img.shields.io/pypi/l/python-seedwork)](LICENSE)
+[![CI](https://github.com/aseguragonzalez/python-seedwork/actions/workflows/ci.yml/badge.svg)](https://github.com/aseguragonzalez/python-seedwork/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/aseguragonzalez/python-seedwork/branch/main/graph/badge.svg)](https://codecov.io/gh/aseguragonzalez/python-seedwork)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Checked with pyright](https://microsoft.github.io/pyright/img/pyright_badge.svg)](https://microsoft.github.io/pyright/)
+
 DDD and Hexagonal Architecture building blocks for Python. Provides base classes and infrastructure primitives for domain-driven design: entities, aggregates, value objects, domain events, CQRS buses, and more.
 
 ## Installation
