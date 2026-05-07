@@ -150,3 +150,27 @@ src/
 ```
 
 One public class per file. File name matches the exported class name in `snake_case`.
+
+---
+
+## Design decisions
+
+### Protocols over ABCs (PEP 544)
+
+All contracts with no shared implementation use `Protocol` rather than abstract base classes. Implementations satisfy them structurally — no inheritance from seedwork is required. This keeps the dependency direction clean: consuming code never inherits from library internals, and swapping implementations requires no base class changes.
+
+The exceptions are `Command`, `Query`, `ValueObject`, `Entity`, and `AggregateRoot` — these use nominal (inheritance-based) typing because inheritance here communicates DDD intent, not just interface conformance.
+
+### TypeVar variance naming (PEP 484)
+
+TypeVars with declared variance carry `_co` (covariant) or `_contra` (contravariant) suffixes as specified by PEP 484. This makes the variance constraint visible at the point of use without navigating to the TypeVar definition.
+
+| TypeVar | Variance | Why |
+|---|---|---|
+| `TCommand_contra`, `TQuery_contra`, `TEvent_contra` | Contravariant | Handler input parameters: a handler of a supertype satisfies a handler of a subtype |
+| `TId_contra` | Contravariant | Repository ID parameter |
+| `TResult_co` | Covariant | Query handler result: a handler returning a subtype satisfies one returning a supertype |
+
+### Protocol method stubs use `...`
+
+Protocol method bodies use `...` as the stub, following PEP 544 convention for `.py` files. Python requires a syntactic body for all function definitions; `...` is the minimal idiomatic form for abstract protocol methods.
