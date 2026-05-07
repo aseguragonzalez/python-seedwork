@@ -45,10 +45,15 @@ jobs:
           enable-cache: true
       
       - name: Restore virtual environment cache
+        id: venv-cache
         uses: actions/cache/restore@v4
         with:
           path: .venv
           key: venv-3.12-${{ hashFiles('uv.lock') }}
+      
+      - name: Sync dependencies
+        if: steps.venv-cache.outputs.cache-hit != 'true'
+        run: uv sync
       
       - name: Run Ruff check
         run: uv run ruff check src tests examples
