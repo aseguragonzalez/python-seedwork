@@ -8,7 +8,7 @@ Older versions are not patched; please upgrade to the current release.
 | Version | Supported |
 | ------- | --------- |
 | latest  | Yes       |
-| < latest | No       |
+| older than latest | No |
 
 ## Reporting a Vulnerability
 
@@ -72,7 +72,7 @@ this library, third-party dependencies, or example code in `examples/`.
 To reduce supply-chain risk in your project:
 
 - Pin the exact version in your lock file (e.g. `uv lock`).
-- Verify the PyPI release signature via `sigstore` (signatures are attached to
-  each GitHub release).
+- Verify package provenance using trusted tooling (for example, Sigstore and
+  GitHub release artifacts when available).
 - Subscribe to GitHub Security Advisories for this repository to receive
   automated alerts.
