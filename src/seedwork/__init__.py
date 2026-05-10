@@ -1,14 +1,26 @@
 from seedwork.application import (
+    BackgroundTask,
     Command,
     CommandBus,
     CommandHandler,
+    DomainEventBus,
     DomainEventHandler,
     DomainEventPublisher,
+    IntegrationEvent,
+    IntegrationEventPublisher,
+    IntegrationEventRecord,
+    OutboxRecord,
+    OutboxRepository,
+    OutboxStatus,
     Query,
     QueryBus,
     QueryHandler,
     Result,
     ResultError,
+    TaskBus,
+    TaskHandler,
+    TaskQueue,
+    TaskStatus,
 )
 from seedwork.domain import (
     AggregateRoot,
@@ -22,27 +34,54 @@ from seedwork.domain import (
     ValueObject,
 )
 from seedwork.infrastructure import (
+    BackgroundTaskRecord,
     CommandBusBuilder,
+    DeferredDomainEventBus,
+    DomainEventFlushCommandBus,
     DomainEventPublishingRepository,
+    InMemoryIntegrationEventPublisher,
+    InMemoryOutboxRepository,
     InMemoryRepository,
+    InMemoryTaskQueue,
+    OutboxIntegrationEventPublisher,
     QueryBusBuilder,
     RegistryCommandBus,
     RegistryQueryBus,
+    RegistryTaskBus,
     TransactionalCommandBus,
+    ValidationCommandBus,
+    ValidationQueryBus,
 )
 
 __all__ = [
-    # application
+    # application — commands
     "Command",
     "CommandBus",
     "CommandHandler",
+    "Result",
+    "ResultError",
+    # application — domain events
+    "DomainEventBus",
     "DomainEventHandler",
     "DomainEventPublisher",
+    # application — queries
     "Query",
     "QueryBus",
     "QueryHandler",
-    "Result",
-    "ResultError",
+    # application — integration events
+    "IntegrationEvent",
+    "IntegrationEventPublisher",
+    "IntegrationEventRecord",
+    # application — outbox
+    "OutboxRecord",
+    "OutboxRepository",
+    "OutboxStatus",
+    # application — background tasks
+    "BackgroundTask",
+    "TaskBus",
+    "TaskHandler",
+    "TaskQueue",
+    "TaskStatus",
     # domain
     "AggregateRoot",
     "DomainEventRecord",
@@ -54,11 +93,21 @@ __all__ = [
     "UnitOfWork",
     "ValueObject",
     # infrastructure
+    "BackgroundTaskRecord",
     "CommandBusBuilder",
+    "DeferredDomainEventBus",
+    "DomainEventFlushCommandBus",
     "DomainEventPublishingRepository",
+    "InMemoryIntegrationEventPublisher",
+    "InMemoryOutboxRepository",
     "InMemoryRepository",
+    "InMemoryTaskQueue",
+    "OutboxIntegrationEventPublisher",
     "QueryBusBuilder",
     "RegistryCommandBus",
     "RegistryQueryBus",
+    "RegistryTaskBus",
     "TransactionalCommandBus",
+    "ValidationCommandBus",
+    "ValidationQueryBus",
 ]

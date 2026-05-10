@@ -11,5 +11,5 @@ class GetBalanceHandler(QueryHandler[GetBalanceQuery, BalanceResponse]):
     def __init__(self, repository: BankAccountReadRepository) -> None:
         self._repository = repository
 
-    async def execute(self, query: GetBalanceQuery) -> BalanceResponse | None:
+    async def handle(self, query: GetBalanceQuery) -> BalanceResponse | None:
         return await self._repository.find_balance(query.account_id)

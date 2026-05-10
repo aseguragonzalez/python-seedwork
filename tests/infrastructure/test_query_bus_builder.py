@@ -17,7 +17,7 @@ class GetAccountQuery(Query[AccountDto]):
 
 
 class GetAccountHandler(QueryHandler[GetAccountQuery, AccountDto]):
-    async def execute(self, query: GetAccountQuery) -> AccountDto | None:
+    async def handle(self, query: GetAccountQuery) -> AccountDto | None:
         return AccountDto(query.account_id)
 
 

@@ -10,7 +10,7 @@ class MyCommand(Command): ...
 
 
 class MyHandler(CommandHandler[MyCommand]):
-    async def execute(self, command: MyCommand) -> None:
+    async def handle(self, command: MyCommand) -> None:
         pass
 
 

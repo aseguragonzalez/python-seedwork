@@ -17,14 +17,14 @@ class FailingCommand(Command): ...
 
 class OpenAccountHandler(CommandHandler[OpenAccountCommand]):
     def __init__(self) -> None:
-        self.executed_with: OpenAccountCommand | None = None
+        self.handled_with: OpenAccountCommand | None = None
 
-    async def execute(self, command: OpenAccountCommand) -> None:
-        self.executed_with = command
+    async def handle(self, command: OpenAccountCommand) -> None:
+        self.handled_with = command
 
 
 class DomainErrorHandler(CommandHandler[FailingCommand]):
-    async def execute(self, command: FailingCommand) -> None:
+    async def handle(self, command: FailingCommand) -> None:
         raise InsufficientFundsError()
 
 
@@ -35,7 +35,7 @@ async def test_dispatch_calls_registered_handler() -> None:
     command = OpenAccountCommand(account_id="acc-1")
     result = await bus.dispatch(command)
     assert result.ok
-    assert handler.executed_with is command
+    assert handler.handled_with is command
 
 
 async def test_dispatch_without_handler_raises() -> None:
@@ -54,7 +54,7 @@ async def test_dispatch_domain_error_returns_fail_result() -> None:
 
 async def test_dispatch_non_domain_error_reraises() -> None:
     class BrokenHandler(CommandHandler[FailingCommand]):
-        async def execute(self, command: FailingCommand) -> None:
+        async def handle(self, command: FailingCommand) -> None:
             raise RuntimeError("unexpected")
 
     bus = RegistryCommandBus()

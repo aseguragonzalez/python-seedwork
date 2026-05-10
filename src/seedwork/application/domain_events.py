@@ -12,3 +12,13 @@ class DomainEventPublisher(Protocol):
 
 class DomainEventHandler(Protocol[TEvent_contra]):
     async def handle(self, event: TEvent_contra) -> None: ...
+
+
+class DomainEventBus(Protocol):
+    async def publish(self, events: Sequence[DomainEvent]) -> None: ...
+
+    def subscribe(
+        self,
+        event_type: type[TEvent_contra],
+        handler: "DomainEventHandler[TEvent_contra]",
+    ) -> None: ...

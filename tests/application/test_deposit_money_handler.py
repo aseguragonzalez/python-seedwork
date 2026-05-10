@@ -1,0 +1,37 @@
+import pytest
+from bank_account.application.deposit_money.deposit_money_command import DepositMoneyCommand
+from bank_account.application.deposit_money.deposit_money_handler import DepositMoneyHandler
+from bank_account.domain.bank_account import BankAccount
+from bank_account.domain.bank_account_id import BankAccountId
+from bank_account.domain.errors import AccountNotFoundError
+from bank_account.domain.money import Money
+
+from seedwork.infrastructure.in_memory_repository import InMemoryRepository
+
+
+class BankAccountInMemoryRepository(InMemoryRepository[BankAccountId, BankAccount]):
+    pass
+
+
+async def test_deposit_increases_balance() -> None:
+    repo = BankAccountInMemoryRepository()
+    account = BankAccount.open(
+        id=BankAccountId("acc-1"),
+        initial_balance=Money(amount=100.0, currency="EUR"),
+    )
+    await repo.save(account)
+
+    handler = DepositMoneyHandler(repo)
+    await handler.handle(DepositMoneyCommand(account_id="acc-1", amount=50.0, currency="EUR"))
+
+    updated = await repo.find_by_id(BankAccountId("acc-1"))
+    assert updated is not None
+    assert updated.balance == Money(amount=150.0, currency="EUR")
+
+
+async def test_deposit_on_nonexistent_account_raises() -> None:
+    repo = BankAccountInMemoryRepository()
+    handler = DepositMoneyHandler(repo)
+
+    with pytest.raises(AccountNotFoundError):
+        await handler.handle(DepositMoneyCommand(account_id="ghost", amount=10.0, currency="EUR"))
