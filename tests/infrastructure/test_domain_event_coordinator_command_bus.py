@@ -3,8 +3,6 @@ from seedwork.infrastructure.deferred_domain_event_bus import DeferredDomainEven
 from seedwork.infrastructure.domain_event_coordinator_command_bus import (
     DomainEventCoordinatorCommandBus,
 )
-
-# Backwards-compat alias still works
 from seedwork.infrastructure.domain_event_flush_command_bus import DomainEventFlushCommandBus
 
 
@@ -61,8 +59,18 @@ async def test_fail_result_calls_discard_not_dispatch() -> None:
     assert event_bus.discarded_count == 1
 
 
-# Backwards-compat: DomainEventFlushCommandBus alias still resolves
-async def test_flush_bus_alias_ok_result_calls_dispatch() -> None:
+async def test_result_is_propagated() -> None:
+    inner = SpyCommandBus(Result.succeeded())
+    event_bus = SpyDeferredBus()
+    bus = DomainEventCoordinatorCommandBus(inner, event_bus)
+
+    result = await bus.dispatch(OkCommand())
+
+    assert result is Result.succeeded() or result.ok
+
+
+# Backwards compat: DomainEventFlushCommandBus is an alias
+async def test_flush_bus_alias_ok_calls_dispatch() -> None:
     inner = SpyCommandBus(Result.succeeded())
     event_bus = SpyDeferredBus()
     bus = DomainEventFlushCommandBus(inner, event_bus)
@@ -73,7 +81,7 @@ async def test_flush_bus_alias_ok_result_calls_dispatch() -> None:
     assert event_bus.dispatched_count == 1
 
 
-async def test_flush_bus_alias_fail_result_calls_discard() -> None:
+async def test_flush_bus_alias_fail_calls_discard() -> None:
     inner = SpyCommandBus(Result.failed([ResultError(code="err", description="fail")]))
     event_bus = SpyDeferredBus()
     bus = DomainEventFlushCommandBus(inner, event_bus)
@@ -84,9 +92,8 @@ async def test_flush_bus_alias_fail_result_calls_discard() -> None:
     assert event_bus.discarded_count == 1
 
 
-# Legacy: old test names still pass if flushed/cleared counters are maintained
+# Legacy names in flush_command_bus test for backwards compat verification
 async def test_ok_result_calls_flush() -> None:
-    """Kept for backwards compatibility verification of flush() alias."""
     inner = SpyCommandBus(Result.succeeded())
     event_bus = SpyDeferredBus()
     bus = DomainEventCoordinatorCommandBus(inner, event_bus)
@@ -99,7 +106,6 @@ async def test_ok_result_calls_flush() -> None:
 
 
 async def test_fail_result_calls_clear_not_flush() -> None:
-    """Kept for backwards compatibility verification of clear() alias."""
     inner = SpyCommandBus(Result.failed([ResultError(code="err", description="fail")]))
     event_bus = SpyDeferredBus()
     bus = DomainEventCoordinatorCommandBus(inner, event_bus)

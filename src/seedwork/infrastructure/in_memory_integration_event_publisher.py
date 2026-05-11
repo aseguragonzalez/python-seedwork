@@ -14,5 +14,9 @@ class InMemoryIntegrationEventPublisher:
     async def publish(self, events: Sequence[IntegrationEvent]) -> None:
         self._published.extend(events)
 
-    def clear(self) -> None:
+    def reset(self) -> None:
         self._published.clear()
+
+    def clear(self) -> None:
+        """Deprecated: use reset() instead."""
+        self.reset()

@@ -1,9 +1,8 @@
 from seedwork.application.background_tasks import (
     BackgroundTask,
-    TaskBus,
+    BaseBackgroundTask,
     TaskHandler,
-    TaskQueue,
-    TaskStatus,
+    TaskScheduler,
 )
 from seedwork.application.commands import (
     Command,
@@ -14,15 +13,17 @@ from seedwork.application.commands import (
 )
 from seedwork.application.domain_events import (
     DomainEventBus,
+    DomainEventBusPublisher,
+    DomainEventBusSubscriber,
     DomainEventHandler,
-    DomainEventPublisher,
+    DomainEventPublisher,  # backwards-compat alias
 )
 from seedwork.application.integration_events import (
     IntegrationEvent,
+    IntegrationEventHandler,
     IntegrationEventPublisher,
     IntegrationEventRecord,
 )
-from seedwork.application.outbox import OutboxRecord, OutboxRepository, OutboxStatus
 from seedwork.application.queries import Query, QueryBus, QueryHandler
 
 __all__ = [
@@ -34,24 +35,22 @@ __all__ = [
     "ResultError",
     # domain events
     "DomainEventBus",
+    "DomainEventBusPublisher",
+    "DomainEventBusSubscriber",
     "DomainEventHandler",
-    "DomainEventPublisher",
+    "DomainEventPublisher",  # backwards-compat alias
     # queries
     "Query",
     "QueryBus",
     "QueryHandler",
     # integration events
     "IntegrationEvent",
+    "IntegrationEventHandler",
     "IntegrationEventPublisher",
     "IntegrationEventRecord",
-    # outbox
-    "OutboxRecord",
-    "OutboxRepository",
-    "OutboxStatus",
     # background tasks
     "BackgroundTask",
-    "TaskBus",
+    "BaseBackgroundTask",
     "TaskHandler",
-    "TaskQueue",
-    "TaskStatus",
+    "TaskScheduler",
 ]

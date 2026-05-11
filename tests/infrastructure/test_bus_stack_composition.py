@@ -1,6 +1,6 @@
 """
 Integration test showing the recommended bus stack composition:
-    Validation > Transactional > EventFlush > RegistryCommandBus
+    Validation > Transactional > EventCoordinator > RegistryCommandBus
 """
 
 from types import TracebackType
@@ -41,7 +41,7 @@ async def test_full_bus_stack_dispatches_command() -> None:
     bus = (
         CommandBusBuilder()
         .register(OpenAccountCommand, OpenAccountHandler(repo))
-        .with_domain_event_flushing(event_bus)
+        .with_domain_event_coordination(event_bus)
         .with_transaction(uow)
         .build()
     )
@@ -53,3 +53,24 @@ async def test_full_bus_stack_dispatches_command() -> None:
     assert result.ok
     account = await repo.find_by_id(BankAccountId("acc-1"))
     assert account is not None
+
+
+async def test_full_bus_stack_with_legacy_flushing_method() -> None:
+    """Backwards-compat: with_domain_event_flushing still works."""
+    repo = BankAccountInMemoryRepository()
+    event_bus = DeferredDomainEventBus()
+    uow = FakeUnitOfWork()
+
+    bus = (
+        CommandBusBuilder()
+        .register(OpenAccountCommand, OpenAccountHandler(repo))
+        .with_domain_event_flushing(event_bus)  # deprecated alias
+        .with_transaction(uow)
+        .build()
+    )
+
+    result = await bus.dispatch(
+        OpenAccountCommand(account_id="acc-2", initial_balance=100.0, currency="EUR")
+    )
+
+    assert result.ok

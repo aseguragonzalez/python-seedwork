@@ -1,9 +1,16 @@
+"""
+RegistryTaskBus — simple handler registry for background tasks.
+
+Note: TaskQueue, InMemoryTaskQueue and BackgroundTaskRecord are kept here for
+backwards compatibility only. New code should use InMemoryTaskScheduler instead.
+"""
+
 from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
 
-from seedwork.application.background_tasks import BackgroundTask, TaskHandler, TaskStatus
+from seedwork.application.background_tasks import BackgroundTask, TaskHandler
 
 
 class RegistryTaskBus:
@@ -20,43 +27,47 @@ class RegistryTaskBus:
         await handler.handle(task)
 
 
+# ---------------------------------------------------------------------------
+# Kept for backwards compatibility — will be removed in a future release.
+# ---------------------------------------------------------------------------
+
+
 @dataclass(frozen=True, kw_only=True)
 class BackgroundTaskRecord:
-    """Concrete implementation of BackgroundTask for use in tests and InMemoryTaskQueue."""
+    """Concrete BackgroundTask with legacy lifecycle fields (backwards compat)."""
 
     id: str = field(default_factory=lambda: str(uuid4()))
     type: str = ""
     payload: dict[str, Any] = field(default_factory=lambda: {})
-    status: TaskStatus = "pending"
+    correlation_id: str = field(default_factory=lambda: str(uuid4()))
+    causation_id: str | None = None
+    # Legacy lifecycle fields — not part of the minimal BackgroundTask protocol
+    status: str = "pending"
     scheduled_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     started_at: datetime | None = None
     completed_at: datetime | None = None
     attempts: int = 0
     max_attempts: int = 3
     last_error: str | None = None
-    correlation_id: str = field(default_factory=lambda: str(uuid4()))
-    causation_id: str | None = None
 
 
 class InMemoryTaskQueue:
+    """Deprecated — use InMemoryTaskScheduler instead."""
+
     def __init__(self) -> None:
         self._store: dict[str, BackgroundTaskRecord] = {}
-        self._queue: list[str] = []  # IDs en orden
+        self._queue: list[str] = []
 
     async def enqueue(self, task: BackgroundTask) -> None:
+        # Preserve max_attempts from BackgroundTaskRecord if available.
+        max_attempts: int = getattr(task, "max_attempts", 3)
         record = BackgroundTaskRecord(
             id=task.id,
             type=task.type,
             payload=task.payload,
-            status=task.status,
-            scheduled_at=task.scheduled_at,
-            started_at=task.started_at,
-            completed_at=task.completed_at,
-            attempts=task.attempts,
-            max_attempts=task.max_attempts,
-            last_error=task.last_error,
             correlation_id=task.correlation_id,
             causation_id=task.causation_id,
+            max_attempts=max_attempts,
         )
         self._store[record.id] = record
         self._queue.append(record.id)

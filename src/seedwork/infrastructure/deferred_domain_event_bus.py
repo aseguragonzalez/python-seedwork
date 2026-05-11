@@ -13,7 +13,7 @@ class DeferredDomainEventBus:
         self._handlers: dict[type[DomainEvent], list[DomainEventHandler[DomainEvent]]] = (
             defaultdict(list)
         )
-        self._pending: list[DomainEvent] = []
+        self._pending: dict[str, DomainEvent] = {}  # keyed by event.id — idempotent
 
     def subscribe(
         self,
@@ -23,13 +23,26 @@ class DeferredDomainEventBus:
         self._handlers[event_type].append(handler)  # type: ignore[arg-type]
 
     async def publish(self, events: Sequence[DomainEvent]) -> None:
-        self._pending.extend(events)
+        for event in events:
+            if event.id not in self._pending:
+                self._pending[event.id] = event
 
-    async def flush(self) -> None:
-        events, self._pending = self._pending, []
+    async def dispatch(self) -> None:
+        events = list(self._pending.values())
+        self._pending.clear()
         for event in events:
             for handler in self._handlers.get(type(event), []):
                 await handler.handle(event)
 
-    def clear(self) -> None:
+    def discard(self) -> None:
         self._pending.clear()
+
+    # ---------------------------------------------------------------------------
+    # Backwards-compatible aliases (deprecated — will be removed in next release)
+    # ---------------------------------------------------------------------------
+
+    async def flush(self) -> None:  # noqa: D401
+        await self.dispatch()
+
+    def clear(self) -> None:
+        self.discard()

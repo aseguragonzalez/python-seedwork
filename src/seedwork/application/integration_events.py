@@ -35,6 +35,9 @@ class IntegrationEvent(Protocol):
 
 
 TPayload = TypeVar("TPayload")
+TIntegrationEvent_contra = TypeVar(
+    "TIntegrationEvent_contra", bound=IntegrationEvent, contravariant=True
+)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -52,3 +55,7 @@ class IntegrationEventRecord(Generic[TPayload]):
 
 class IntegrationEventPublisher(Protocol):
     async def publish(self, events: Sequence[IntegrationEvent]) -> None: ...
+
+
+class IntegrationEventHandler(Protocol[TIntegrationEvent_contra]):
+    async def handle(self, event: TIntegrationEvent_contra) -> None: ...

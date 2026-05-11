@@ -1,3 +1,10 @@
+"""
+Deprecated — OutboxRecord, OutboxRepository, OutboxStatus have moved to
+seedwork.infrastructure.outbox (split into IntegrationEventOutbox and TaskOutbox).
+
+This module is kept for backwards compatibility only.
+"""
+
 from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import datetime
@@ -10,7 +17,7 @@ OutboxStatus = Literal["pending", "published", "failed"]
 
 @dataclass(frozen=True, kw_only=True)
 class OutboxRecord:
-    id: str  # record ID, distinto de event.id
+    id: str
     event: IntegrationEvent
     status: OutboxStatus
     attempts: int
