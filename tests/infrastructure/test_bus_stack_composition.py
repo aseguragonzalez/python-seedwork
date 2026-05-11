@@ -1,6 +1,6 @@
 """
 Integration test showing the recommended bus stack composition:
-    Validation > Transactional > EventCoordinator > RegistryCommandBus
+    Validation > Transactional > DomainEventCoordinator > RegistryCommandBus
 """
 
 from types import TracebackType
@@ -41,8 +41,8 @@ async def test_full_bus_stack_dispatches_command() -> None:
     bus = (
         CommandBusBuilder()
         .register(OpenAccountCommand, OpenAccountHandler(repo))
-        .with_domain_event_coordination(event_bus)
         .with_transaction(uow)
+        .with_domain_event_coordination(event_bus)
         .build()
     )
 
@@ -64,8 +64,8 @@ async def test_full_bus_stack_with_legacy_flushing_method() -> None:
     bus = (
         CommandBusBuilder()
         .register(OpenAccountCommand, OpenAccountHandler(repo))
-        .with_domain_event_flushing(event_bus)  # deprecated alias
         .with_transaction(uow)
+        .with_domain_event_flushing(event_bus)  # deprecated alias
         .build()
     )
 

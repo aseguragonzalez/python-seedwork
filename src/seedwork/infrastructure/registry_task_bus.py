@@ -22,7 +22,7 @@ class RegistryTaskBus:
 
     async def dispatch(self, task: BackgroundTask) -> None:
         handler = self._handlers.get(task.type)
-        if not handler:
+        if handler is None:
             raise ValueError(f"No handler registered for task type: {task.type}")
         await handler.handle(task)
 

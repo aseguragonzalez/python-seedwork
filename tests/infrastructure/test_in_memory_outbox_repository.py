@@ -1,10 +1,8 @@
-from typing import Any
-
 from seedwork.application.integration_events import IntegrationEventRecord
 from seedwork.infrastructure.outbox_integration_event_publisher import InMemoryOutboxRepository
 
 
-def make_event(correlation_id: str = "corr-1") -> IntegrationEventRecord[dict[str, Any]]:
+def make_event(correlation_id: str = "corr-1") -> IntegrationEventRecord:
     return IntegrationEventRecord(
         type="bank.account.opened",
         version="1.0",

@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any, Generic, Protocol, TypeVar
+from typing import Any, Protocol, TypeVar
 from uuid import uuid4
 
 
@@ -34,18 +34,17 @@ class IntegrationEvent(Protocol):
     def metadata(self) -> dict[str, str] | None: ...  # traceparent, tenant_id, etc.
 
 
-TPayload = TypeVar("TPayload")
 TIntegrationEvent_contra = TypeVar(
     "TIntegrationEvent_contra", bound=IntegrationEvent, contravariant=True
 )
 
 
 @dataclass(frozen=True, kw_only=True)
-class IntegrationEventRecord(Generic[TPayload]):
+class IntegrationEventRecord:
     type: str
     version: str
     aggregate_id: str
-    payload: TPayload
+    payload: dict[str, Any]
     correlation_id: str
     id: str = field(default_factory=lambda: str(uuid4()))
     occurred_at: datetime = field(default_factory=lambda: datetime.now(UTC))

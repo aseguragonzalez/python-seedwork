@@ -1,5 +1,3 @@
-from typing import Any
-
 from seedwork.application.background_tasks import BaseBackgroundTask
 from seedwork.application.integration_events import IntegrationEventRecord
 from seedwork.infrastructure.outbox import (
@@ -10,7 +8,7 @@ from seedwork.infrastructure.outbox import (
 )
 
 
-def make_event(correlation_id: str = "corr-1") -> IntegrationEventRecord[dict[str, Any]]:
+def make_event(correlation_id: str = "corr-1") -> IntegrationEventRecord:
     return IntegrationEventRecord(
         type="bank.account.opened",
         version="1.0",
