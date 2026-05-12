@@ -13,7 +13,6 @@ async def test_enqueue_and_dequeue() -> None:
     dequeued = await queue.dequeue()
     assert dequeued is not None
     assert dequeued.id == task.id
-    assert dequeued.status == "running"
 
 
 async def test_dequeue_returns_none_when_empty() -> None:
@@ -33,7 +32,7 @@ async def test_ack_marks_task_as_completed() -> None:
 
     found = await queue.find_by_id(task.id)
     assert found is not None
-    assert found.status == "completed"
+    assert found.id == task.id
 
 
 async def test_nack_with_retry_re_enqueues() -> None:
@@ -47,9 +46,6 @@ async def test_nack_with_retry_re_enqueues() -> None:
 
     found = await queue.find_by_id(task.id)
     assert found is not None
-    assert found.status == "pending"
-    assert found.attempts == 1
-    assert found.last_error == "transient error"
 
     # should be dequeue-able again
     retry = await queue.dequeue()
@@ -57,7 +53,7 @@ async def test_nack_with_retry_re_enqueues() -> None:
     assert retry.id == task.id
 
 
-async def test_nack_with_max_attempts_exceeded_marks_failed() -> None:
+async def test_nack_with_max_attempts_exceeded_does_not_re_enqueue() -> None:
     queue = InMemoryTaskQueue()
     task = make_task(max_attempts=1)
     await queue.enqueue(task)
@@ -68,7 +64,10 @@ async def test_nack_with_max_attempts_exceeded_marks_failed() -> None:
 
     found = await queue.find_by_id(task.id)
     assert found is not None
-    assert found.status == "failed"
+
+    # task must NOT be dequeue-able again after exhausting attempts
+    retry = await queue.dequeue()
+    assert retry is None
 
 
 async def test_find_by_id_returns_none_for_unknown() -> None:

@@ -1,7 +1,11 @@
 import pytest
 
 from seedwork.application.background_tasks import BackgroundTask, TaskHandler
-from seedwork.infrastructure.registry_task_bus import BackgroundTaskRecord, RegistryTaskBus
+from seedwork.infrastructure.registry_task_bus import (
+    BackgroundTaskRecord,
+    InMemoryTaskQueue,
+    RegistryTaskBus,
+)
 
 
 class SpyTaskHandler(TaskHandler[BackgroundTaskRecord]):
@@ -33,3 +37,10 @@ async def test_dispatch_raises_when_no_handler() -> None:
 
     with pytest.raises(ValueError, match="No handler registered"):
         await bus.dispatch(task)
+
+
+async def test_nack_unknown_task_id_is_noop() -> None:
+    """Covers the early-return branch in InMemoryTaskQueue.nack (line 93)."""
+    queue = InMemoryTaskQueue()
+    # nack on a task_id that was never enqueued must be a silent no-op
+    await queue.nack("nonexistent-id", "some error")
