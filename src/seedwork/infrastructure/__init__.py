@@ -37,10 +37,6 @@ from seedwork.infrastructure.registry_task_bus import (
     RegistryTaskBus,
 )
 from seedwork.infrastructure.transactional_command_bus import TransactionalCommandBus
-from seedwork.infrastructure.validation_command_bus import (
-    ValidationCommandBus,
-    ValidationQueryBus,
-)
 
 __all__ = [
     # command buses
@@ -51,11 +47,9 @@ __all__ = [
     "DomainEventPublishingRepository",
     "RegistryCommandBus",
     "TransactionalCommandBus",
-    "ValidationCommandBus",
     # query buses
     "QueryBusBuilder",
     "RegistryQueryBus",
-    "ValidationQueryBus",
     # repositories
     "InMemoryRepository",
     # integration event publishers

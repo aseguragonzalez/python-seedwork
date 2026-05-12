@@ -62,8 +62,6 @@ from seedwork.infrastructure import (
     TaskOutboxRecord,
     TaskOutboxRepository,
     TransactionalCommandBus,
-    ValidationCommandBus,
-    ValidationQueryBus,
 )
 
 __all__ = [
@@ -116,8 +114,6 @@ __all__ = [
     "RegistryCommandBus",
     "RegistryTaskBus",
     "TransactionalCommandBus",
-    "ValidationCommandBus",
-    "ValidationQueryBus",
     # infrastructure — query
     "QueryBusBuilder",
     "RegistryQueryBus",
