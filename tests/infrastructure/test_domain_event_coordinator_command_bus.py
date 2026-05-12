@@ -66,7 +66,7 @@ async def test_result_is_propagated() -> None:
 
     result = await bus.dispatch(OkCommand())
 
-    assert result is Result.succeeded() or result.ok
+    assert result.ok
 
 
 # Backwards compat: DomainEventFlushCommandBus is an alias

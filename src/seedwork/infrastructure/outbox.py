@@ -16,6 +16,7 @@ from seedwork.application.background_tasks import BackgroundTask
 from seedwork.application.integration_events import IntegrationEvent
 
 OutboxStatus = Literal["pending", "published", "failed"]
+TaskOutboxStatus = Literal["pending", "delivered", "failed"]
 
 
 # ---------------------------------------------------------------------------
@@ -107,7 +108,7 @@ class InMemoryIntegrationEventOutboxRepository:
 class TaskOutboxRecord:
     id: str
     task: BackgroundTask
-    status: OutboxStatus
+    status: TaskOutboxStatus
     attempts: int
     created_at: datetime
     last_error: str | None = None
@@ -164,7 +165,7 @@ class InMemoryTaskOutboxRepository:
     async def mark_as_delivered(self, id: str) -> None:
         r = self._records.get(id)
         if r:
-            self._records[id] = replace(r, status="published", delivered_at=datetime.now(UTC))
+            self._records[id] = replace(r, status="delivered", delivered_at=datetime.now(UTC))
 
     async def mark_as_failed(self, id: str, error: str) -> None:
         r = self._records.get(id)

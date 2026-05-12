@@ -38,7 +38,7 @@ class BackgroundTaskRecord:
 
     id: str = field(default_factory=lambda: str(uuid4()))
     type: str = ""
-    payload: dict[str, Any] = field(default_factory=lambda: {})
+    payload: dict[str, Any] = field(default_factory=dict)  # type: ignore[assignment]
     correlation_id: str = field(default_factory=lambda: str(uuid4()))
     causation_id: str | None = None
     # Legacy lifecycle fields — not part of the minimal BackgroundTask protocol

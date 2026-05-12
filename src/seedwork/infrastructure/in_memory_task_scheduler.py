@@ -20,10 +20,12 @@ class InMemoryTaskScheduler:
         self._scheduled.append(task)
 
     async def execute_scheduled(self) -> None:
-        for task in list(self._scheduled):
+        tasks, self._scheduled = list(self._scheduled), []
+        for task in tasks:
             handler = self._handlers.get(task.type)
-            if handler:
-                await handler.handle(task)
+            if handler is None:
+                continue
+            await handler.handle(task)
 
     def reset(self) -> None:
         self._scheduled.clear()
