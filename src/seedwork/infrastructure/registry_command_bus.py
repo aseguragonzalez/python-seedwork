@@ -16,7 +16,7 @@ class RegistryCommandBus(CommandBus):
         if handler is None:
             raise KeyError(f"No handler registered for {type(command).__name__}")
         try:
-            await handler.execute(command)
+            await handler.handle(command)
             return Result.succeeded()
         except DomainError as e:
             return Result.failed([ResultError(code=e.code, description=str(e))])

@@ -4,6 +4,7 @@ from typing import Any
 
 from seedwork.application.queries import Query, QueryBus, QueryHandler
 from seedwork.infrastructure.query_bus_builder import QueryBusBuilder
+from seedwork.infrastructure.registry_query_bus import RegistryQueryBus
 
 
 @dataclass
@@ -17,12 +18,12 @@ class GetAccountQuery(Query[AccountDto]):
 
 
 class GetAccountHandler(QueryHandler[GetAccountQuery, AccountDto]):
-    async def execute(self, query: GetAccountQuery) -> AccountDto | None:
+    async def handle(self, query: GetAccountQuery) -> AccountDto | None:
         return AccountDto(query.account_id)
 
 
 async def test_builder_returns_result() -> None:
-    bus = QueryBusBuilder().register(GetAccountQuery, GetAccountHandler()).build()
+    bus = QueryBusBuilder(RegistryQueryBus()).register(GetAccountQuery, GetAccountHandler()).build()
     result = await bus.ask(GetAccountQuery(account_id="acc-1"))
     assert result is not None
     assert result.account_id == "acc-1"
@@ -43,7 +44,7 @@ async def test_builder_middleware_order() -> None:
         return middleware
 
     bus = (
-        QueryBusBuilder()
+        QueryBusBuilder(RegistryQueryBus())
         .register(GetAccountQuery, GetAccountHandler())
         .use(make_middleware("first"))
         .use(make_middleware("second"))

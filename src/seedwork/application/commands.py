@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Protocol, Self, TypeVar
 
@@ -30,8 +30,11 @@ class Command: ...
 
 
 class CommandHandler(Protocol[TCommand_contra]):
-    async def execute(self, command: TCommand_contra) -> None: ...
+    async def handle(self, command: TCommand_contra) -> None: ...
 
 
 class CommandBus(Protocol):
     async def dispatch(self, command: Command) -> Result: ...
+
+
+CommandBusMiddleware = Callable[["CommandBus"], "CommandBus"]
