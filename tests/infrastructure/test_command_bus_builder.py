@@ -2,6 +2,7 @@ from collections.abc import Callable
 
 from seedwork.application.commands import Command, CommandBus, CommandHandler, Result
 from seedwork.infrastructure.command_bus_builder import CommandBusBuilder
+from seedwork.infrastructure.registry_command_bus import RegistryCommandBus
 from seedwork.infrastructure.transactional_command_bus import TransactionalCommandBus
 from tests.infrastructure.test_transactional_command_bus import SpyUnitOfWork
 
@@ -10,19 +11,24 @@ class MyCommand(Command): ...
 
 
 class MyHandler(CommandHandler[MyCommand]):
-    async def execute(self, command: MyCommand) -> None:
+    async def handle(self, command: MyCommand) -> None:
         pass
 
 
 async def test_builder_dispatches_registered_command() -> None:
-    bus = CommandBusBuilder().register(MyCommand, MyHandler()).build()
+    bus = CommandBusBuilder(RegistryCommandBus()).register(MyCommand, MyHandler()).build()
     result = await bus.dispatch(MyCommand())
     assert result.ok
 
 
 def test_builder_with_transaction_wraps_correctly() -> None:
     uow = SpyUnitOfWork()
-    bus = CommandBusBuilder().register(MyCommand, MyHandler()).with_transaction(uow).build()
+    bus = (
+        CommandBusBuilder(RegistryCommandBus())
+        .register(MyCommand, MyHandler())
+        .with_transaction(uow)
+        .build()
+    )
     assert isinstance(bus, TransactionalCommandBus)
 
 
@@ -41,7 +47,7 @@ async def test_builder_middleware_order() -> None:
         return middleware
 
     bus = (
-        CommandBusBuilder()
+        CommandBusBuilder(RegistryCommandBus())
         .register(MyCommand, MyHandler())
         .use(make_middleware("first"))
         .use(make_middleware("second"))

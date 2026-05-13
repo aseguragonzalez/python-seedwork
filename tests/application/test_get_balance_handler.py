@@ -15,11 +15,11 @@ async def test_returns_balance_when_account_exists() -> None:
     repo = InMemoryBankAccountReadRepository(
         {"acc-1": BalanceResponse(account_id="acc-1", balance=100.0, currency="EUR")}
     )
-    result = await GetBalanceHandler(repo).execute(GetBalanceQuery(account_id="acc-1"))
+    result = await GetBalanceHandler(repo).handle(GetBalanceQuery(account_id="acc-1"))
     assert result == BalanceResponse(account_id="acc-1", balance=100.0, currency="EUR")
 
 
 async def test_returns_none_when_account_not_found() -> None:
     repo = InMemoryBankAccountReadRepository({})
-    result = await GetBalanceHandler(repo).execute(GetBalanceQuery(account_id="acc-1"))
+    result = await GetBalanceHandler(repo).handle(GetBalanceQuery(account_id="acc-1"))
     assert result is None

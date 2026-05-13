@@ -37,12 +37,12 @@ class FailCommand(Command): ...
 
 
 class OkHandler(CommandHandler[OkCommand]):
-    async def execute(self, command: OkCommand) -> None:
+    async def handle(self, command: OkCommand) -> None:
         pass
 
 
 class FailHandler(CommandHandler[FailCommand]):
-    async def execute(self, command: FailCommand) -> None:
+    async def handle(self, command: FailCommand) -> None:
         raise RuntimeError("boom")
 
 

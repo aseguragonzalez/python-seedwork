@@ -1,14 +1,28 @@
 from seedwork.application import (
+    BackgroundTask,
+    BaseBackgroundTask,
     Command,
     CommandBus,
+    CommandBusMiddleware,
     CommandHandler,
+    DomainEventBus,
+    DomainEventBusPublisher,
+    DomainEventBusSubscriber,
     DomainEventHandler,
-    DomainEventPublisher,
+    IntegrationEvent,
+    IntegrationEventHandler,
+    IntegrationEventPublisher,
+    IntegrationEventPublisherSpy,
     Query,
     QueryBus,
+    QueryBusMiddleware,
     QueryHandler,
     Result,
     ResultError,
+    TaskHandler,
+    TaskScheduler,
+    ValidationErrorDetail,
+    ValidationErrors,
 )
 from seedwork.domain import (
     AggregateRoot,
@@ -23,26 +37,62 @@ from seedwork.domain import (
 )
 from seedwork.infrastructure import (
     CommandBusBuilder,
+    DeferredDomainEventBus,
+    DomainEventCoordinatorCommandBus,
     DomainEventPublishingRepository,
+    InMemoryIntegrationEventOutboxRepository,
+    InMemoryIntegrationEventPublisher,
     InMemoryRepository,
+    InMemoryTaskOutboxRepository,
+    InMemoryTaskScheduler,
+    IntegrationEventOutboxRecord,
+    IntegrationEventOutboxRepository,
+    IntegrationEventOutboxRepositorySpy,
+    IntegrationEventRecord,
+    OutboxIntegrationEventPublisher,
+    OutboxStatus,
+    OutboxTaskScheduler,
     QueryBusBuilder,
     RegistryCommandBus,
     RegistryQueryBus,
+    TaskOutboxRecord,
+    TaskOutboxRepository,
+    TaskOutboxRepositorySpy,
+    TaskOutboxStatus,
     TransactionalCommandBus,
 )
 
 __all__ = [
-    # application
+    # application — commands
     "Command",
     "CommandBus",
+    "CommandBusMiddleware",
     "CommandHandler",
-    "DomainEventHandler",
-    "DomainEventPublisher",
-    "Query",
-    "QueryBus",
-    "QueryHandler",
     "Result",
     "ResultError",
+    # application — domain events
+    "DomainEventBus",
+    "DomainEventBusPublisher",
+    "DomainEventBusSubscriber",
+    "DomainEventHandler",
+    # application — queries
+    "Query",
+    "QueryBus",
+    "QueryBusMiddleware",
+    "QueryHandler",
+    # application — integration events
+    "IntegrationEvent",
+    "IntegrationEventHandler",
+    "IntegrationEventPublisher",
+    "IntegrationEventPublisherSpy",
+    # application — background tasks
+    "BackgroundTask",
+    "BaseBackgroundTask",
+    "TaskHandler",
+    "TaskScheduler",
+    # application — validation
+    "ValidationErrorDetail",
+    "ValidationErrors",
     # domain
     "AggregateRoot",
     "DomainEventRecord",
@@ -53,12 +103,34 @@ __all__ = [
     "Repository",
     "UnitOfWork",
     "ValueObject",
-    # infrastructure
+    # infrastructure — command buses
     "CommandBusBuilder",
+    "DeferredDomainEventBus",
+    "DomainEventCoordinatorCommandBus",
     "DomainEventPublishingRepository",
-    "InMemoryRepository",
-    "QueryBusBuilder",
     "RegistryCommandBus",
-    "RegistryQueryBus",
     "TransactionalCommandBus",
+    # infrastructure — query buses
+    "QueryBusBuilder",
+    "RegistryQueryBus",
+    # infrastructure — repositories
+    "InMemoryRepository",
+    # infrastructure — integration events
+    "IntegrationEventRecord",
+    "InMemoryIntegrationEventPublisher",
+    "OutboxIntegrationEventPublisher",
+    # infrastructure — outbox (integration events)
+    "InMemoryIntegrationEventOutboxRepository",
+    "IntegrationEventOutboxRecord",
+    "IntegrationEventOutboxRepository",
+    "IntegrationEventOutboxRepositorySpy",
+    "OutboxStatus",
+    # infrastructure — outbox (tasks)
+    "InMemoryTaskOutboxRepository",
+    "InMemoryTaskScheduler",
+    "OutboxTaskScheduler",
+    "TaskOutboxRecord",
+    "TaskOutboxRepository",
+    "TaskOutboxRepositorySpy",
+    "TaskOutboxStatus",
 ]

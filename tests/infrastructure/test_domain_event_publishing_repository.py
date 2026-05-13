@@ -1,10 +1,11 @@
 from collections.abc import Sequence
+from dataclasses import replace as dataclass_replace
 
 from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.money import Money
 
-from seedwork.application.domain_events import DomainEventPublisher
+from seedwork.application.domain_event_bus import DomainEventBusPublisher
 from seedwork.domain.domain_event import DomainEvent
 from seedwork.domain.repository import Repository
 from seedwork.infrastructure.domain_event_publishing_repository import (
@@ -26,7 +27,7 @@ class InMemoryBankAccountRepository(Repository[BankAccountId, BankAccount]):
         self._store.pop(entity_id, None)
 
 
-class SpyPublisher(DomainEventPublisher):
+class SpyPublisher(DomainEventBusPublisher):
     def __init__(self) -> None:
         self.published: list[DomainEvent] = []
 
@@ -45,6 +46,19 @@ async def test_save_publishes_domain_events() -> None:
     assert len(publisher.published) == 1
 
 
+async def test_save_with_no_events_does_not_publish() -> None:
+    inner = InMemoryBankAccountRepository()
+    publisher = SpyPublisher()
+    repo = DomainEventPublishingRepository(inner, publisher)
+
+    account = BankAccount.open(BankAccountId("acc-4"), Money(amount=10.0, currency="EUR"))
+    account_no_events = dataclass_replace(account, domain_events=())
+
+    await repo.save(account_no_events)
+
+    assert len(publisher.published) == 0
+
+
 async def test_find_by_id_delegates_to_inner() -> None:
     inner = InMemoryBankAccountRepository()
     publisher = SpyPublisher()
@@ -55,6 +69,15 @@ async def test_find_by_id_delegates_to_inner() -> None:
 
     found = await repo.find_by_id(BankAccountId("acc-2"))
     assert found is account
+
+
+async def test_find_by_id_returns_none_for_missing() -> None:
+    inner = InMemoryBankAccountRepository()
+    publisher = SpyPublisher()
+    repo = DomainEventPublishingRepository(inner, publisher)
+
+    found = await repo.find_by_id(BankAccountId("nonexistent"))
+    assert found is None
 
 
 async def test_delete_does_not_publish_events() -> None:

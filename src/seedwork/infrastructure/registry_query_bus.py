@@ -14,4 +14,4 @@ class RegistryQueryBus(QueryBus):
         handler = self._handlers.get(type(query))
         if handler is None:
             raise KeyError(f"No handler registered for {type(query).__name__}")
-        return cast(TResult | None, await handler.execute(query))
+        return cast(TResult | None, await handler.handle(query))
