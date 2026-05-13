@@ -2,7 +2,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from typing import TypeVar
 
-from seedwork.application.domain_events import DomainEventHandler
+from seedwork.application.domain_event_bus import DomainEventHandler
 from seedwork.domain.domain_event import DomainEvent
 
 TEvent_contra = TypeVar("TEvent_contra", bound=DomainEvent, contravariant=True)
@@ -13,7 +13,7 @@ class DeferredDomainEventBus:
         self._handlers: dict[type[DomainEvent], list[DomainEventHandler[DomainEvent]]] = (
             defaultdict(list)
         )
-        self._pending: dict[str, DomainEvent] = {}  # keyed by event.id — idempotent
+        self._pending: dict[str, DomainEvent] = {}
 
     def subscribe(
         self,
@@ -36,13 +36,3 @@ class DeferredDomainEventBus:
 
     def discard(self) -> None:
         self._pending.clear()
-
-    # ---------------------------------------------------------------------------
-    # Backwards-compatible aliases (deprecated — will be removed in next release)
-    # ---------------------------------------------------------------------------
-
-    async def flush(self) -> None:  # noqa: D401
-        await self.dispatch()
-
-    def clear(self) -> None:
-        self.discard()

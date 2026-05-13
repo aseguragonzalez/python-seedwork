@@ -19,6 +19,9 @@ class BackgroundTask(Protocol):
     @property
     def causation_id(self) -> str | None: ...
 
+    @property
+    def metadata(self) -> dict[str, str] | None: ...
+
 
 @dataclass(frozen=True, kw_only=True)
 class BaseBackgroundTask:
@@ -26,6 +29,7 @@ class BaseBackgroundTask:
     payload: dict[str, Any]
     correlation_id: str
     causation_id: str | None = None
+    metadata: dict[str, str] | None = None
     id: str = field(default_factory=lambda: str(uuid4()))
 
 

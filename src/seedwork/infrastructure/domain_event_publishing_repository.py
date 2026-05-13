@@ -1,6 +1,6 @@
 from typing import Any
 
-from seedwork.application.domain_events import DomainEventBusPublisher
+from seedwork.application.domain_event_bus import DomainEventBusPublisher
 from seedwork.domain.aggregate_root import AggregateRoot
 from seedwork.domain.repository import Repository
 

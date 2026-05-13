@@ -7,29 +7,31 @@ from seedwork.application.background_tasks import (
 from seedwork.application.commands import (
     Command,
     CommandBus,
+    CommandBusMiddleware,
     CommandHandler,
     Result,
     ResultError,
 )
-from seedwork.application.domain_events import (
+from seedwork.application.domain_event_bus import (
     DomainEventBus,
     DomainEventBusPublisher,
     DomainEventBusSubscriber,
     DomainEventHandler,
-    DomainEventPublisher,  # backwards-compat alias
 )
 from seedwork.application.integration_events import (
     IntegrationEvent,
     IntegrationEventHandler,
     IntegrationEventPublisher,
-    IntegrationEventRecord,
+    IntegrationEventPublisherSpy,
 )
-from seedwork.application.queries import Query, QueryBus, QueryHandler
+from seedwork.application.queries import Query, QueryBus, QueryBusMiddleware, QueryHandler
+from seedwork.application.validation_errors import ValidationErrorDetail, ValidationErrors
 
 __all__ = [
     # commands
     "Command",
     "CommandBus",
+    "CommandBusMiddleware",
     "CommandHandler",
     "Result",
     "ResultError",
@@ -38,19 +40,22 @@ __all__ = [
     "DomainEventBusPublisher",
     "DomainEventBusSubscriber",
     "DomainEventHandler",
-    "DomainEventPublisher",  # backwards-compat alias
     # queries
     "Query",
     "QueryBus",
+    "QueryBusMiddleware",
     "QueryHandler",
     # integration events
     "IntegrationEvent",
     "IntegrationEventHandler",
     "IntegrationEventPublisher",
-    "IntegrationEventRecord",
+    "IntegrationEventPublisherSpy",
     # background tasks
     "BackgroundTask",
     "BaseBackgroundTask",
     "TaskHandler",
     "TaskScheduler",
+    # validation
+    "ValidationErrorDetail",
+    "ValidationErrors",
 ]

@@ -26,7 +26,3 @@ class DomainEventBus(DomainEventBusPublisher, DomainEventBusSubscriber, Protocol
     async def dispatch(self) -> None: ...
 
     def discard(self) -> None: ...
-
-
-# Kept for backwards compatibility — alias to DomainEventBusPublisher
-DomainEventPublisher = DomainEventBusPublisher

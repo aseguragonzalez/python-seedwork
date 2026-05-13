@@ -1,5 +1,5 @@
 from seedwork.application.background_tasks import BaseBackgroundTask
-from seedwork.application.integration_events import IntegrationEventRecord
+from seedwork.infrastructure.integration_event_record import IntegrationEventRecord
 from seedwork.infrastructure.outbox import (
     InMemoryIntegrationEventOutboxRepository,
     InMemoryTaskOutboxRepository,
@@ -24,11 +24,6 @@ def make_task(task_type: str = "domain.send_email") -> BaseBackgroundTask:
         payload={"key": "value"},
         correlation_id="corr-1",
     )
-
-
-# ---------------------------------------------------------------------------
-# InMemoryIntegrationEventOutboxRepository
-# ---------------------------------------------------------------------------
 
 
 async def test_ie_outbox_save_creates_pending_record() -> None:
@@ -114,11 +109,6 @@ async def test_outbox_ie_publisher_saves_each_event() -> None:
     await publisher.publish([e1, e2])
 
     assert len(repo.all) == 2
-
-
-# ---------------------------------------------------------------------------
-# InMemoryTaskOutboxRepository
-# ---------------------------------------------------------------------------
 
 
 async def test_task_outbox_save_creates_pending_record() -> None:

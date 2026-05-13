@@ -16,7 +16,3 @@ class InMemoryIntegrationEventPublisher:
 
     def reset(self) -> None:
         self._published.clear()
-
-    def clear(self) -> None:
-        """Deprecated: use reset() instead."""
-        self.reset()

@@ -3,28 +3,26 @@ from seedwork.application import (
     BaseBackgroundTask,
     Command,
     CommandBus,
+    CommandBusMiddleware,
     CommandHandler,
     DomainEventBus,
     DomainEventBusPublisher,
     DomainEventBusSubscriber,
     DomainEventHandler,
-    DomainEventPublisher,  # backwards-compat alias
     IntegrationEvent,
     IntegrationEventHandler,
     IntegrationEventPublisher,
-    IntegrationEventRecord,
+    IntegrationEventPublisherSpy,
     Query,
     QueryBus,
+    QueryBusMiddleware,
     QueryHandler,
     Result,
     ResultError,
     TaskHandler,
     TaskScheduler,
-)
-from seedwork.application.outbox import (  # kept for backwards compat
-    OutboxRecord,
-    OutboxRepository,
-    OutboxStatus,
+    ValidationErrorDetail,
+    ValidationErrors,
 )
 from seedwork.domain import (
     AggregateRoot,
@@ -38,29 +36,29 @@ from seedwork.domain import (
     ValueObject,
 )
 from seedwork.infrastructure import (
-    BackgroundTaskRecord,
     CommandBusBuilder,
     DeferredDomainEventBus,
     DomainEventCoordinatorCommandBus,
-    DomainEventFlushCommandBus,  # backwards-compat alias
     DomainEventPublishingRepository,
     InMemoryIntegrationEventOutboxRepository,
     InMemoryIntegrationEventPublisher,
-    InMemoryOutboxRepository,  # backwards-compat alias
     InMemoryRepository,
     InMemoryTaskOutboxRepository,
-    InMemoryTaskQueue,
     InMemoryTaskScheduler,
     IntegrationEventOutboxRecord,
     IntegrationEventOutboxRepository,
+    IntegrationEventOutboxRepositorySpy,
+    IntegrationEventRecord,
     OutboxIntegrationEventPublisher,
+    OutboxStatus,
     OutboxTaskScheduler,
     QueryBusBuilder,
     RegistryCommandBus,
     RegistryQueryBus,
-    RegistryTaskBus,
     TaskOutboxRecord,
     TaskOutboxRepository,
+    TaskOutboxRepositorySpy,
+    TaskOutboxStatus,
     TransactionalCommandBus,
 )
 
@@ -68,6 +66,7 @@ __all__ = [
     # application — commands
     "Command",
     "CommandBus",
+    "CommandBusMiddleware",
     "CommandHandler",
     "Result",
     "ResultError",
@@ -76,25 +75,24 @@ __all__ = [
     "DomainEventBusPublisher",
     "DomainEventBusSubscriber",
     "DomainEventHandler",
-    "DomainEventPublisher",
     # application — queries
     "Query",
     "QueryBus",
+    "QueryBusMiddleware",
     "QueryHandler",
     # application — integration events
     "IntegrationEvent",
     "IntegrationEventHandler",
     "IntegrationEventPublisher",
-    "IntegrationEventRecord",
-    # application — outbox (deprecated, kept for compat)
-    "OutboxRecord",
-    "OutboxRepository",
-    "OutboxStatus",
+    "IntegrationEventPublisherSpy",
     # application — background tasks
     "BackgroundTask",
     "BaseBackgroundTask",
     "TaskHandler",
     "TaskScheduler",
+    # application — validation
+    "ValidationErrorDetail",
+    "ValidationErrors",
     # domain
     "AggregateRoot",
     "DomainEventRecord",
@@ -105,33 +103,34 @@ __all__ = [
     "Repository",
     "UnitOfWork",
     "ValueObject",
-    # infrastructure — buses
+    # infrastructure — command buses
     "CommandBusBuilder",
     "DeferredDomainEventBus",
     "DomainEventCoordinatorCommandBus",
-    "DomainEventFlushCommandBus",
     "DomainEventPublishingRepository",
     "RegistryCommandBus",
-    "RegistryTaskBus",
     "TransactionalCommandBus",
-    # infrastructure — query
+    # infrastructure — query buses
     "QueryBusBuilder",
     "RegistryQueryBus",
     # infrastructure — repositories
-    "BackgroundTaskRecord",
     "InMemoryRepository",
-    "InMemoryTaskQueue",
-    "InMemoryTaskScheduler",
-    # infrastructure — integration event publishers
+    # infrastructure — integration events
+    "IntegrationEventRecord",
     "InMemoryIntegrationEventPublisher",
     "OutboxIntegrationEventPublisher",
-    # infrastructure — outboxes
+    # infrastructure — outbox (integration events)
     "InMemoryIntegrationEventOutboxRepository",
-    "InMemoryOutboxRepository",
-    "InMemoryTaskOutboxRepository",
     "IntegrationEventOutboxRecord",
     "IntegrationEventOutboxRepository",
+    "IntegrationEventOutboxRepositorySpy",
+    "OutboxStatus",
+    # infrastructure — outbox (tasks)
+    "InMemoryTaskOutboxRepository",
+    "InMemoryTaskScheduler",
     "OutboxTaskScheduler",
     "TaskOutboxRecord",
     "TaskOutboxRepository",
+    "TaskOutboxRepositorySpy",
+    "TaskOutboxStatus",
 ]

@@ -1,11 +1,3 @@
-"""
-Outbox pattern implementations for Infrastructure layer.
-
-Provides two separate outboxes:
-- IntegrationEventOutbox — for Integration Events
-- TaskOutbox — for Background Tasks
-"""
-
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
@@ -17,11 +9,6 @@ from seedwork.application.integration_events import IntegrationEvent
 
 OutboxStatus = Literal["pending", "published", "failed"]
 TaskOutboxStatus = Literal["pending", "delivered", "failed"]
-
-
-# ---------------------------------------------------------------------------
-# Integration Event Outbox
-# ---------------------------------------------------------------------------
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -97,11 +84,6 @@ class InMemoryIntegrationEventOutboxRepository:
 
     def reset(self) -> None:
         self._records.clear()
-
-
-# ---------------------------------------------------------------------------
-# Task Outbox
-# ---------------------------------------------------------------------------
 
 
 @dataclass(frozen=True, kw_only=True)

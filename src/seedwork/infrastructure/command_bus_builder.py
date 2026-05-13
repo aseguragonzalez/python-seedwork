@@ -1,10 +1,8 @@
-from collections.abc import Callable
 from typing import Any, Self
 
-from seedwork.application.commands import Command, CommandBus, CommandHandler
-from seedwork.application.domain_events import DomainEventBus
+from seedwork.application.commands import Command, CommandBus, CommandBusMiddleware, CommandHandler
+from seedwork.application.domain_event_bus import DomainEventBus
 from seedwork.domain.unit_of_work import UnitOfWork
-from seedwork.infrastructure.deferred_domain_event_bus import DeferredDomainEventBus
 from seedwork.infrastructure.domain_event_coordinator_command_bus import (
     DomainEventCoordinatorCommandBus,
 )
@@ -13,9 +11,9 @@ from seedwork.infrastructure.transactional_command_bus import TransactionalComma
 
 
 class CommandBusBuilder:
-    def __init__(self) -> None:
-        self._registry = RegistryCommandBus()
-        self._steps: list[Callable[[CommandBus], CommandBus]] = []
+    def __init__(self, registry: RegistryCommandBus) -> None:
+        self._registry = registry
+        self._steps: list[CommandBusMiddleware] = []
 
     def register(self, command_type: type[Command], handler: CommandHandler[Any]) -> Self:
         self._registry.register(command_type, handler)
@@ -29,11 +27,7 @@ class CommandBusBuilder:
         self._steps.append(lambda inner: DomainEventCoordinatorCommandBus(inner, event_bus))
         return self
 
-    def with_domain_event_flushing(self, event_bus: DeferredDomainEventBus) -> Self:
-        """Deprecated: use with_domain_event_coordination instead."""
-        return self.with_domain_event_coordination(event_bus)
-
-    def use(self, middleware: Callable[[CommandBus], CommandBus]) -> Self:
+    def use(self, middleware: CommandBusMiddleware) -> Self:
         self._steps.append(middleware)
         return self
 

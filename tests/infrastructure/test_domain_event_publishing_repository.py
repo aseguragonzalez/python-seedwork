@@ -4,7 +4,7 @@ from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.money import Money
 
-from seedwork.application.domain_events import DomainEventBusPublisher
+from seedwork.application.domain_event_bus import DomainEventBusPublisher
 from seedwork.domain.domain_event import DomainEvent
 from seedwork.domain.repository import Repository
 from seedwork.infrastructure.domain_event_publishing_repository import (

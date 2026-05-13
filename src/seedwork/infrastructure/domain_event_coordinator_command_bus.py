@@ -1,5 +1,5 @@
 from seedwork.application.commands import Command, CommandBus, Result
-from seedwork.application.domain_events import DomainEventBus
+from seedwork.application.domain_event_bus import DomainEventBus
 
 
 class DomainEventCoordinatorCommandBus:

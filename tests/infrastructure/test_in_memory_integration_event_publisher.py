@@ -1,7 +1,7 @@
-from seedwork.application.integration_events import IntegrationEventRecord
 from seedwork.infrastructure.in_memory_integration_event_publisher import (
     InMemoryIntegrationEventPublisher,
 )
+from seedwork.infrastructure.integration_event_record import IntegrationEventRecord
 
 
 def make_event(correlation_id: str = "corr-1") -> IntegrationEventRecord:
@@ -33,12 +33,12 @@ async def test_published_getter_returns_copy() -> None:
     snapshot = publisher.published
     await publisher.publish([make_event("c-99")])
 
-    assert len(snapshot) == 1  # snapshot is not affected
+    assert len(snapshot) == 1
 
 
-async def test_clear_removes_all_published() -> None:
+async def test_reset_removes_all_published() -> None:
     publisher = InMemoryIntegrationEventPublisher()
     await publisher.publish([make_event()])
-    publisher.clear()
+    publisher.reset()
 
     assert list(publisher.published) == []

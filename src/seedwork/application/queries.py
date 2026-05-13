@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol, TypeVar
 
@@ -15,3 +16,6 @@ class QueryHandler(Protocol[TQuery_contra, TResult_co]):
 
 class QueryBus(Protocol):
     async def ask[TResult](self, query: Query[TResult]) -> TResult | None: ...
+
+
+QueryBusMiddleware = Callable[["QueryBus"], "QueryBus"]
