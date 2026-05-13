@@ -1,11 +1,8 @@
 from collections import defaultdict
 from collections.abc import Sequence
-from typing import TypeVar
 
 from seedwork.application.domain_event_bus import DomainEventHandler
 from seedwork.domain.domain_event import DomainEvent
-
-TEvent_contra = TypeVar("TEvent_contra", bound=DomainEvent, contravariant=True)
 
 
 class DeferredDomainEventBus:
@@ -15,10 +12,10 @@ class DeferredDomainEventBus:
         )
         self._pending: dict[str, DomainEvent] = {}
 
-    def subscribe(
+    def subscribe[TEvent: DomainEvent](
         self,
-        event_type: type[TEvent_contra],
-        handler: DomainEventHandler[TEvent_contra],
+        event_type: type[TEvent],
+        handler: DomainEventHandler[TEvent],
     ) -> None:
         self._handlers[event_type].append(handler)  # type: ignore[arg-type]
 

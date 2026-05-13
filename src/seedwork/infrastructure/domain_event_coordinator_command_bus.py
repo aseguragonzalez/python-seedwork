@@ -12,7 +12,11 @@ class DomainEventCoordinatorCommandBus:
         self._event_bus = event_bus
 
     async def dispatch(self, command: Command) -> Result:
-        result = await self._inner.dispatch(command)
+        try:
+            result = await self._inner.dispatch(command)
+        except Exception:
+            self._event_bus.discard()
+            raise
         if result.ok:
             await self._event_bus.dispatch()
         else:

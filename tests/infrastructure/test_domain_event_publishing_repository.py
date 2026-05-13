@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from dataclasses import replace as dataclass_replace
 
 from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
@@ -46,24 +47,15 @@ async def test_save_publishes_domain_events() -> None:
 
 
 async def test_save_with_no_events_does_not_publish() -> None:
-    """An aggregate with no domain events should not call publish."""
     inner = InMemoryBankAccountRepository()
     publisher = SpyPublisher()
     repo = DomainEventPublishingRepository(inner, publisher)
 
-    # Save once to persist (consumes the event), then save plain copy via inner
     account = BankAccount.open(BankAccountId("acc-4"), Money(amount=10.0, currency="EUR"))
-    await inner.save(account)  # bypass publishing repo so events are NOT cleared
+    account_no_events = dataclass_replace(account, domain_events=())
 
-    # Create an account-like object with no events by saving it a second time directly
-    # (In real code, a reconstituted aggregate has no events)
-    from dataclasses import replace as dc_replace
+    await repo.save(account_no_events)
 
-    no_events_account = dc_replace(account, domain_events=())
-    await inner.save(no_events_account)
-
-    # Now save via publishing repo — no events, so publish should NOT be called
-    await repo.save(no_events_account)
     assert len(publisher.published) == 0
 
 
