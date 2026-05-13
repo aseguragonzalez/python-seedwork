@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "python-seedwork"
-version = "0.1.0"
+version = "0.2.0"
 description = "DDD and Hexagonal Architecture building blocks for Python"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -29,21 +29,10 @@ Homepage = "https://github.com/aseguragonzalez/python-seedwork"
 Repository = "https://github.com/aseguragonzalez/python-seedwork"
 Issues = "https://github.com/aseguragonzalez/python-seedwork/issues"
 
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/seedwork"]
 
-[dependency-groups]
-dev = [
-    "pytest>=8.3",
-    "pytest-asyncio>=0.24",
-    "pytest-cov>=6.0",
-    "ruff>=0.8",
-    "pyright>=1.1",
-    "build>=1.0",
-    "hatch>=1.13",
-    "python-semantic-release>=9.0",
-    "pre-commit>=4.0",
-]
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
@@ -62,11 +51,13 @@ changelog_file = "CHANGELOG.md"
 upload_to_vcs_release = false  # artifacts are uploaded by the upload-to-gh-release step after uv build
 upload_to_pypi = false  # publishing is handled by pypa/gh-action-pypi-publish via OIDC Trusted Publisher
 
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 pythonpath = [".", "docs/examples"]
 addopts = "--cov=src/seedwork --cov-report=term-missing --cov-fail-under=90"
+
 
 [tool.coverage.run]
 source = ["src/seedwork"]
@@ -78,6 +69,7 @@ exclude_lines = [
     "^\\s*\\.\\.\\.$",
 ]
 
+
 [tool.ruff]
 target-version = "py312"
 line-length = 100
@@ -85,6 +77,7 @@ line-length = 100
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "ANN"]
 ignore = ["ANN401"]  # Any is necessary at generic boundaries (e.g. _evolve **changes)
+
 
 [tool.pyright]
 pythonVersion = "3.12"
@@ -94,3 +87,17 @@ include = ["src", "tests", "docs/examples"]
 extraPaths = ["docs/examples"]
 venvPath = "."
 venv = ".venv"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+    "pyright>=1.1",
+    "build>=1.0",
+    "hatch>=1.13",
+    "python-semantic-release>=9.0",
+    "pre-commit>=4.0",
+]
+

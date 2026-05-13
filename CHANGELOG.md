@@ -1,6 +1,64 @@
 # CHANGELOG
 
 
+## v0.2.0 (2026-05-13)
+
+### Chores
+
+- Add CODEOWNERS file ([#7](https://github.com/aseguragonzalez/python-seedwork/pull/7),
+  [`ce1f5d5`](https://github.com/aseguragonzalez/python-seedwork/commit/ce1f5d542a5e39b5611e20e257904b4dfce25bd0))
+
+Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+### Continuous Integration
+
+- Optimize workflows with venv caching and fix release build order
+  ([#5](https://github.com/aseguragonzalez/python-seedwork/pull/5),
+  [`d2a9441`](https://github.com/aseguragonzalez/python-seedwork/commit/d2a94410d62f5e9abd3f50f1094f6b5b598b9d20))
+
+Co-authored-by: Copilot Autofix powered by AI <175728472+Copilot@users.noreply.github.com>
+
+### Documentation
+
+- Add security policy and advisory issue template
+  ([#6](https://github.com/aseguragonzalez/python-seedwork/pull/6),
+  [`0d20136`](https://github.com/aseguragonzalez/python-seedwork/commit/0d2013640ba9c5ac82815e8e9db7ddb92b251257))
+
+Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+Co-authored-by: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>
+
+Co-authored-by: aseguragonzalez <2671340+aseguragonzalez@users.noreply.github.com>
+
+- Add status badges to README ([#8](https://github.com/aseguragonzalez/python-seedwork/pull/8),
+  [`4995c37`](https://github.com/aseguragonzalez/python-seedwork/commit/4995c37a638308930044cc34b4fd19c09cee7bed))
+
+Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- Rewrite README and expand docs with getting-started guide
+  ([#9](https://github.com/aseguragonzalez/python-seedwork/pull/9),
+  [`9f06fa6`](https://github.com/aseguragonzalez/python-seedwork/commit/9f06fa6043a4fc856e4287096c2c0f7f7e9536a4))
+
+Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+Co-authored-by: Copilot Autofix powered by AI <175728472+Copilot@users.noreply.github.com>
+
+### Features
+
+- Release 0.2.0 ([#11](https://github.com/aseguragonzalez/python-seedwork/pull/11),
+  [`eae54cc`](https://github.com/aseguragonzalez/python-seedwork/commit/eae54cc0ccde0d70eb00b40f75cc2b7a4bc91b84))
+
+Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+### Refactoring
+
+- Move examples/ into docs/examples/
+  ([#10](https://github.com/aseguragonzalez/python-seedwork/pull/10),
+  [`caf716c`](https://github.com/aseguragonzalez/python-seedwork/commit/caf716c58c53f1abfa3c7fd2743edc491393a5ea))
+
+Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+
 ## v0.1.0 (2026-05-06)
 
 ### Bug Fixes
