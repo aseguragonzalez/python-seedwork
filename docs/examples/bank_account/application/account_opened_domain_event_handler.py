@@ -13,7 +13,7 @@ class AccountOpenedDomainEventHandler(DomainEventHandler[AccountOpened]):
             type="bank_account.account_opened",
             version="1.0",
             aggregate_id=event.payload.account_id,
-            payload={},
+            payload={},  # derived from typed fields in __post_init__
             correlation_id=event.id,
             account_id=event.payload.account_id,
             owner="unknown",

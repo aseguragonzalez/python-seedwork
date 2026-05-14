@@ -9,3 +9,15 @@ class AccountOpenedIntegrationEvent(IntegrationEventRecord):
     owner: str
     initial_balance: float
     currency: str
+
+    def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "payload",
+            {
+                "account_id": self.account_id,
+                "owner": self.owner,
+                "initial_balance": self.initial_balance,
+                "currency": self.currency,
+            },
+        )
