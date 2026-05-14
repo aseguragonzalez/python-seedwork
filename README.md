@@ -49,6 +49,15 @@ A complete [Bank Account example](docs/examples/bank_account/) demonstrates all 
 
 Python 3.12+, [uv](https://github.com/astral-sh/uv)
 
+## Built With
+
+- [Python 3.12+](https://www.python.org/)
+- [uv](https://github.com/astral-sh/uv) — dependency management and packaging
+- [Ruff](https://github.com/astral-sh/ruff) — linting and formatting
+- [Pyright](https://github.com/microsoft/pyright) — strict static type checking
+- [pytest](https://docs.pytest.org/) — testing with coverage gate
+- [python-semantic-release](https://python-semantic-release.readthedocs.io/) — automated versioning and changelog
+
 ## Development
 
 ```bash
