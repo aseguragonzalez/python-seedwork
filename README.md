@@ -87,15 +87,6 @@ This package draws on the following literature and on the experience of building
 [4]: https://learn.microsoft.com/en-us/dotnet/architecture/microservices/
 [5]: https://www.oreilly.com/library/view/architecture-patterns-with/9781492052197/
 
-## Sibling Packages
-
-This library is part of a family of seedwork packages implementing the same DDD/CQRS patterns:
-
-| Package | Language |
-|---|---|
-| [ts-seedwork](https://github.com/aseguragonzalez/ts-seedwork) | TypeScript |
-| [php-seedwork](https://github.com/aseguragonzalez/php-seedwork) | PHP |
-
 ## License
 
 [MIT](LICENSE)
