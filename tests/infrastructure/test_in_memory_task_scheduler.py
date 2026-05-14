@@ -94,3 +94,10 @@ async def test_reset_prevents_execution() -> None:
     await scheduler.execute_scheduled()
 
     assert len(handler.handled) == 0
+
+
+def test_in_memory_task_scheduler_satisfies_spy_protocol() -> None:
+    from seedwork.infrastructure.in_memory_task_scheduler import TaskSchedulerSpy
+
+    scheduler = InMemoryTaskScheduler()
+    assert isinstance(scheduler, TaskSchedulerSpy)

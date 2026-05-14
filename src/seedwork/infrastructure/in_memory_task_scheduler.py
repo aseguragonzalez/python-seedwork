@@ -1,10 +1,22 @@
 from collections.abc import Sequence
-from typing import Any
+from typing import Any, Protocol, runtime_checkable
 
-from seedwork.application.background_tasks import BackgroundTask, TaskHandler
+from seedwork.application.background_tasks import BackgroundTask, TaskHandler, TaskScheduler
 
 
-class InMemoryTaskScheduler:
+@runtime_checkable
+class TaskSchedulerSpy(TaskScheduler, Protocol):
+    @property
+    def scheduled(self) -> Sequence[BackgroundTask]: ...
+
+    def register(self, task_type: str, handler: TaskHandler[Any]) -> None: ...
+
+    async def execute_scheduled(self) -> None: ...
+
+    def reset(self) -> None: ...
+
+
+class InMemoryTaskScheduler(TaskSchedulerSpy):
     def __init__(self) -> None:
         self._scheduled: list[BackgroundTask] = []
         self._handlers: dict[str, TaskHandler[Any]] = {}
