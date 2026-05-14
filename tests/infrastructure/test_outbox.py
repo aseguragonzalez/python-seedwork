@@ -1,5 +1,5 @@
 from seedwork.application.background_tasks import BaseBackgroundTask
-from seedwork.infrastructure.integration_event_record import IntegrationEventRecord
+from seedwork.application.base_integration_event import BaseIntegrationEvent
 from seedwork.infrastructure.outbox import (
     InMemoryIntegrationEventOutboxRepository,
     InMemoryTaskOutboxRepository,
@@ -8,8 +8,8 @@ from seedwork.infrastructure.outbox import (
 )
 
 
-def make_event(correlation_id: str = "corr-1") -> IntegrationEventRecord:
-    return IntegrationEventRecord(
+def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent:
+    return BaseIntegrationEvent(
         type="bank.account.opened",
         version="1.0",
         aggregate_id="acc-1",

@@ -1,26 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any
-from uuid import uuid4
+from typing import TYPE_CHECKING
+
+from seedwork.application.base_integration_event import BaseIntegrationEvent
 
 if TYPE_CHECKING:
     from bank_account.domain.events.account_opened import AccountOpened
 
 
-@dataclass(frozen=True, kw_only=True)
-class AccountOpenedIntegrationEvent:
-    type: str
-    version: str
-    aggregate_id: str
-    payload: dict[str, Any]
-    correlation_id: str
-    id: str = field(default_factory=lambda: str(uuid4()))
-    occurred_at: datetime = field(default_factory=lambda: datetime.now(UTC))
-    causation_id: str | None = None
-    metadata: dict[str, str] | None = None
-
+class AccountOpenedIntegrationEvent(BaseIntegrationEvent):
     @classmethod
     def from_domain_event(cls, event: AccountOpened) -> AccountOpenedIntegrationEvent:
         return cls(

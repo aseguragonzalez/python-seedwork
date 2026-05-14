@@ -1,6 +1,7 @@
 from seedwork.application import (
     BackgroundTask,
     BaseBackgroundTask,
+    BaseIntegrationEvent,
     Command,
     CommandBus,
     CommandBusMiddleware,
@@ -48,7 +49,6 @@ from seedwork.infrastructure import (
     IntegrationEventOutboxRecord,
     IntegrationEventOutboxRepository,
     IntegrationEventOutboxRepositorySpy,
-    IntegrationEventRecord,
     OutboxIntegrationEventPublisher,
     OutboxStatus,
     OutboxTaskScheduler,
@@ -116,7 +116,7 @@ __all__ = [
     # infrastructure — repositories
     "InMemoryRepository",
     # infrastructure — integration events
-    "IntegrationEventRecord",
+    "BaseIntegrationEvent",
     "InMemoryIntegrationEventPublisher",
     "OutboxIntegrationEventPublisher",
     # infrastructure — outbox (integration events)

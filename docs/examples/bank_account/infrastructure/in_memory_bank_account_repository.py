@@ -1,4 +1,7 @@
 from bank_account.application.get_balance.balance_response import BalanceResponse
+from bank_account.application.get_balance.bank_account_read_repository import (
+    BankAccountReadRepository,
+)
 from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.bank_account_repository import BankAccountRepository
@@ -9,6 +12,7 @@ from seedwork.infrastructure import InMemoryRepository
 class InMemoryBankAccountRepository(
     InMemoryRepository[BankAccountId, BankAccount],
     BankAccountRepository,
+    BankAccountReadRepository,
 ):
     async def find_balance(self, account_id: str) -> BalanceResponse | None:
         account = await self.find_by_id(BankAccountId(account_id))
