@@ -4,6 +4,7 @@ from seedwork.application.background_tasks import (
     TaskHandler,
     TaskScheduler,
 )
+from seedwork.application.base_integration_event import BaseIntegrationEvent
 from seedwork.application.commands import (
     Command,
     CommandBus,
@@ -46,6 +47,7 @@ __all__ = [
     "QueryBusMiddleware",
     "QueryHandler",
     # integration events
+    "BaseIntegrationEvent",
     "IntegrationEvent",
     "IntegrationEventHandler",
     "IntegrationEventPublisher",

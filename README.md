@@ -16,6 +16,16 @@ DDD and Hexagonal Architecture building blocks for Python.
 - **Keep domain logic pure.** The domain layer has zero framework or infrastructure imports. Business rules live in the domain; everything else lives in infrastructure.
 - **Clear layer boundaries.** Protocols define contracts; implementations satisfy them structurally. The dependency direction is enforced: domain ← application ← infrastructure.
 
+## Components
+
+| Layer | Package | Components |
+|---|---|---|
+| Domain | `seedwork.domain` | `Entity`, `AggregateRoot`, `ValueObject`, `DomainEvent`, `DomainEventRecord`, `DomainError`, `Repository`, `UnitOfWork` |
+| Application | `seedwork.application` | `Command`, `Query[TResult]`, `CommandHandler`, `QueryHandler`, `CommandBus`, `QueryBus`, `Result`, `DomainEventBusPublisher`, `DomainEventBusSubscriber`, `DomainEventBus`, `DomainEventHandler`, `BaseIntegrationEvent`, `IntegrationEvent`, `IntegrationEventPublisher`, `IntegrationEventHandler`, `BackgroundTask`, `TaskScheduler` |
+| Infrastructure | `seedwork.infrastructure` | `RegistryCommandBus`, `RegistryQueryBus`, `TransactionalCommandBus`, `DomainEventCoordinatorCommandBus`, `CommandBusBuilder`, `QueryBusBuilder`, `DeferredDomainEventBus`, `DomainEventPublishingRepository`, `InMemoryRepository` |
+
+All components are also re-exported from the top-level `seedwork` package.
+
 ## Installation
 
 ```bash
@@ -24,21 +34,20 @@ pip install python-seedwork
 
 Requires Python 3.12+. Ships a `py.typed` marker (PEP 561) — mypy and pyright pick up the inline types automatically.
 
-## How to Use
+## Documentation
 
-See [Getting Started](docs/getting-started.md) for a step-by-step walkthrough: define a value object, build an aggregate root, create a command handler, and wire a bus.
+Comprehensive guides are available in the [`docs/`](docs/) directory:
 
-The [Component Reference](docs/component-reference.md) covers every class and protocol in detail. A complete working example lives in [`docs/examples/bank_account/`](docs/examples/bank_account/).
+- [Getting Started](docs/getting-started.md)
+- [Component Reference](docs/component-reference.md)
+- [Best Practices](docs/best-practices.md)
+- [Coding Standards](docs/coding-standards.md)
 
-## What's Included
+A complete [Bank Account example](docs/examples/bank_account/) demonstrates all patterns end-to-end.
 
-| Layer | Package | Components |
-|---|---|---|
-| Domain | `seedwork.domain` | `Entity`, `AggregateRoot`, `ValueObject`, `DomainEvent`, `DomainEventRecord`, `DomainError`, `Repository`, `UnitOfWork` |
-| Application | `seedwork.application` | `Command`, `Query[TResult]`, `CommandHandler`, `QueryHandler`, `CommandBus`, `QueryBus`, `Result`, `DomainEventPublisher`, `DomainEventHandler` |
-| Infrastructure | `seedwork.infrastructure` | `RegistryCommandBus`, `RegistryQueryBus`, `TransactionalCommandBus`, `CommandBusBuilder`, `QueryBusBuilder`, `DomainEventPublishingRepository`, `InMemoryRepository` |
+## Requirements
 
-All components are also re-exported from the top-level `seedwork` package.
+Python 3.12+, [uv](https://github.com/astral-sh/uv)
 
 ## Built With
 
@@ -50,8 +59,6 @@ All components are also re-exported from the top-level `seedwork` package.
 - [python-semantic-release](https://python-semantic-release.readthedocs.io/) — automated versioning and changelog
 
 ## Development
-
-**Requirements:** Python 3.12+, [uv](https://github.com/astral-sh/uv)
 
 ```bash
 git clone https://github.com/aseguragonzalez/python-seedwork.git
@@ -69,19 +76,26 @@ make install
 | `make test-no-cov` | Run tests without coverage |
 | `make clean` | Remove build artifacts and caches |
 
-## Documentation
-
-- [Getting Started](docs/getting-started.md) — step-by-step guide for building with this library
-- [Component Reference](docs/component-reference.md) — every class, protocol, and method
-- [Best Practices](docs/best-practices.md) — patterns and idioms for effective use
-- [Coding Standards](docs/coding-standards.md) — conventions aligned with DDD and Clean Architecture
-
 ## Contributing
 
 This project follows the [Conventional Commits](https://www.conventionalcommits.org) specification. The `commit-msg` pre-commit hook enforces the format; `python-semantic-release` derives versions and the changelog from commit prefixes automatically.
 
 ## References
 
-- Evans, E. — *Domain-Driven Design: Tackling Complexity in the Heart of Software* (2003)
-- Vernon, V. — *Implementing Domain-Driven Design* (2013)
-- Martin, R. C. — *Clean Architecture: A Craftsman's Guide to Software Structure and Design* (2017)
+This package draws on the following literature and on the experience of building solid, scalable, and maintainable systems in different stacks (PHP, C#, Python, TypeScript).
+
+- Eric Evans, _Domain-Driven Design: Tackling Complexity in the Heart of Software_ [1]
+- Vaughn Vernon, _Implementing Domain-Driven Design_ [2]
+- Robert C. Martin, _Clean Architecture: A Craftsman's Guide to Software Structure and Design_ [3]
+- .NET Microservices: Architecture for Containerized .NET Applications [4]
+- Architecture Patterns with Python, Harry Percival & Bob Gregory [5]
+
+[1]: https://www.amazon.es/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215
+[2]: https://www.amazon.es/Implementing-Domain-Driven-Design-Vaughn-Vernon/dp/0321834577
+[3]: https://www.amazon.es/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164
+[4]: https://learn.microsoft.com/en-us/dotnet/architecture/microservices/
+[5]: https://www.oreilly.com/library/view/architecture-patterns-with/9781492052197/
+
+## License
+
+[MIT](LICENSE)

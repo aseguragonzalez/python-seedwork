@@ -1,6 +1,7 @@
 from seedwork.application import (
     BackgroundTask,
     BaseBackgroundTask,
+    BaseIntegrationEvent,
     Command,
     CommandBus,
     CommandBusMiddleware,
@@ -48,7 +49,6 @@ from seedwork.infrastructure import (
     IntegrationEventOutboxRecord,
     IntegrationEventOutboxRepository,
     IntegrationEventOutboxRepositorySpy,
-    IntegrationEventRecord,
     OutboxIntegrationEventPublisher,
     OutboxStatus,
     OutboxTaskScheduler,
@@ -59,6 +59,7 @@ from seedwork.infrastructure import (
     TaskOutboxRepository,
     TaskOutboxRepositorySpy,
     TaskOutboxStatus,
+    TaskSchedulerSpy,
     TransactionalCommandBus,
 )
 
@@ -81,6 +82,7 @@ __all__ = [
     "QueryBusMiddleware",
     "QueryHandler",
     # application — integration events
+    "BaseIntegrationEvent",
     "IntegrationEvent",
     "IntegrationEventHandler",
     "IntegrationEventPublisher",
@@ -116,7 +118,6 @@ __all__ = [
     # infrastructure — repositories
     "InMemoryRepository",
     # infrastructure — integration events
-    "IntegrationEventRecord",
     "InMemoryIntegrationEventPublisher",
     "OutboxIntegrationEventPublisher",
     # infrastructure — outbox (integration events)
@@ -128,6 +129,7 @@ __all__ = [
     # infrastructure — outbox (tasks)
     "InMemoryTaskOutboxRepository",
     "InMemoryTaskScheduler",
+    "TaskSchedulerSpy",
     "OutboxTaskScheduler",
     "TaskOutboxRecord",
     "TaskOutboxRepository",

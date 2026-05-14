@@ -5,7 +5,7 @@ from uuid import uuid4
 
 
 @dataclass(frozen=True, kw_only=True)
-class IntegrationEventRecord:
+class BaseIntegrationEvent:
     type: str
     version: str
     aggregate_id: str

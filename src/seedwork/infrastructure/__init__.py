@@ -10,8 +10,7 @@ from seedwork.infrastructure.in_memory_integration_event_publisher import (
     InMemoryIntegrationEventPublisher,
 )
 from seedwork.infrastructure.in_memory_repository import InMemoryRepository
-from seedwork.infrastructure.in_memory_task_scheduler import InMemoryTaskScheduler
-from seedwork.infrastructure.integration_event_record import IntegrationEventRecord
+from seedwork.infrastructure.in_memory_task_scheduler import InMemoryTaskScheduler, TaskSchedulerSpy
 from seedwork.infrastructure.outbox import (
     InMemoryIntegrationEventOutboxRepository,
     InMemoryTaskOutboxRepository,
@@ -45,7 +44,6 @@ __all__ = [
     # repositories
     "InMemoryRepository",
     # integration events
-    "IntegrationEventRecord",
     "InMemoryIntegrationEventPublisher",
     "OutboxIntegrationEventPublisher",
     # outbox — integration events
@@ -57,6 +55,7 @@ __all__ = [
     # outbox — tasks
     "InMemoryTaskOutboxRepository",
     "InMemoryTaskScheduler",
+    "TaskSchedulerSpy",
     "OutboxTaskScheduler",
     "TaskOutboxRecord",
     "TaskOutboxRepository",
