@@ -82,6 +82,7 @@ __all__ = [
     "QueryBusMiddleware",
     "QueryHandler",
     # application — integration events
+    "BaseIntegrationEvent",
     "IntegrationEvent",
     "IntegrationEventHandler",
     "IntegrationEventPublisher",
@@ -117,7 +118,6 @@ __all__ = [
     # infrastructure — repositories
     "InMemoryRepository",
     # infrastructure — integration events
-    "BaseIntegrationEvent",
     "InMemoryIntegrationEventPublisher",
     "OutboxIntegrationEventPublisher",
     # infrastructure — outbox (integration events)
