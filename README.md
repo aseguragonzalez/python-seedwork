@@ -21,7 +21,7 @@ DDD and Hexagonal Architecture building blocks for Python.
 | Layer | Package | Components |
 |---|---|---|
 | Domain | `seedwork.domain` | `Entity`, `AggregateRoot`, `ValueObject`, `DomainEvent`, `DomainEventRecord`, `DomainError`, `Repository`, `UnitOfWork` |
-| Application | `seedwork.application` | `Command`, `Query[TResult]`, `CommandHandler`, `QueryHandler`, `CommandBus`, `QueryBus`, `Result`, `DomainEventBusPublisher`, `DomainEventBusSubscriber`, `DomainEventBus`, `DomainEventHandler`, `IntegrationEvent`, `IntegrationEventHandler`, `BackgroundTask`, `TaskScheduler`, `ValidationCommandBus`, `ValidationQueryBus` |
+| Application | `seedwork.application` | `Command`, `Query[TResult]`, `CommandHandler`, `QueryHandler`, `CommandBus`, `QueryBus`, `Result`, `DomainEventBusPublisher`, `DomainEventBusSubscriber`, `DomainEventBus`, `DomainEventHandler`, `BaseIntegrationEvent`, `IntegrationEvent`, `IntegrationEventPublisher`, `IntegrationEventHandler`, `BackgroundTask`, `TaskScheduler` |
 | Infrastructure | `seedwork.infrastructure` | `RegistryCommandBus`, `RegistryQueryBus`, `TransactionalCommandBus`, `DomainEventCoordinatorCommandBus`, `CommandBusBuilder`, `QueryBusBuilder`, `DeferredDomainEventBus`, `DomainEventPublishingRepository`, `InMemoryRepository` |
 
 All components are also re-exported from the top-level `seedwork` package.

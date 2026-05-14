@@ -1,6 +1,7 @@
 from bank_account.application.open_account.open_account_command import OpenAccountCommand
 from bank_account.application.open_account.open_account_handler import OpenAccountHandler
 from bank_account.domain.bank_account_id import BankAccountId
+from bank_account.domain.bank_account_repository import BankAccountRepository
 from bank_account.domain.events.account_opened import AccountOpened
 from bank_account.domain.money import Money
 from bank_account.infrastructure.in_memory_bank_account_repository import (
@@ -13,8 +14,8 @@ from seedwork.infrastructure import DeferredDomainEventBus, DomainEventPublishin
 async def test_open_account_saves_account_with_initial_balance() -> None:
     inner_repo = InMemoryBankAccountRepository()
     event_bus = DeferredDomainEventBus()
-    repo = DomainEventPublishingRepository(inner_repo, event_bus)
-    handler = OpenAccountHandler(repo)  # type: ignore[arg-type]
+    repo: BankAccountRepository = DomainEventPublishingRepository(inner_repo, event_bus)
+    handler = OpenAccountHandler(repo)
 
     await handler.handle(
         OpenAccountCommand(account_id="acc-1", initial_balance=100.0, currency="EUR")
@@ -23,21 +24,6 @@ async def test_open_account_saves_account_with_initial_balance() -> None:
     account = await inner_repo.find_by_id(BankAccountId("acc-1"))
     assert account is not None
     assert account.balance == Money(amount=100.0, currency="EUR")
-
-
-async def test_open_account_publishes_domain_event() -> None:
-    inner_repo = InMemoryBankAccountRepository()
-    event_bus = DeferredDomainEventBus()
-    repo = DomainEventPublishingRepository(inner_repo, event_bus)
-    handler = OpenAccountHandler(repo)  # type: ignore[arg-type]
-
-    await handler.handle(
-        OpenAccountCommand(account_id="acc-2", initial_balance=50.0, currency="USD")
-    )
-    await event_bus.dispatch()
-
-    # After dispatch, pending events have been cleared but we confirmed dispatch ran without error.
-    # To inspect published events, subscribe a spy handler.
 
 
 async def test_open_account_dispatches_account_opened_event() -> None:
@@ -52,8 +38,8 @@ async def test_open_account_dispatches_account_opened_event() -> None:
     inner_repo = InMemoryBankAccountRepository()
     event_bus = DeferredDomainEventBus()
     event_bus.subscribe(AccountOpened, SpyHandler())
-    repo = DomainEventPublishingRepository(inner_repo, event_bus)
-    handler = OpenAccountHandler(repo)  # type: ignore[arg-type]
+    repo: BankAccountRepository = DomainEventPublishingRepository(inner_repo, event_bus)
+    handler = OpenAccountHandler(repo)
 
     await handler.handle(
         OpenAccountCommand(account_id="acc-3", initial_balance=200.0, currency="EUR")

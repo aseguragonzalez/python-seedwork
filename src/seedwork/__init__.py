@@ -59,6 +59,7 @@ from seedwork.infrastructure import (
     TaskOutboxRepository,
     TaskOutboxRepositorySpy,
     TaskOutboxStatus,
+    TaskSchedulerSpy,
     TransactionalCommandBus,
 )
 
@@ -128,6 +129,7 @@ __all__ = [
     # infrastructure — outbox (tasks)
     "InMemoryTaskOutboxRepository",
     "InMemoryTaskScheduler",
+    "TaskSchedulerSpy",
     "OutboxTaskScheduler",
     "TaskOutboxRecord",
     "TaskOutboxRepository",
