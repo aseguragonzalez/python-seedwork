@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "python-seedwork"
-version = "0.2.0"
+version = "0.3.0"
 description = "DDD and Hexagonal Architecture building blocks for Python"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -28,6 +28,7 @@ classifiers = [
 Homepage = "https://github.com/aseguragonzalez/python-seedwork"
 Repository = "https://github.com/aseguragonzalez/python-seedwork"
 Issues = "https://github.com/aseguragonzalez/python-seedwork/issues"
+
 
 
 [tool.hatch.build.targets.wheel]
@@ -87,6 +88,7 @@ include = ["src", "tests", "docs/examples"]
 extraPaths = ["docs/examples"]
 venvPath = "."
 venv = ".venv"
+
 
 [dependency-groups]
 dev = [

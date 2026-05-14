@@ -1,6 +1,42 @@
 # CHANGELOG
 
 
+## v0.3.0 (2026-05-14)
+
+### Chores
+
+- **deps**: Bump urllib3 from 2.6.3 to 2.7.0 in the uv group across 1 directory
+  ([#12](https://github.com/aseguragonzalez/python-seedwork/pull/12),
+  [`ea20737`](https://github.com/aseguragonzalez/python-seedwork/commit/ea2073740d31b39e8111613903457cabdf358290))
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+Co-authored-by: Alfonso Segura <a.segura.gonzalez@gmail.com>
+
+### Features
+
+- Taskschedulerspy, bank-account example (infra + tests), documentation
+  ([`47025c9`](https://github.com/aseguragonzalez/python-seedwork/commit/47025c99b11ff9b58bca0db54b70b402accdbe24))
+
+### Refactoring
+
+- Fix for code scanning alert no. 6: Workflow does not contain permissions
+  ([#13](https://github.com/aseguragonzalez/python-seedwork/pull/13),
+  [`e561cac`](https://github.com/aseguragonzalez/python-seedwork/commit/e561cac9d900a9e48a6f41893236408e2a990729))
+
+Co-authored-by: Copilot Autofix powered by AI
+  <62310815+github-advanced-security[bot]@users.noreply.github.com>
+
+- Potential fix for code scanning alert no. 2: Workflow does not contain permissions
+  ([#14](https://github.com/aseguragonzalez/python-seedwork/pull/14),
+  [`1a089ec`](https://github.com/aseguragonzalez/python-seedwork/commit/1a089ec2384e5b2706d70b3e9c7db8ef05206ae8))
+
+Co-authored-by: Copilot Autofix powered by AI
+  <62310815+github-advanced-security[bot]@users.noreply.github.com>
+
+
 ## v0.2.0 (2026-05-13)
 
 ### Chores
