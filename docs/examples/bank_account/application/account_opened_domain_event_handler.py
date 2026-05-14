@@ -9,15 +9,5 @@ class AccountOpenedDomainEventHandler(DomainEventHandler[AccountOpened]):
         self._publisher = publisher
 
     async def handle(self, event: AccountOpened) -> None:
-        integration_event = AccountOpenedIntegrationEvent(
-            type="bank_account.account_opened",
-            version="1.0",
-            aggregate_id=event.payload.account_id,
-            payload={},  # derived from typed fields in __post_init__
-            correlation_id=event.id,
-            account_id=event.payload.account_id,
-            owner="unknown",
-            initial_balance=event.payload.initial_balance,
-            currency=event.payload.currency,
-        )
+        integration_event = AccountOpenedIntegrationEvent.from_domain_event(event)
         await self._publisher.publish([integration_event])
