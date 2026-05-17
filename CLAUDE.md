@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 make install        # uv sync + install pre-commit hooks (run once after clone)
+make all            # full validation: lint + typecheck + tests + pre-commit hooks
 make check          # lint + typecheck + tests (what CI runs)
+make pre-commit     # run all pre-commit hooks against all files (includes markdownlint)
 make lint           # ruff check src tests docs/examples
 make format         # ruff format + ruff check --fix
 make typecheck      # pyright

@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install lint format typecheck test build clean
+.PHONY: help install lint format typecheck test pre-commit all build clean
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -24,6 +24,11 @@ test: ## Run tests with coverage
 
 test-no-cov: ## Run tests without coverage
 	uv run pytest --no-cov
+
+pre-commit: ## Run all pre-commit hooks against all files
+	uv run pre-commit run --all-files
+
+all: check pre-commit ## Run all validations (lint, typecheck, tests, pre-commit hooks)
 
 clean: ## Remove build artifacts and caches
 	rm -rf dist .coverage .pytest_cache .ruff_cache
