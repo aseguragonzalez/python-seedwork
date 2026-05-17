@@ -51,6 +51,9 @@ class BankAccount(AggregateRoot[BankAccountId]):
             )
         )
 
+    def validate(self) -> None:
+        pass
+
     def debit(self, amount: Money) -> Self:
         if amount.currency != self.balance.currency:
             raise CurrencyMismatchError(self.balance.currency, amount.currency)
