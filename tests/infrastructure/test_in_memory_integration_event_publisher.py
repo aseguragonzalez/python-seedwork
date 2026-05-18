@@ -1,4 +1,5 @@
 from seedwork.application.base_integration_event import BaseIntegrationEvent
+from seedwork.application.integration_events import IntegrationEventPublisherSpy
 from seedwork.infrastructure.in_memory_integration_event_publisher import (
     InMemoryIntegrationEventPublisher,
 )
@@ -42,3 +43,8 @@ async def test_reset_removes_all_published() -> None:
     publisher.reset()
 
     assert list(publisher.published) == []
+
+
+def test_in_memory_integration_event_publisher_satisfies_spy_protocol() -> None:
+    publisher = InMemoryIntegrationEventPublisher()
+    assert isinstance(publisher, IntegrationEventPublisherSpy)

@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, Protocol, TypeVar
+from typing import Any, Protocol, TypeVar, runtime_checkable
 
 
 class IntegrationEvent(Protocol):
@@ -41,6 +41,7 @@ class IntegrationEventPublisher(Protocol):
     async def publish(self, events: Sequence[IntegrationEvent]) -> None: ...
 
 
+@runtime_checkable
 class IntegrationEventPublisherSpy(Protocol):
     async def publish(self, events: Sequence[IntegrationEvent]) -> None: ...
 
