@@ -6,7 +6,6 @@ This package provides DDD and Hexagonal Architecture building blocks for Python 
 
 - [Getting started](getting-started.md) — Step-by-step guide: install, define a domain model, handle commands, wire buses.
 - [Component reference](component-reference.md) — Every abstract class, protocol, and infrastructure component.
-- [Best practices](best-practices.md) — How to use the package effectively in your project.
 - [Coding standards](coding-standards.md) — Conventions aligned with DDD and Clean Architecture, with do/don't guidelines.
 
 ## Complete working example
