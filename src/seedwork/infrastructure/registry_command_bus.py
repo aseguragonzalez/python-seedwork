@@ -1,10 +1,10 @@
 from typing import Any
 
-from seedwork.application.commands import Command, CommandBus, CommandHandler, Result, ResultError
+from seedwork.application.commands import Command, CommandHandler, Result, ResultError
 from seedwork.domain.domain_error import DomainError
 
 
-class RegistryCommandBus(CommandBus):
+class RegistryCommandBus:
     def __init__(self) -> None:
         self._handlers: dict[type[Command], CommandHandler[Any]] = {}
 
