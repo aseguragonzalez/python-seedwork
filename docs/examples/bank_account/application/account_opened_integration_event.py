@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from uuid import uuid4
+
+from bank_account.application.request_context import correlation_id as _correlation_id
 
 from seedwork.application.base_integration_event import BaseIntegrationEvent
 
@@ -20,5 +23,6 @@ class AccountOpenedIntegrationEvent(BaseIntegrationEvent):
                 "initial_balance": event.payload.initial_balance,
                 "currency": event.payload.currency,
             },
-            correlation_id=event.id,
+            correlation_id=_correlation_id.get(str(uuid4())),
+            causation_id=event.id,
         )

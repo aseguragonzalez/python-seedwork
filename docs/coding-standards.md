@@ -174,3 +174,43 @@ TypeVars with declared variance carry `_co` (covariant) or `_contra` (contravari
 ### Protocol method stubs use `...`
 
 Protocol method bodies use `...` as the stub, following PEP 544 convention for `.py` files. Python requires a syntactic body for all function definitions; `...` is the minimal idiomatic form for abstract protocol methods.
+
+### `correlation_id` propagation via `ContextVar`
+
+`correlation_id` is a request-scoped value that must flow from the entry point (HTTP handler, CLI, consumer) through the entire call stack without threading it through every function signature. The seedwork does not provide this abstraction; each bounded context owns it.
+
+**Pattern:**
+
+```python
+# application/request_context.py
+from contextvars import ContextVar
+
+correlation_id: ContextVar[str] = ContextVar("correlation_id")
+```
+
+The entry point sets it at the boundary:
+
+```python
+# infrastructure/http/middleware.py
+token = correlation_id.set(request.headers.get("X-Correlation-Id", str(uuid4())))
+try:
+    response = await call_next(request)
+finally:
+    correlation_id.reset(token)
+```
+
+`DomainEventHandler` implementations read it when building integration events:
+
+```python
+correlation_id=correlation_id.get(str(uuid4())),  # fallback generates a fresh id
+causation_id=event.id,                            # the domain event that triggered this
+```
+
+**`correlation_id` vs `causation_id`:**
+
+| Field | Value | Meaning |
+|---|---|---|
+| `correlation_id` | request/trace id | Groups all events belonging to the same logical operation |
+| `causation_id` | domain event `id` | The immediate cause of this integration event |
+
+Never assign `event.id` to `correlation_id` — that conflates causation with correlation and breaks distributed tracing.
