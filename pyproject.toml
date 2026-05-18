@@ -55,7 +55,7 @@ upload_to_pypi = false  # publishing is handled by pypa/gh-action-pypi-publish v
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-testpaths = ["tests"]
+testpaths = ["tests", "docs/examples/bank_account/tests"]
 pythonpath = [".", "docs/examples"]
 addopts = "--cov=src/seedwork --cov-report=term-missing --cov-fail-under=90"
 
