@@ -32,3 +32,13 @@ def test_errors_are_immutable_tuple() -> None:
         ]
     )
     assert isinstance(result.errors, tuple)
+
+
+def test_succeeded_result_is_not_failed() -> None:
+    result = Result.ok()
+    assert not result.is_failed
+
+
+def test_failed_result_is_failed() -> None:
+    result = Result.failed([ResultError(code="ERR", description="error")])
+    assert result.is_failed
