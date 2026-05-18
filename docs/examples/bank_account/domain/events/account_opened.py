@@ -5,7 +5,6 @@ from seedwork.domain.domain_event import DomainEventRecord
 
 @dataclass(frozen=True, kw_only=True)
 class AccountOpenedPayload:
-    account_id: str
     initial_balance: float
     currency: str
 

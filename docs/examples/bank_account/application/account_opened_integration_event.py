@@ -14,9 +14,9 @@ class AccountOpenedIntegrationEvent(BaseIntegrationEvent):
         return cls(
             type="bank_account.account_opened",
             version="1.0",
-            aggregate_id=str(event.payload.account_id),
+            aggregate_id=event.aggregate_id,
             payload={
-                "account_id": str(event.payload.account_id),
+                "account_id": event.aggregate_id,
                 "initial_balance": event.payload.initial_balance,
                 "currency": event.payload.currency,
             },
