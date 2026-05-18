@@ -1,5 +1,5 @@
 from seedwork.application.background_tasks import BaseBackgroundTask
-from seedwork.application.base_integration_event import BaseIntegrationEvent
+from seedwork.application.integration_events import BaseIntegrationEvent
 from seedwork.infrastructure.outbox import (
     InMemoryIntegrationEventOutboxRepository,
     InMemoryTaskOutboxRepository,

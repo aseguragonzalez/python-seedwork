@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from bank_account.application.request_context import correlation_id as _correlation_id
 
-from seedwork.application.base_integration_event import BaseIntegrationEvent
+from seedwork.application.integration_events import BaseIntegrationEvent
 
 if TYPE_CHECKING:
     from bank_account.domain.events.account_opened import AccountOpened

@@ -1,5 +1,7 @@
-from seedwork.application.base_integration_event import BaseIntegrationEvent
-from seedwork.application.integration_events import IntegrationEventPublisherSpy
+from seedwork.application.integration_events import (
+    BaseIntegrationEvent,
+    IntegrationEventPublisherSpy,
+)
 from seedwork.infrastructure.in_memory_integration_event_publisher import (
     InMemoryIntegrationEventPublisher,
 )
