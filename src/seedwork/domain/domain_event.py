@@ -16,7 +16,7 @@ class DomainEvent(Protocol):
 
 
 @dataclass(frozen=True, kw_only=True)
-class DomainEventRecord[TPayload]:
+class BaseDomainEvent[TPayload]:
     payload: TPayload
     aggregate_id: str
     id: str = field(default_factory=lambda: str(uuid4()))

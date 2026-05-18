@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from seedwork.domain.domain_event import DomainEvent, DomainEventRecord
+from seedwork.domain.domain_event import BaseDomainEvent, DomainEvent
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -11,7 +11,7 @@ class OrderPlacedPayload:
 
 
 @dataclass(frozen=True)
-class OrderPlaced(DomainEventRecord[OrderPlacedPayload]):
+class OrderPlaced(BaseDomainEvent[OrderPlacedPayload]):
     pass
 
 

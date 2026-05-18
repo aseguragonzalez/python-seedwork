@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from seedwork.domain.domain_event import DomainEventRecord
+from seedwork.domain.domain_event import BaseDomainEvent
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -10,5 +10,5 @@ class AccountOpenedPayload:
 
 
 @dataclass(frozen=True)
-class AccountOpened(DomainEventRecord[AccountOpenedPayload]):
+class AccountOpened(BaseDomainEvent[AccountOpenedPayload]):
     pass

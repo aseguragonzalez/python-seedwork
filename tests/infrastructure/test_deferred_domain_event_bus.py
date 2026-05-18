@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from seedwork.application.domain_event_bus import DomainEventHandler
-from seedwork.domain.domain_event import DomainEvent, DomainEventRecord
+from seedwork.domain.domain_event import BaseDomainEvent, DomainEvent
 from seedwork.infrastructure.deferred_domain_event_bus import DeferredDomainEventBus
 
 
@@ -11,7 +11,7 @@ class OrderPlacedPayload:
 
 
 @dataclass(frozen=True)
-class OrderPlaced(DomainEventRecord[OrderPlacedPayload]):
+class OrderPlaced(BaseDomainEvent[OrderPlacedPayload]):
     pass
 
 
@@ -21,7 +21,7 @@ class OrderShippedPayload:
 
 
 @dataclass(frozen=True)
-class OrderShipped(DomainEventRecord[OrderShippedPayload]):
+class OrderShipped(BaseDomainEvent[OrderShippedPayload]):
     pass
 
 

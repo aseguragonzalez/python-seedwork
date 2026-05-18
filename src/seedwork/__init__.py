@@ -27,9 +27,9 @@ from seedwork.application import (
 )
 from seedwork.domain import (
     AggregateRoot,
+    BaseDomainEvent,
     DomainError,
     DomainEvent,
-    DomainEventRecord,
     Entity,
     NullEntityIdError,
     Repository,
@@ -97,7 +97,7 @@ __all__ = [
     "ValidationErrors",
     # domain
     "AggregateRoot",
-    "DomainEventRecord",
+    "BaseDomainEvent",
     "DomainError",
     "DomainEvent",
     "Entity",
