@@ -2,7 +2,7 @@ from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.money import Money
 
-from seedwork.infrastructure.in_memory_repository import InMemoryRepository
+from seedwork.testing import InMemoryRepository, RepositorySpy
 
 
 def make_account(account_id: str = "acc-1", balance: float = 100.0) -> BankAccount:
@@ -62,3 +62,35 @@ async def test_stores_multiple_aggregates_independently() -> None:
 
     assert await repo.find_by_id(BankAccountId("acc-1")) is a1
     assert await repo.find_by_id(BankAccountId("acc-2")) is a2
+
+
+async def test_all_returns_all_saved_aggregates() -> None:
+    repo: InMemoryRepository[BankAccountId, BankAccount] = InMemoryRepository()
+    a1 = make_account("acc-1", 100.0)
+    a2 = make_account("acc-2", 200.0)
+    await repo.save(a1)
+    await repo.save(a2)
+
+    assert set(repo.all) == {a1, a2}
+
+
+async def test_all_returns_empty_when_no_aggregates() -> None:
+    repo: InMemoryRepository[BankAccountId, BankAccount] = InMemoryRepository()
+
+    assert list(repo.all) == []
+
+
+async def test_reset_clears_all_saved_aggregates() -> None:
+    repo: InMemoryRepository[BankAccountId, BankAccount] = InMemoryRepository()
+    await repo.save(make_account("acc-1"))
+    await repo.save(make_account("acc-2"))
+
+    repo.reset()
+
+    assert list(repo.all) == []
+    assert await repo.find_by_id(BankAccountId("acc-1")) is None
+
+
+def test_in_memory_repository_satisfies_repository_spy_protocol() -> None:
+    repo: InMemoryRepository[BankAccountId, BankAccount] = InMemoryRepository()
+    assert isinstance(repo, RepositorySpy)

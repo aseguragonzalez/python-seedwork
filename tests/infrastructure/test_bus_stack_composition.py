@@ -8,8 +8,8 @@ from bank_account.domain.bank_account_id import BankAccountId
 
 from seedwork.infrastructure.command_bus_builder import CommandBusBuilder
 from seedwork.infrastructure.deferred_domain_event_bus import DeferredDomainEventBus
-from seedwork.infrastructure.in_memory_repository import InMemoryRepository
 from seedwork.infrastructure.registry_command_bus import RegistryCommandBus
+from seedwork.testing import InMemoryRepository
 
 
 class BankAccountInMemoryRepository(InMemoryRepository[BankAccountId, BankAccount]):
@@ -46,6 +46,6 @@ async def test_full_bus_stack_dispatches_command() -> None:
         OpenAccountCommand(account_id="acc-1", initial_balance=200.0, currency="EUR")
     )
 
-    assert result.ok
+    assert result.is_ok
     account = await repo.find_by_id(BankAccountId("acc-1"))
     assert account is not None

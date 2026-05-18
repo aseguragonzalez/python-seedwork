@@ -4,7 +4,6 @@ from seedwork.application.background_tasks import (
     TaskHandler,
     TaskScheduler,
 )
-from seedwork.application.base_integration_event import BaseIntegrationEvent
 from seedwork.application.commands import (
     Command,
     CommandBus,
@@ -20,10 +19,10 @@ from seedwork.application.domain_event_bus import (
     DomainEventHandler,
 )
 from seedwork.application.integration_events import (
+    BaseIntegrationEvent,
     IntegrationEvent,
     IntegrationEventHandler,
     IntegrationEventPublisher,
-    IntegrationEventPublisherSpy,
 )
 from seedwork.application.queries import Query, QueryBus, QueryBusMiddleware, QueryHandler
 from seedwork.application.validation_errors import ValidationErrorDetail, ValidationErrors
@@ -51,7 +50,6 @@ __all__ = [
     "IntegrationEvent",
     "IntegrationEventHandler",
     "IntegrationEventPublisher",
-    "IntegrationEventPublisherSpy",
     # background tasks
     "BackgroundTask",
     "BaseBackgroundTask",

@@ -1,9 +1,9 @@
 from typing import Any, cast
 
-from seedwork.application.queries import Query, QueryBus, QueryHandler
+from seedwork.application.queries import Query, QueryHandler
 
 
-class RegistryQueryBus(QueryBus):
+class RegistryQueryBus:
     def __init__(self) -> None:
         self._handlers: dict[type[Query[Any]], QueryHandler[Any, Any]] = {}
 

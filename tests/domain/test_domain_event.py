@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from seedwork.domain.domain_event import DomainEvent, DomainEventRecord
+from seedwork.domain.domain_event import BaseDomainEvent, DomainEvent
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -11,12 +11,15 @@ class OrderPlacedPayload:
 
 
 @dataclass(frozen=True)
-class OrderPlaced(DomainEventRecord[OrderPlacedPayload]):
+class OrderPlaced(BaseDomainEvent[OrderPlacedPayload]):
     pass
 
 
 def _make_event() -> OrderPlaced:
-    return OrderPlaced(payload=OrderPlacedPayload(order_id="ord-1", total=42.0))
+    return OrderPlaced(
+        aggregate_id="ord-1",
+        payload=OrderPlacedPayload(order_id="ord-1", total=42.0),
+    )
 
 
 def test_domain_event_record_auto_generates_id() -> None:
@@ -53,6 +56,7 @@ def test_domain_event_record_satisfies_domain_event_protocol() -> None:
     event = _make_event()
     assert isinstance(event.id, str)
     assert isinstance(event.occurred_at, datetime)
+    assert isinstance(event.aggregate_id, str)
 
 
 def test_domain_event_protocol_is_structural() -> None:
@@ -65,8 +69,13 @@ def test_domain_event_protocol_is_structural() -> None:
         def occurred_at(self) -> datetime:
             return datetime.now(UTC)
 
+        @property
+        def aggregate_id(self) -> str:
+            return "agg-1"
+
     event: DomainEvent = MinimalEvent()
     assert event.id == "evt-id"
+    assert event.aggregate_id == "agg-1"
 
 
 def test_domain_event_record_is_immutable() -> None:

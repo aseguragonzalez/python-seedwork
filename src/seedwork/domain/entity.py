@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
 from typing import Any, Self, cast
 
@@ -10,12 +11,16 @@ class NullEntityIdError(DomainError):
 
 
 @dataclass(frozen=True, eq=False, kw_only=True)
-class Entity[TId]:
+class Entity[TId](ABC):
     id: TId
 
     def __post_init__(self) -> None:
         if self.id is None:
             raise NullEntityIdError()
+        self.validate()
+
+    @abstractmethod
+    def validate(self) -> None: ...
 
     def _evolve(self, **changes: Any) -> Self:
         return replace(self, **changes)

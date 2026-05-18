@@ -1,15 +1,14 @@
 from dataclasses import dataclass
 
-from seedwork.domain.domain_event import DomainEventRecord
+from seedwork.domain.domain_event import BaseDomainEvent
 
 
 @dataclass(frozen=True, kw_only=True)
 class AccountCreditedPayload:
-    account_id: str
     amount: float
     currency: str
 
 
 @dataclass(frozen=True)
-class AccountCredited(DomainEventRecord[AccountCreditedPayload]):
+class AccountCredited(BaseDomainEvent[AccountCreditedPayload]):
     pass

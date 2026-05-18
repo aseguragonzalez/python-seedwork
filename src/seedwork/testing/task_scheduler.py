@@ -16,7 +16,7 @@ class TaskSchedulerSpy(TaskScheduler, Protocol):
     def reset(self) -> None: ...
 
 
-class InMemoryTaskScheduler(TaskSchedulerSpy):
+class InMemoryTaskScheduler:
     def __init__(self) -> None:
         self._scheduled: list[BackgroundTask] = []
         self._handlers: dict[str, TaskHandler[Any]] = {}

@@ -28,11 +28,11 @@ class BankAccount(AggregateRoot[BankAccountId]):
     @classmethod
     def open(cls, id: BankAccountId, initial_balance: Money) -> Self:
         event = AccountOpened(
+            aggregate_id=id,
             payload=AccountOpenedPayload(
-                account_id=id,
                 initial_balance=initial_balance.amount,
                 currency=initial_balance.currency,
-            )
+            ),
         )
         return cls(id=id, balance=initial_balance, domain_events=(event,))
 
@@ -43,13 +43,16 @@ class BankAccount(AggregateRoot[BankAccountId]):
         new_balance = Money(amount=new_amount, currency=self.balance.currency)
         return self._evolve(balance=new_balance)._record(
             AccountCredited(
+                aggregate_id=self.id,
                 payload=AccountCreditedPayload(
-                    account_id=self.id,
                     amount=amount.amount,
                     currency=amount.currency,
-                )
+                ),
             )
         )
+
+    def validate(self) -> None:
+        pass
 
     def debit(self, amount: Money) -> Self:
         if amount.currency != self.balance.currency:
@@ -60,10 +63,10 @@ class BankAccount(AggregateRoot[BankAccountId]):
         new_balance = Money(amount=new_amount, currency=self.balance.currency)
         return self._evolve(balance=new_balance)._record(
             AccountDebited(
+                aggregate_id=self.id,
                 payload=AccountDebitedPayload(
-                    account_id=self.id,
                     amount=amount.amount,
                     currency=amount.currency,
-                )
+                ),
             )
         )

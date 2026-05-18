@@ -34,7 +34,7 @@ async def test_dispatch_calls_registered_handler() -> None:
     bus.register(OpenAccountCommand, handler)
     command = OpenAccountCommand(account_id="acc-1")
     result = await bus.dispatch(command)
-    assert result.ok
+    assert result.is_ok
     assert handler.handled_with is command
 
 
@@ -48,7 +48,7 @@ async def test_dispatch_domain_error_returns_fail_result() -> None:
     bus = RegistryCommandBus()
     bus.register(FailingCommand, DomainErrorHandler())
     result = await bus.dispatch(FailingCommand())
-    assert not result.ok
+    assert not result.is_ok
     assert result.errors[0].code == "INSUFFICIENT_FUNDS"
 
 

@@ -1,6 +1,21 @@
 from collections.abc import Sequence
-from datetime import datetime
+from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from typing import Any, Protocol, TypeVar
+from uuid import uuid4
+
+
+@dataclass(frozen=True, kw_only=True)
+class BaseIntegrationEvent:
+    type: str
+    version: str
+    aggregate_id: str
+    payload: dict[str, Any]
+    correlation_id: str
+    id: str = field(default_factory=lambda: str(uuid4()))
+    occurred_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    causation_id: str | None = None
+    metadata: dict[str, str] | None = None
 
 
 class IntegrationEvent(Protocol):
@@ -39,15 +54,6 @@ TIntegrationEvent_contra = TypeVar(
 
 class IntegrationEventPublisher(Protocol):
     async def publish(self, events: Sequence[IntegrationEvent]) -> None: ...
-
-
-class IntegrationEventPublisherSpy(Protocol):
-    async def publish(self, events: Sequence[IntegrationEvent]) -> None: ...
-
-    @property
-    def published(self) -> Sequence[IntegrationEvent]: ...
-
-    def reset(self) -> None: ...
 
 
 class IntegrationEventHandler(Protocol[TIntegrationEvent_contra]):

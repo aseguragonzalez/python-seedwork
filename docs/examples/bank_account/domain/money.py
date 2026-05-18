@@ -19,7 +19,7 @@ class Money(ValueObject):
     amount: float
     currency: str
 
-    def __post_init__(self) -> None:
+    def validate(self) -> None:
         if self.amount < 0:
             raise NegativeAmountError()
         if not self.currency:

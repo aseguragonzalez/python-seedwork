@@ -1,6 +1,5 @@
 # CHANGELOG
 
-
 ## v0.3.0 (2026-05-14)
 
 ### Chores
@@ -35,7 +34,6 @@ Co-authored-by: Copilot Autofix powered by AI
 
 Co-authored-by: Copilot Autofix powered by AI
   <62310815+github-advanced-security[bot]@users.noreply.github.com>
-
 
 ## v0.2.0 (2026-05-13)
 
@@ -93,7 +91,6 @@ Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
   [`caf716c`](https://github.com/aseguragonzalez/python-seedwork/commit/caf716c58c53f1abfa3c7fd2743edc491393a5ea))
 
 Co-authored-by: Claude Sonnet 4.6 <noreply@anthropic.com>
-
 
 ## v0.1.0 (2026-05-06)
 

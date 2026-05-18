@@ -6,7 +6,7 @@ from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.errors import AccountNotFoundError
 from bank_account.domain.money import Money
 
-from seedwork.infrastructure.in_memory_repository import InMemoryRepository
+from seedwork.testing import InMemoryRepository
 
 
 class BankAccountInMemoryRepository(InMemoryRepository[BankAccountId, BankAccount]):

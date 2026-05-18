@@ -8,11 +8,13 @@ class UserId(str):
 
 
 class User(Entity[UserId]):
-    pass
+    def validate(self) -> None:
+        pass
 
 
 class Product(Entity[UserId]):
-    pass
+    def validate(self) -> None:
+        pass
 
 
 def test_entity_raises_when_id_is_none() -> None:

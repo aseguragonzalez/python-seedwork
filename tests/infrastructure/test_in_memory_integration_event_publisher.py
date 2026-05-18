@@ -1,7 +1,5 @@
-from seedwork.application.base_integration_event import BaseIntegrationEvent
-from seedwork.infrastructure.in_memory_integration_event_publisher import (
-    InMemoryIntegrationEventPublisher,
-)
+from seedwork.application.integration_events import BaseIntegrationEvent
+from seedwork.testing import InMemoryIntegrationEventPublisher, IntegrationEventPublisherSpy
 
 
 def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent:
@@ -42,3 +40,8 @@ async def test_reset_removes_all_published() -> None:
     publisher.reset()
 
     assert list(publisher.published) == []
+
+
+def test_in_memory_integration_event_publisher_satisfies_spy_protocol() -> None:
+    publisher = InMemoryIntegrationEventPublisher()
+    assert isinstance(publisher, IntegrationEventPublisherSpy)

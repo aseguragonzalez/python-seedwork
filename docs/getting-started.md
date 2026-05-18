@@ -296,5 +296,4 @@ if balance is None:
 
 - [`docs/examples/bank_account/`](examples/bank_account/) — complete, self-contained bounded context exercising every building block.
 - [Component Reference](component-reference.md) — detailed documentation on every class and protocol.
-- [Best Practices](best-practices.md) — design guidelines and patterns for effective use.
 - [Coding Standards](coding-standards.md) — conventions aligned with DDD and Clean Architecture.

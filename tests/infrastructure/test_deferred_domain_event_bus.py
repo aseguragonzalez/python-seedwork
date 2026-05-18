@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from seedwork.application.domain_event_bus import DomainEventHandler
-from seedwork.domain.domain_event import DomainEvent, DomainEventRecord
+from seedwork.domain.domain_event import BaseDomainEvent, DomainEvent
 from seedwork.infrastructure.deferred_domain_event_bus import DeferredDomainEventBus
 
 
@@ -11,7 +11,7 @@ class OrderPlacedPayload:
 
 
 @dataclass(frozen=True)
-class OrderPlaced(DomainEventRecord[OrderPlacedPayload]):
+class OrderPlaced(BaseDomainEvent[OrderPlacedPayload]):
     pass
 
 
@@ -21,7 +21,7 @@ class OrderShippedPayload:
 
 
 @dataclass(frozen=True)
-class OrderShipped(DomainEventRecord[OrderShippedPayload]):
+class OrderShipped(BaseDomainEvent[OrderShippedPayload]):
     pass
 
 
@@ -38,8 +38,8 @@ async def test_subscribe_publish_dispatch_handlers_invoked_in_order() -> None:
     handler = SpyHandler()
     bus.subscribe(OrderPlaced, handler)
 
-    event1 = OrderPlaced(payload=OrderPlacedPayload(order_id="o-1"))
-    event2 = OrderPlaced(payload=OrderPlacedPayload(order_id="o-2"))
+    event1 = OrderPlaced(aggregate_id="o-1", payload=OrderPlacedPayload(order_id="o-1"))
+    event2 = OrderPlaced(aggregate_id="o-2", payload=OrderPlacedPayload(order_id="o-2"))
     await bus.publish([event1, event2])
     await bus.dispatch()
 
@@ -63,7 +63,7 @@ async def test_multiple_handlers_for_same_event_type() -> None:
     bus.subscribe(OrderPlaced, h1)
     bus.subscribe(OrderPlaced, h2)
 
-    event = OrderPlaced(payload=OrderPlacedPayload(order_id="o-1"))
+    event = OrderPlaced(aggregate_id="o-1", payload=OrderPlacedPayload(order_id="o-1"))
     await bus.publish([event])
     await bus.dispatch()
 
@@ -73,7 +73,7 @@ async def test_multiple_handlers_for_same_event_type() -> None:
 
 async def test_event_without_subscriber_does_not_raise() -> None:
     bus = DeferredDomainEventBus()
-    event = OrderShipped(payload=OrderShippedPayload(order_id="o-1"))
+    event = OrderShipped(aggregate_id="o-1", payload=OrderShippedPayload(order_id="o-1"))
     await bus.publish([event])
     await bus.dispatch()
 
@@ -83,7 +83,7 @@ async def test_discard_empties_without_dispatching() -> None:
     handler = SpyHandler()
     bus.subscribe(OrderPlaced, handler)
 
-    event = OrderPlaced(payload=OrderPlacedPayload(order_id="o-1"))
+    event = OrderPlaced(aggregate_id="o-1", payload=OrderPlacedPayload(order_id="o-1"))
     await bus.publish([event])
     bus.discard()
     await bus.dispatch()
@@ -96,7 +96,7 @@ async def test_idempotent_publish_same_event_id_invoked_once() -> None:
     handler = SpyHandler()
     bus.subscribe(OrderPlaced, handler)
 
-    event = OrderPlaced(payload=OrderPlacedPayload(order_id="o-1"))
+    event = OrderPlaced(aggregate_id="o-1", payload=OrderPlacedPayload(order_id="o-1"))
     await bus.publish([event])
     await bus.publish([event])
     await bus.dispatch()
@@ -110,7 +110,7 @@ async def test_dispatch_clears_pending_so_second_dispatch_is_noop() -> None:
     handler = SpyHandler()
     bus.subscribe(OrderPlaced, handler)
 
-    event = OrderPlaced(payload=OrderPlacedPayload(order_id="o-1"))
+    event = OrderPlaced(aggregate_id="o-1", payload=OrderPlacedPayload(order_id="o-1"))
     await bus.publish([event])
     await bus.dispatch()
     await bus.dispatch()
