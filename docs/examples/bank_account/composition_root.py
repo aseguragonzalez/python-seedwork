@@ -7,6 +7,10 @@ from bank_account.application.get_balance.get_balance_handler import GetBalanceH
 from bank_account.application.get_balance.get_balance_query import GetBalanceQuery
 from bank_account.application.open_account.open_account_command import OpenAccountCommand
 from bank_account.application.open_account.open_account_handler import OpenAccountHandler
+from bank_account.application.send_welcome_email.send_welcome_email_task import SendWelcomeEmailTask
+from bank_account.application.send_welcome_email.send_welcome_email_task_handler import (
+    SendWelcomeEmailTaskHandler,
+)
 from bank_account.domain.bank_account_repository import BankAccountRepository
 from bank_account.domain.events.account_opened import AccountOpened
 from bank_account.infrastructure.in_memory_bank_account_repository import (
@@ -24,7 +28,7 @@ from seedwork.infrastructure import (
     RegistryCommandBus,
     RegistryQueryBus,
 )
-from seedwork.testing import InMemoryIntegrationEventPublisher
+from seedwork.testing import InMemoryIntegrationEventPublisher, InMemoryTaskScheduler
 
 
 def build_command_bus(
@@ -50,13 +54,16 @@ def build_query_bus(repository: InMemoryBankAccountRepository) -> QueryBus:
 
 def compose(
     integration_publisher: IntegrationEventPublisher | None = None,
+    task_scheduler: InMemoryTaskScheduler | None = None,
 ) -> tuple[CommandBus, QueryBus]:
     inner_repo = InMemoryBankAccountRepository()
     event_bus = DeferredDomainEventBus()
     publisher: IntegrationEventPublisher = (
         integration_publisher or InMemoryIntegrationEventPublisher()
     )
-    event_bus.subscribe(AccountOpened, AccountOpenedDomainEventHandler(publisher))
+    scheduler = task_scheduler or InMemoryTaskScheduler()
+    scheduler.register(SendWelcomeEmailTask.TYPE, SendWelcomeEmailTaskHandler())
+    event_bus.subscribe(AccountOpened, AccountOpenedDomainEventHandler(publisher, scheduler))
     repository: BankAccountRepository = DomainEventPublishingRepository(inner_repo, event_bus)
     command_bus = build_command_bus(event_bus, repository)
     query_bus = build_query_bus(inner_repo)
