@@ -214,3 +214,25 @@ causation_id=event.id,                            # the domain event that trigge
 | `causation_id` | domain event `id` | The immediate cause of this integration event |
 
 Never assign `event.id` to `correlation_id` — that conflates causation with correlation and breaks distributed tracing.
+
+### `BaseIntegrationEvent` subclass convention
+
+Every concrete integration event declares `TYPE` and `VERSION` as `ClassVar[str]` and uses them in its factory method. This prevents scattered string literals and makes the event type searchable:
+
+```python
+from typing import ClassVar
+
+class AccountOpenedIntegrationEvent(BaseIntegrationEvent):
+    TYPE: ClassVar[str] = "bank_account.account_opened"
+    VERSION: ClassVar[str] = "1.0"
+
+    @classmethod
+    def from_domain_event(cls, event: AccountOpened) -> AccountOpenedIntegrationEvent:
+        return cls(
+            type=cls.TYPE,
+            version=cls.VERSION,
+            ...
+        )
+```
+
+`BaseIntegrationEvent` does not validate that `type`/`version` are non-empty — that is a programming error the `ClassVar` convention prevents at authoring time. No runtime validation is added.

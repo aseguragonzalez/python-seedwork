@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 from uuid import uuid4
 
 from bank_account.application.request_context import correlation_id as _correlation_id
@@ -12,11 +12,14 @@ if TYPE_CHECKING:
 
 
 class AccountOpenedIntegrationEvent(BaseIntegrationEvent):
+    TYPE: ClassVar[str] = "bank_account.account_opened"
+    VERSION: ClassVar[str] = "1.0"
+
     @classmethod
     def from_domain_event(cls, event: AccountOpened) -> AccountOpenedIntegrationEvent:
         return cls(
-            type="bank_account.account_opened",
-            version="1.0",
+            type=cls.TYPE,
+            version=cls.VERSION,
             aggregate_id=event.aggregate_id,
             payload={
                 "account_id": event.aggregate_id,
