@@ -46,6 +46,6 @@ async def test_full_bus_stack_dispatches_command() -> None:
         OpenAccountCommand(account_id="acc-1", initial_balance=200.0, currency="EUR")
     )
 
-    assert result.ok
+    assert result.is_ok
     account = await repo.find_by_id(BankAccountId("acc-1"))
     assert account is not None

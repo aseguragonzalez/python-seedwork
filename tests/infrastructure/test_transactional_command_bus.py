@@ -52,7 +52,7 @@ async def test_successful_command_commits() -> None:
     registry.register(OkCommand, OkHandler())
     bus = TransactionalCommandBus(registry, uow)
     result = await bus.dispatch(OkCommand())
-    assert result.ok
+    assert result.is_ok
     assert uow.sessions == 1
     assert uow.commits == 1
     assert uow.rollbacks == 0

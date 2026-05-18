@@ -2,14 +2,14 @@ from seedwork.application.commands import Result, ResultError
 
 
 def test_succeeded_result_is_ok() -> None:
-    result = Result.succeeded()
-    assert result.ok
+    result = Result.ok()
+    assert result.is_ok
 
 
 def test_failed_result_is_fail() -> None:
     errors = [ResultError(code="ERR", description="Something went wrong")]
     result = Result.failed(errors)
-    assert not result.ok
+    assert not result.is_ok
 
 
 def test_failed_result_contains_errors() -> None:
@@ -20,7 +20,7 @@ def test_failed_result_contains_errors() -> None:
 
 
 def test_succeeded_result_has_no_errors() -> None:
-    result = Result.succeeded()
+    result = Result.ok()
     assert len(result.errors) == 0
 
 

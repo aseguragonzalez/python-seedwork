@@ -18,7 +18,7 @@ class MyHandler(CommandHandler[MyCommand]):
 async def test_builder_dispatches_registered_command() -> None:
     bus = CommandBusBuilder(RegistryCommandBus()).register(MyCommand, MyHandler()).build()
     result = await bus.dispatch(MyCommand())
-    assert result.ok
+    assert result.is_ok
 
 
 def test_builder_with_transaction_wraps_correctly() -> None:

@@ -42,13 +42,13 @@ class SpyDeferredBus(DeferredDomainEventBus):
 
 
 async def test_ok_result_calls_dispatch() -> None:
-    inner = SpyCommandBus(Result.succeeded())
+    inner = SpyCommandBus(Result.ok())
     event_bus = SpyDeferredBus()
     bus = DomainEventCoordinatorCommandBus(inner, event_bus)
 
     result = await bus.dispatch(OkCommand())
 
-    assert result.ok
+    assert result.is_ok
     assert event_bus.dispatched_count == 1
     assert event_bus.discarded_count == 0
 
@@ -60,19 +60,19 @@ async def test_fail_result_calls_discard_not_dispatch() -> None:
 
     result = await bus.dispatch(FailCommand())
 
-    assert not result.ok
+    assert not result.is_ok
     assert event_bus.dispatched_count == 0
     assert event_bus.discarded_count == 1
 
 
 async def test_result_is_propagated() -> None:
-    inner = SpyCommandBus(Result.succeeded())
+    inner = SpyCommandBus(Result.ok())
     event_bus = SpyDeferredBus()
     bus = DomainEventCoordinatorCommandBus(inner, event_bus)
 
     result = await bus.dispatch(OkCommand())
 
-    assert result.ok
+    assert result.is_ok
 
 
 async def test_exception_calls_discard_and_reraises() -> None:

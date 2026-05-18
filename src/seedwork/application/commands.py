@@ -13,16 +13,16 @@ class ResultError:
 
 @dataclass(frozen=True, kw_only=True)
 class Result:
-    ok: bool
+    is_ok: bool
     errors: tuple[ResultError, ...] = ()
 
     @classmethod
-    def succeeded(cls) -> Self:
-        return cls(ok=True)
+    def ok(cls) -> Self:
+        return cls(is_ok=True)
 
     @classmethod
     def failed(cls, errors: Sequence[ResultError]) -> Self:
-        return cls(ok=False, errors=tuple(errors))
+        return cls(is_ok=False, errors=tuple(errors))
 
 
 @dataclass(frozen=True, kw_only=True)

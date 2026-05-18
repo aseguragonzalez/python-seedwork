@@ -17,7 +17,7 @@ class DomainEventCoordinatorCommandBus:
         except Exception:
             self._event_bus.discard()
             raise
-        if result.ok:
+        if result.is_ok:
             await self._event_bus.dispatch()
         else:
             self._event_bus.discard()
