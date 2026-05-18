@@ -11,6 +11,8 @@ from bank_account.application.send_welcome_email.send_welcome_email_task import 
 from bank_account.application.send_welcome_email.send_welcome_email_task_handler import (
     SendWelcomeEmailTaskHandler,
 )
+from bank_account.application.withdraw_money.withdraw_money_command import WithdrawMoneyCommand
+from bank_account.application.withdraw_money.withdraw_money_handler import WithdrawMoneyHandler
 from bank_account.domain.bank_account_repository import BankAccountRepository
 from bank_account.domain.events.account_opened import AccountOpened
 from bank_account.infrastructure.in_memory_bank_account_repository import (
@@ -40,6 +42,7 @@ def build_command_bus(
         CommandBusBuilder(registry)
         .register(OpenAccountCommand, OpenAccountHandler(repository))
         .register(DepositMoneyCommand, DepositMoneyHandler(repository))
+        .register(WithdrawMoneyCommand, WithdrawMoneyHandler(repository))
         .with_domain_event_coordination(event_bus)
         .build()
     )
