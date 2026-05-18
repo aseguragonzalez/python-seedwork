@@ -6,7 +6,7 @@ from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.bank_account_repository import BankAccountRepository
 
-from seedwork.infrastructure import InMemoryRepository
+from seedwork.testing import InMemoryRepository
 
 
 class InMemoryBankAccountRepository(

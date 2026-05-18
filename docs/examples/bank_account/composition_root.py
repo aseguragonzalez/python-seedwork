@@ -20,11 +20,11 @@ from seedwork.infrastructure import (
     CommandBusBuilder,
     DeferredDomainEventBus,
     DomainEventPublishingRepository,
-    InMemoryIntegrationEventPublisher,
     QueryBusBuilder,
     RegistryCommandBus,
     RegistryQueryBus,
 )
+from seedwork.testing import InMemoryIntegrationEventPublisher
 
 
 def build_command_bus(

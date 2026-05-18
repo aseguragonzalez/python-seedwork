@@ -1,6 +1,17 @@
 from collections.abc import Sequence
+from typing import Protocol, runtime_checkable
 
 from seedwork.application.integration_events import IntegrationEvent
+
+
+@runtime_checkable
+class IntegrationEventPublisherSpy(Protocol):
+    async def publish(self, events: Sequence[IntegrationEvent]) -> None: ...
+
+    @property
+    def published(self) -> Sequence[IntegrationEvent]: ...
+
+    def reset(self) -> None: ...
 
 
 class InMemoryIntegrationEventPublisher:

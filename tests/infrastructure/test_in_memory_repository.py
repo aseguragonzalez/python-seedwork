@@ -2,7 +2,7 @@ from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.money import Money
 
-from seedwork.infrastructure.in_memory_repository import InMemoryRepository, RepositorySpy
+from seedwork.testing import InMemoryRepository, RepositorySpy
 
 
 def make_account(account_id: str = "acc-1", balance: float = 100.0) -> BankAccount:

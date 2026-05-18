@@ -1,7 +1,7 @@
 from bank_account.application.open_account.open_account_command import OpenAccountCommand
 from bank_account.composition_root import compose
 
-from seedwork.infrastructure import InMemoryIntegrationEventPublisher
+from seedwork.testing import InMemoryIntegrationEventPublisher
 
 
 async def test_compose_open_account_publishes_integration_event() -> None:

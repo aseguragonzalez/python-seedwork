@@ -1,10 +1,5 @@
-from seedwork.application.integration_events import (
-    BaseIntegrationEvent,
-    IntegrationEventPublisherSpy,
-)
-from seedwork.infrastructure.in_memory_integration_event_publisher import (
-    InMemoryIntegrationEventPublisher,
-)
+from seedwork.application.integration_events import BaseIntegrationEvent
+from seedwork.testing import InMemoryIntegrationEventPublisher, IntegrationEventPublisherSpy
 
 
 def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent:

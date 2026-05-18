@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any, Protocol, TypeVar, runtime_checkable
+from typing import Any, Protocol, TypeVar
 from uuid import uuid4
 
 
@@ -54,16 +54,6 @@ TIntegrationEvent_contra = TypeVar(
 
 class IntegrationEventPublisher(Protocol):
     async def publish(self, events: Sequence[IntegrationEvent]) -> None: ...
-
-
-@runtime_checkable
-class IntegrationEventPublisherSpy(Protocol):
-    async def publish(self, events: Sequence[IntegrationEvent]) -> None: ...
-
-    @property
-    def published(self) -> Sequence[IntegrationEvent]: ...
-
-    def reset(self) -> None: ...
 
 
 class IntegrationEventHandler(Protocol[TIntegrationEvent_contra]):

@@ -23,7 +23,6 @@ from seedwork.application.integration_events import (
     IntegrationEvent,
     IntegrationEventHandler,
     IntegrationEventPublisher,
-    IntegrationEventPublisherSpy,
 )
 from seedwork.application.queries import Query, QueryBus, QueryBusMiddleware, QueryHandler
 from seedwork.application.validation_errors import ValidationErrorDetail, ValidationErrors
@@ -51,7 +50,6 @@ __all__ = [
     "IntegrationEvent",
     "IntegrationEventHandler",
     "IntegrationEventPublisher",
-    "IntegrationEventPublisherSpy",
     # background tasks
     "BackgroundTask",
     "BaseBackgroundTask",

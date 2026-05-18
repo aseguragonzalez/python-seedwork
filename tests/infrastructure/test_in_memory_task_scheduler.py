@@ -1,5 +1,5 @@
 from seedwork.application.background_tasks import BaseBackgroundTask, TaskHandler
-from seedwork.infrastructure.in_memory_task_scheduler import InMemoryTaskScheduler
+from seedwork.testing import InMemoryTaskScheduler
 
 
 class SpyTaskHandler(TaskHandler[BaseBackgroundTask]):
@@ -97,7 +97,7 @@ async def test_reset_prevents_execution() -> None:
 
 
 def test_in_memory_task_scheduler_satisfies_spy_protocol() -> None:
-    from seedwork.infrastructure.in_memory_task_scheduler import TaskSchedulerSpy
+    from seedwork.testing import TaskSchedulerSpy
 
     scheduler = InMemoryTaskScheduler()
     assert isinstance(scheduler, TaskSchedulerSpy)

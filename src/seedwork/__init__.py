@@ -13,7 +13,6 @@ from seedwork.application import (
     IntegrationEvent,
     IntegrationEventHandler,
     IntegrationEventPublisher,
-    IntegrationEventPublisherSpy,
     Query,
     QueryBus,
     QueryBusMiddleware,
@@ -41,14 +40,8 @@ from seedwork.infrastructure import (
     DeferredDomainEventBus,
     DomainEventCoordinatorCommandBus,
     DomainEventPublishingRepository,
-    InMemoryIntegrationEventOutboxRepository,
-    InMemoryIntegrationEventPublisher,
-    InMemoryRepository,
-    InMemoryTaskOutboxRepository,
-    InMemoryTaskScheduler,
     IntegrationEventOutboxRecord,
     IntegrationEventOutboxRepository,
-    IntegrationEventOutboxRepositorySpy,
     OutboxIntegrationEventPublisher,
     OutboxStatus,
     OutboxTaskScheduler,
@@ -57,9 +50,7 @@ from seedwork.infrastructure import (
     RegistryQueryBus,
     TaskOutboxRecord,
     TaskOutboxRepository,
-    TaskOutboxRepositorySpy,
     TaskOutboxStatus,
-    TaskSchedulerSpy,
     TransactionalCommandBus,
 )
 
@@ -86,7 +77,6 @@ __all__ = [
     "IntegrationEvent",
     "IntegrationEventHandler",
     "IntegrationEventPublisher",
-    "IntegrationEventPublisherSpy",
     # application — background tasks
     "BackgroundTask",
     "BaseBackgroundTask",
@@ -115,24 +105,15 @@ __all__ = [
     # infrastructure — query buses
     "QueryBusBuilder",
     "RegistryQueryBus",
-    # infrastructure — repositories
-    "InMemoryRepository",
     # infrastructure — integration events
-    "InMemoryIntegrationEventPublisher",
     "OutboxIntegrationEventPublisher",
     # infrastructure — outbox (integration events)
-    "InMemoryIntegrationEventOutboxRepository",
     "IntegrationEventOutboxRecord",
     "IntegrationEventOutboxRepository",
-    "IntegrationEventOutboxRepositorySpy",
     "OutboxStatus",
     # infrastructure — outbox (tasks)
-    "InMemoryTaskOutboxRepository",
-    "InMemoryTaskScheduler",
-    "TaskSchedulerSpy",
     "OutboxTaskScheduler",
     "TaskOutboxRecord",
     "TaskOutboxRepository",
-    "TaskOutboxRepositorySpy",
     "TaskOutboxStatus",
 ]

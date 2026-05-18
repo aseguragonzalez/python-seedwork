@@ -1,11 +1,7 @@
 from seedwork.application.background_tasks import BaseBackgroundTask
 from seedwork.application.integration_events import BaseIntegrationEvent
-from seedwork.infrastructure.outbox import (
-    InMemoryIntegrationEventOutboxRepository,
-    InMemoryTaskOutboxRepository,
-    OutboxIntegrationEventPublisher,
-    OutboxTaskScheduler,
-)
+from seedwork.infrastructure.outbox import OutboxIntegrationEventPublisher, OutboxTaskScheduler
+from seedwork.testing import InMemoryIntegrationEventOutboxRepository, InMemoryTaskOutboxRepository
 
 
 def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent:
