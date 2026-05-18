@@ -1,7 +1,18 @@
-from collections.abc import Hashable
-from typing import Any, cast
+from collections.abc import Hashable, Sequence
+from typing import Any, Protocol, cast, runtime_checkable
 
 from seedwork.domain.aggregate_root import AggregateRoot
+from seedwork.domain.repository import Repository
+
+
+@runtime_checkable
+class RepositorySpy[TId: Hashable, TAggregate: AggregateRoot[Any]](
+    Repository[TId, TAggregate], Protocol
+):
+    @property
+    def all(self) -> Sequence[TAggregate]: ...
+
+    def reset(self) -> None: ...
 
 
 class InMemoryRepository[TId: Hashable, TAggregate: AggregateRoot[Any]]:
@@ -16,3 +27,10 @@ class InMemoryRepository[TId: Hashable, TAggregate: AggregateRoot[Any]]:
 
     async def delete_by_id(self, entity_id: TId) -> None:
         self._store.pop(entity_id, None)
+
+    @property
+    def all(self) -> Sequence[TAggregate]:
+        return list(self._store.values())
+
+    def reset(self) -> None:
+        self._store.clear()

@@ -9,7 +9,7 @@ from seedwork.infrastructure.domain_event_publishing_repository import (
 from seedwork.infrastructure.in_memory_integration_event_publisher import (
     InMemoryIntegrationEventPublisher,
 )
-from seedwork.infrastructure.in_memory_repository import InMemoryRepository
+from seedwork.infrastructure.in_memory_repository import InMemoryRepository, RepositorySpy
 from seedwork.infrastructure.in_memory_task_scheduler import InMemoryTaskScheduler, TaskSchedulerSpy
 from seedwork.infrastructure.outbox import (
     InMemoryIntegrationEventOutboxRepository,
@@ -43,6 +43,7 @@ __all__ = [
     "RegistryQueryBus",
     # repositories
     "InMemoryRepository",
+    "RepositorySpy",
     # integration events
     "InMemoryIntegrationEventPublisher",
     "OutboxIntegrationEventPublisher",
