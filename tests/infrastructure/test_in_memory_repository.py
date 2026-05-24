@@ -1,12 +1,15 @@
 from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.money import Money
+from bank_account.domain.user_id import UserId
 
 from seedwork.testing import InMemoryRepository, RepositorySpy
 
 
 def make_account(account_id: str = "acc-1", balance: float = 100.0) -> BankAccount:
-    return BankAccount.open(BankAccountId(account_id), Money(amount=balance, currency="EUR"))
+    return BankAccount.open(
+        BankAccountId(account_id), UserId("user-1"), Money(amount=balance, currency="EUR")
+    )
 
 
 async def test_save_and_find_by_id() -> None:

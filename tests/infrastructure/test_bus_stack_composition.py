@@ -43,7 +43,9 @@ async def test_full_bus_stack_dispatches_command() -> None:
     )
 
     result = await bus.dispatch(
-        OpenAccountCommand(account_id="acc-1", initial_balance=200.0, currency="EUR")
+        OpenAccountCommand(
+            account_id="acc-1", owner_id="user-1", initial_balance=200.0, currency="EUR"
+        )
     )
 
     assert result.is_ok

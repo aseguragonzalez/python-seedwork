@@ -16,7 +16,9 @@ async def test_open_account_saves_account_with_initial_balance() -> None:
     handler = OpenAccountHandler(repo)
 
     await handler.handle(
-        OpenAccountCommand(account_id="acc-1", initial_balance=100.0, currency="EUR")
+        OpenAccountCommand(
+            account_id="acc-1", owner_id="user-1", initial_balance=100.0, currency="EUR"
+        )
     )
 
     account = await repo.find_by_id(BankAccountId("acc-1"))
@@ -29,7 +31,9 @@ async def test_open_account_records_domain_event() -> None:
     handler = OpenAccountHandler(repo)
 
     await handler.handle(
-        OpenAccountCommand(account_id="acc-2", initial_balance=50.0, currency="USD")
+        OpenAccountCommand(
+            account_id="acc-2", owner_id="user-1", initial_balance=50.0, currency="USD"
+        )
     )
 
     account = await repo.find_by_id(BankAccountId("acc-2"))

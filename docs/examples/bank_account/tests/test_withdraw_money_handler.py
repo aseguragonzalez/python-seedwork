@@ -5,6 +5,7 @@ from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.errors import AccountNotFoundError, InsufficientFundsError
 from bank_account.domain.money import Money
+from bank_account.domain.user_id import UserId
 from bank_account.infrastructure.in_memory_bank_account_repository import (
     InMemoryBankAccountRepository,
 )
@@ -14,6 +15,7 @@ async def test_withdraw_decreases_balance() -> None:
     repo = InMemoryBankAccountRepository()
     account = BankAccount.open(
         id=BankAccountId("acc-1"),
+        owner_id=UserId("user-1"),
         initial_balance=Money(amount=200.0, currency="EUR"),
     )
     await repo.save(account)
@@ -38,6 +40,7 @@ async def test_withdraw_insufficient_funds_raises() -> None:
     repo = InMemoryBankAccountRepository()
     account = BankAccount.open(
         id=BankAccountId("acc-1"),
+        owner_id=UserId("user-1"),
         initial_balance=Money(amount=30.0, currency="EUR"),
     )
     await repo.save(account)

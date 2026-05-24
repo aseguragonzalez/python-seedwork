@@ -6,10 +6,13 @@ from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.errors import CurrencyMismatchError, InsufficientFundsError
 from bank_account.domain.events.account_opened import AccountOpened
 from bank_account.domain.money import Money
+from bank_account.domain.user_id import UserId
 
 
 def make_account(balance: float = 100.0, currency: str = "EUR") -> BankAccount:
-    return BankAccount.open(BankAccountId("acc-1"), Money(amount=balance, currency=currency))
+    return BankAccount.open(
+        BankAccountId("acc-1"), UserId("user-1"), Money(amount=balance, currency=currency)
+    )
 
 
 def test_open_records_domain_event() -> None:
@@ -79,6 +82,7 @@ def test_debit_raises_on_currency_mismatch() -> None:
 def test_reconstitute_restores_state_without_events() -> None:
     account = BankAccount.reconstitute(
         id=BankAccountId("acc-1"),
+        owner_id=UserId("user-1"),
         balance=Money(amount=250.0, currency="EUR"),
     )
     assert account.id == BankAccountId("acc-1")
@@ -90,6 +94,7 @@ def test_reconstitute_instance_is_equal_to_open_instance() -> None:
     opened = make_account(balance=100.0)
     reconstituted = BankAccount.reconstitute(
         id=BankAccountId("acc-1"),
+        owner_id=UserId("user-1"),
         balance=Money(amount=100.0, currency="EUR"),
     )
     assert opened == reconstituted

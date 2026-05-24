@@ -5,6 +5,7 @@ from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.errors import AccountNotFoundError
 from bank_account.domain.money import Money
+from bank_account.domain.user_id import UserId
 
 from seedwork.testing import InMemoryRepository
 
@@ -17,6 +18,7 @@ async def test_deposit_increases_balance() -> None:
     repo = BankAccountInMemoryRepository()
     account = BankAccount.open(
         id=BankAccountId("acc-1"),
+        owner_id=UserId("user-1"),
         initial_balance=Money(amount=100.0, currency="EUR"),
     )
     await repo.save(account)
