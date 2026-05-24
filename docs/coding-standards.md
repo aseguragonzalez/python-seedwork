@@ -631,7 +631,7 @@ Decorates a repository to publish domain events after each save:
 from seedwork.infrastructure import DomainEventPublishingRepository
 
 publishing_repo = DomainEventPublishingRepository(
-    SqlAlchemyAccountRepository(session),
+    SqlAlchemyBankAccountRepository(session),
     event_bus,  # satisfies DomainEventBusPublisher
 )
 ```
