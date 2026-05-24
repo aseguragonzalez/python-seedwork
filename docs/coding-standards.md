@@ -114,20 +114,23 @@ class Money(ValueObject):
 ```python
 from __future__ import annotations
 from dataclasses import dataclass
+from typing import NewType
 from uuid import UUID
 
 from seedwork.domain import AggregateRoot
 
+UserId = NewType("UserId", UUID)
+
 @dataclass(frozen=True, eq=False, kw_only=True)
 class BankAccount(AggregateRoot[BankAccountId]):
-    owner_id: BankAccountId
+    owner_id: UserId
     balance: Money
 
     def validate(self) -> None:
         pass
 
     @classmethod
-    def open(cls, id: BankAccountId, owner_id: BankAccountId, initial_balance: Money) -> BankAccount:
+    def open(cls, id: BankAccountId, owner_id: UserId, initial_balance: Money) -> BankAccount:
         return cls(id=id, owner_id=owner_id, balance=initial_balance)._record(
             AccountOpened.create(
                 initial_balance=initial_balance.amount,
