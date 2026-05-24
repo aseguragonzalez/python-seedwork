@@ -9,7 +9,7 @@
 - Async/await throughout application and infrastructure layers.
 - Type hints everywhere. No `Any` in domain or application code.
 - `Protocol` for ports/contracts. `@dataclass` for data-carrying types.
-- `__post_init__` for validation in Commands, Queries, and Value Objects — no validation bus needed.
+- `__post_init__` for validation in all dataclasses (Commands, Queries, Value Objects, and others).
 
 ---
 
@@ -18,20 +18,18 @@
 | Do | Don't |
 |---|---|
 | `Protocol` for ports | `ABC` for ports (use only for base classes with shared logic) |
-| Frozen dataclass for VOs, Commands, Queries | Mutable objects in domain/application |
-| `handle()` in handlers | `execute()` (renamed — breaking change) |
-| `__post_init__` for validation | Separate validator classes or `ValidationCommandBus` |
+| Frozen dataclass for immutability (VOs, Commands, Queries, Aggregates, Entities, ...) | `@dataclass` without `frozen=True` |
+| `__post_init__` for validation | Dedicated validator classes or external validation layers |
 | `T_co` / `T_contra` variance suffixes | Plain `T` for covariant/contravariant TypeVars |
-| Bus stack: `with_domain_event_coordination → registry` | Skipping `with_domain_event_coordination` in wiring |
 | Publish integration events from `DomainEventHandler` | Publish integration events from aggregate |
-| `dispatch()` / `discard()` on `DeferredDomainEventBus` | `flush()` / `clear()` (old names) |
-| `from seedwork.testing import InMemoryRepository, InMemoryIntegrationEventPublisher` | Import InMemory from `seedwork.infrastructure` |
 
 ---
 
 ## Domain layer
 
 ### Entity
+
+An `Entity` is a domain object with a durable identity — two instances with the same `id` are the same entity regardless of their other fields. `eq=False` on the dataclass delegates equality to the inherited `Entity.__eq__`, which compares by `id` only.
 
 ```python
 from __future__ import annotations
@@ -52,9 +50,23 @@ class Account(Entity[AccountId]):
         pass  # add domain invariants here if needed
 ```
 
-> **NewType note.** Typed identifiers (`AccountId = NewType("AccountId", UUID)`) catch mix-ups between `AccountId` and `UserId` at the type-checker level with zero runtime overhead.
+#### Key points
+
+- `id` is inherited from `Entity[TId]` — do not re-declare it in the subclass.
+- `eq=False` is required — equality is by identity, not by field values.
+- Domain logic (invariants, rules) lives in `validate()`, not in handlers.
+- Use `NewType` for typed identifiers — catches mix-ups between `AccountId` and `UserId` at the type-checker level with zero runtime overhead.
+
+#### Don't
+
+- Re-declare `id` in the subclass.
+- Put orchestration, I/O, or repository calls inside an entity.
+
+---
 
 ### Value Object
+
+A Value Object models a domain concept with no identity — two instances with the same data are interchangeable. Immutability is enforced by `frozen=True`; validity is enforced at construction via `validate()`.
 
 ```python
 from __future__ import annotations
@@ -78,11 +90,26 @@ class Money(ValueObject):
             raise NegativeAmountError()
 ```
 
+#### Key points
+
 - Always `frozen=True` and `kw_only=True`.
-- Extend `ValueObject` and put invariants in `validate()` — raise `DomainError` subclasses, never `ValueError`.
-- No setters, no mutation methods — return new instances.
+- `validate()` is called by `ValueObject.__post_init__`; subclasses override it to enforce invariants.
+- Return new instances from transformation methods — never mutate in place.
+
+#### Do
+
+- Raise `DomainError` subclasses in `validate()`.
+
+#### Don't
+
+- Raise `ValueError` or generic exceptions — always raise `DomainError` subclasses.
+- Use a Value Object for a concept that needs to be tracked individually over time — that is an Entity.
+
+---
 
 ### Aggregate
+
+`AggregateRoot` extends `Entity` and acts as the consistency boundary of the aggregate cluster — all external writes must go through it. It is a frozen dataclass: every state-change method must return a new instance via `_evolve(**kwargs)._record(*events)`.
 
 ```python
 from __future__ import annotations
@@ -102,11 +129,9 @@ class BankAccount(AggregateRoot[BankAccountId]):
     @classmethod
     def open(cls, id: BankAccountId, owner_id: BankAccountId, initial_balance: Money) -> BankAccount:
         return cls(id=id, owner_id=owner_id, balance=initial_balance)._record(
-            AccountOpened(
-                payload=AccountOpenedPayload(
-                    initial_balance=initial_balance.amount,
-                    currency=initial_balance.currency,
-                ),
+            AccountOpened.create(
+                initial_balance=initial_balance.amount,
+                currency=initial_balance.currency,
                 aggregate_id=str(id),
             )
         )
@@ -114,19 +139,35 @@ class BankAccount(AggregateRoot[BankAccountId]):
     def deposit(self, amount: Money) -> BankAccount:
         new_balance = Money(amount=self.balance.amount + amount.amount, currency=self.balance.currency)
         return self._evolve(balance=new_balance)._record(
-            MoneyDeposited(
-                payload=MoneyDepositedPayload(amount=amount.amount),
+            MoneyDeposited.create(
+                amount=amount.amount,
                 aggregate_id=str(self.id),
             )
         )
 ```
 
-- `AggregateRoot` is `frozen=True` — state changes return new instances via `_evolve(**kwargs)`.
+#### Key points
+
 - `domain_events` is `tuple[DomainEvent, ...]` (immutable). `_record(*events)` returns a new instance with the events appended.
 - `id` is inherited from `Entity[TId]` — do not re-declare it in the subclass.
 - The `DomainEventPublishingRepository` reads `domain_events` after each `save()`. The `DeferredDomainEventBus` deduplicates by `event.id` — no manual clearing needed.
 
+#### Do
+
+- Use `_evolve(**kwargs)._record(*events)` for all state changes.
+- Use class factory methods (`open`, `reconstitute`) — never expose the constructor directly to application code.
+
+#### Don't
+
+- Mutate state in place — `AggregateRoot` is frozen.
+- Put orchestration, I/O, or repository calls inside the aggregate.
+- Re-declare `id` in the subclass.
+
+---
+
 ### Domain Events
+
+A Domain Event represents something that happened in the domain — a meaningful business fact, not a technical operation. Events are always recorded by the aggregate root itself via `_record(*events)`; no external code creates or injects them.
 
 Use a frozen payload dataclass for the event fields. `BaseDomainEvent[TPayload]` provides `id` and `occurred_at` with defaults; `aggregate_id` is a **required** constructor argument — pass it explicitly to identify the emitting aggregate.
 
@@ -145,22 +186,48 @@ class AccountOpenedPayload:
 
 @dataclass(frozen=True)
 class AccountOpened(BaseDomainEvent[AccountOpenedPayload]):
-    pass
+    @classmethod
+    def create(cls, initial_balance: int, currency: str, aggregate_id: str) -> AccountOpened:
+        return cls(
+            payload=AccountOpenedPayload(initial_balance=initial_balance, currency=currency),
+            aggregate_id=aggregate_id,
+        )
 ```
 
 Usage from the aggregate:
 
 ```python
-AccountOpened(
-    payload=AccountOpenedPayload(initial_balance=100, currency="EUR"),
-    aggregate_id=str(self.id),   # required — identifies the emitting aggregate
+AccountOpened.create(
+    initial_balance=initial_balance.amount,
+    currency=initial_balance.currency,
+    aggregate_id=str(self.id),
 )
 ```
 
-- **No `type` or `version` fields** — domain events are internal to the bounded context. Routing is done with `isinstance` / `type()`.
+#### Key points
+
 - Named in past tense: `AccountOpened`, `MoneyDeposited`.
+- Keep payloads minimal — use a frozen payload dataclass with primitive or value object fields.
+- Routing is done with `isinstance` / `type()` — no `type` or `version` fields needed.
+
+#### Do
+
+- Use a `create()` classmethod as factory — callers pass plain data, the factory constructs the payload internally. This decouples the aggregate from the payload structure.
+
+#### Don't
+
+- Call the constructor directly from the aggregate — always go through `create()`.
+- Add `type` or `version` fields — domain events are internal to the bounded context.
+- Create domain events outside the aggregate — handlers and repositories must never instantiate events directly.
+- Use domain events to communicate to other services — use Integration Events for that.
+
+> **Deletion note.** Deletion is not automatically a domain event. Use `delete_by_id` for technical removal with no business significance. If deletion is a meaningful domain occurrence (e.g. closing an account), model it as an aggregate behaviour (`account.close()`) that records the event — the handler then calls `save()` or `delete_by_id()` as appropriate. Never use `delete_by_id` when a domain event must be raised.
+
+---
 
 ### Repository
+
+A Repository is a domain port — defined in the domain layer as a `Protocol`, implemented in infrastructure. Its sole concern is the persistence of aggregates: it abstracts storage behind a collection-like interface so the domain never depends on a specific technology. Only aggregate roots have repositories; child entities and value objects are persisted as part of their aggregate, never independently.
 
 ```python
 from __future__ import annotations
@@ -171,11 +238,23 @@ class BankAccountRepository(Repository[BankAccountId, BankAccount], Protocol):
     pass
 ```
 
-- `Protocol` with `Repository[BankAccountId, BankAccount]` as base — structural typing. The method signatures (`find_by_id`, `save`, `delete_by_id`) are inherited from `Repository`; no need to redeclare them.
-- `pass` body is intentional: inheriting `Repository[TId, TAgg]` already carries the full contract. Redeclaring methods is redundant and couples the port to the base class's naming.
-- Returns domain types, never ORM models.
+#### Key points
 
-### Errors
+- The interface is defined in the domain layer; the concrete implementation lives in infrastructure.
+- `Protocol` with `Repository[TId, TAgg]` as base — structural typing, no coupling between port and adapter.
+- Method signatures (`find_by_id`, `save`, `delete_by_id`) are inherited from `Repository`; no need to redeclare them.
+- `pass` body is intentional — redeclaring methods is redundant and couples the port to the base class's naming.
+
+#### Don't
+
+- Add query methods (`find_by_email`, `find_by_status`) to the domain repository — define a read port in the application layer.
+- Return ORM models from the repository — return domain types only.
+
+---
+
+### Domain Errors
+
+Domain errors represent business rule violations — named, typed, and defined in the domain layer. Each distinct invariant gets its own class extending `DomainError`.
 
 ```python
 from seedwork.domain import DomainError
@@ -189,15 +268,24 @@ class AccountNotFoundError(DomainError):
         super().__init__(f"Account {account_id} not found", "ACCOUNT_NOT_FOUND")
 ```
 
-- Extend `DomainError`, the base domain exception type.
-- The `RegistryCommandBus` catches `DomainError` and wraps it in a failed `Result`.
-- Override `__init__` to bake in a stable `code` string — call sites only supply domain-specific arguments.
+#### Key points
+
+- The `code` string is the machine-readable identifier — bake it into `__init__` so call sites only supply domain-specific arguments.
+- The `RegistryCommandBus` catches `DomainError` and wraps it in a failed `Result` automatically — handlers never catch them.
+- Define one subclass per distinct business rule violation.
+
+#### Don't
+
+- Raise `ValueError` or generic exceptions for business rule violations.
+- Catch `DomainError` in the handler — let the bus convert it to `Result.failed`.
 
 ---
 
 ## Application layer
 
 ### Command and handler
+
+A `Command` expresses an intent to change state — it carries the input data and validates it in `__post_init__`. A `CommandHandler` receives a guaranteed-valid command, loads or creates an aggregate, calls the domain method, and saves. No business logic lives in the handler.
 
 ```python
 from __future__ import annotations
@@ -235,11 +323,23 @@ class OpenAccountCommandHandler(CommandHandler[OpenAccountCommand]):
         await self._repository.save(account)
 ```
 
-- Method name is `handle()`, **not** `execute()`.
-- `__post_init__` validates the command before the handler runs — raise `DomainError` subclasses so the bus converts failures into `Result.failed`.
+#### Key points
+
+- The handler's sole responsibility: obtain aggregate (or create new) → call domain method → save. No business logic.
+- `__post_init__` validates the command before the handler runs — the handler receives a guaranteed-valid command.
 - `handle()` returns `None`. The bus wraps the outcome in `Result.ok()` on success or `Result.failed(errors)` on `DomainError`.
 
+#### Don't
+
+- Put business logic or domain conditions in the handler.
+- Call `publish(aggregate.domain_events)` — `DomainEventPublishingRepository` does this automatically after `save()`.
+- Return values from `handle()`.
+
+---
+
 ### Query and handler
+
+A `Query` expresses an intent to read data — always read-only. A `QueryHandler` returns `T | None` and never loads full aggregates nor triggers side effects.
 
 ```python
 from __future__ import annotations
@@ -264,10 +364,23 @@ class GetAccountQueryHandler(QueryHandler[GetAccountQuery, AccountView]):
         return await self._repository.find_view(query.account_id)
 ```
 
-- `handle()` returns `T | None` — the `Maybe` equivalent in Python.
-- Query handlers read only — no state mutations, no domain events.
+#### Key points
+
+- `Query[TResult]` is generic — declare the response type on each query subclass.
+- `handle()` returns `T | None` — return `None` for not-found cases.
+- Use a **read repository** (application-layer port) that returns projections, not the domain repository.
+
+#### Don't
+
+- Load full aggregates just to extract a few fields.
+- Trigger side effects from a query handler — no `save()`, no domain events.
+- Return domain aggregates as query results.
+
+---
 
 ### Result
+
+`Result` is the return type of every command dispatch: `ok` on success, `failed` with typed errors on a domain rule violation. It eliminates unchecked exceptions from the application boundary.
 
 ```python
 # Command bus returns Result — inspect at the entry point
@@ -279,8 +392,12 @@ if result.is_failed:      # @property bool
 # also: result.is_ok
 ```
 
-`Result.ok()` — success. `Result.failed(errors)` — domain failure. Both are class methods.
-`result.is_ok` and `result.is_failed` are `@property` on the dataclass (no parentheses).
+#### Key points
+
+- `Result.ok()` — success. `Result.failed(errors)` — domain failure. Both are class methods.
+- `result.is_ok` and `result.is_failed` are `@property` on the dataclass (no parentheses).
+
+---
 
 ### CommandBus wiring
 
@@ -297,58 +414,24 @@ command_bus = (
 )
 ```
 
-Order: `with_transaction` (outermost) → `with_domain_event_coordination` → registry (innermost).
+#### Key points
 
-### Execution context — correlationId propagation
+- Order: `with_transaction` (outermost) → `with_domain_event_coordination` → registry (innermost).
+- `with_domain_event_coordination(event_bus)` calls `dispatch()` on success and `discard()` on failure.
 
-`correlation_id` is a cross-cutting tracing concern set at the entry point. The `Command` does **not** carry it.
+#### Do
 
-```python
-# shared module, e.g. request_context.py
-from contextvars import ContextVar
-from uuid import uuid4
+- Always use `CommandBusBuilder` — never instantiate bus decorators manually.
 
-correlation_id: ContextVar[str] = ContextVar("correlation_id", default="")
+#### Don't
 
-# Entry point (API controller, subscriber)
-def set_correlation_id(incoming_id: str | None = None) -> None:
-    correlation_id.set(incoming_id or str(uuid4()))
-```
-
-`contextvars.ContextVar` propagates automatically through asyncio tasks — no explicit parameter threading needed.
+- Place `with_domain_event_coordination()` outside `with_transaction()` — events must be dispatched within the open transaction.
 
 ---
 
-### Domain Event handler (in-process)
-
-```python
-from seedwork.application import DomainEventHandler
-from .events import AccountOpened
-from .request_context import correlation_id as _correlation_id
-
-class AccountOpenedDomainEventHandler(DomainEventHandler[AccountOpened]):
-    def __init__(
-        self,
-        publisher: IntegrationEventPublisher,
-        task_scheduler: TaskScheduler,
-    ) -> None:
-        self._publisher = publisher
-        self._task_scheduler = task_scheduler
-
-    async def handle(self, event: AccountOpened) -> None:
-        ie = AccountOpenedIntegrationEvent.from_domain_event(event)
-        await self._publisher.publish([ie])
-        task = SendWelcomeEmailTask.from_domain_event(event)
-        await self._task_scheduler.schedule(task)
-```
-
-- Injected with `IntegrationEventPublisher` and/or `TaskScheduler` — not with a repository.
-- Runs synchronously inside the same transaction (dispatched by `DomainEventBus.dispatch()`).
-- `_correlation_id.get()` reads from the ambient ContextVar — set once per request at the entry point.
-
 ### Integration Events
 
-Integration events cross bounded-context boundaries with eventual consistency via the outbox pattern.
+An Integration Event communicates a meaningful business fact from this bounded context to the outside world. Unlike domain events (internal, synchronous), integration events cross service boundaries and are delivered asynchronously. They carry a stable, versioned contract: once published, their schema must not break consumers.
 
 **Concrete event — use `BaseIntegrationEvent` and a `from_domain_event()` factory:**
 
@@ -395,16 +478,29 @@ class AccountOpenedIntegrationEventHandler(IntegrationEventHandler[AccountOpened
         ...
 ```
 
-Key rules:
+#### Key points
 
+- `TYPE` and `VERSION` are class-level constants passed to `BaseIntegrationEvent`.
 - `correlation_id` from execution context (`ContextVar`) — not from the domain event.
 - `causation_id` = `event.id` (the domain event that triggered this).
 - `publish()` takes a `Sequence[IntegrationEvent]` — pass `[event]` even for a single event.
+
+#### Do
+
 - Version from day 1; bump on breaking payload changes.
+- Use a `from_domain_event()` factory classmethod on the integration event class.
+
+#### Don't
+
+- Publish from the aggregate or the command handler — always publish from `DomainEventHandler`.
+- Omit `correlation_id`.
+- Mutate an existing integration event schema — introduce a new version instead.
+
+---
 
 ### Background Tasks
 
-Background tasks represent work executed reliably but asynchronously within the same service.
+A Background Task defers work that must happen eventually but does not need to complete within the current request — sending emails, triggering webhooks, calling external APIs. Tasks are written to an outbox before the transaction commits, guaranteeing at-least-once execution by a worker even if the process crashes mid-flight.
 
 ```python
 from __future__ import annotations
@@ -437,35 +533,92 @@ class SendWelcomeEmailTaskHandler(TaskHandler[SendWelcomeEmailTask]):
         ...
 ```
 
-Key rules:
+#### Key points
 
 - `TYPE` class attribute as discriminator for routing.
-- Schedule from a `DomainEventHandler` via `await task_scheduler.schedule(task)`.
+- `correlation_id` from execution context — not from the domain event.
+- `causation_id` = `event.id` (the domain event that triggered this).
+
+#### Do
+
 - Design handlers **idempotent** — the task runner may deliver more than once.
+- Schedule from a `DomainEventHandler` via `await task_scheduler.schedule(task)`.
+
+#### Don't
+
+- Schedule tasks from the aggregate or the command handler.
+- Omit `correlation_id`.
+- Use background tasks to communicate with other services — use integration events for that.
+
+---
+
+### Execution context — correlationId propagation
+
+`correlation_id` is a cross-cutting tracing concern set at the entry point. The `Command` does **not** carry it.
+
+```python
+# shared module, e.g. request_context.py
+from contextvars import ContextVar
+from uuid import uuid4
+
+correlation_id: ContextVar[str] = ContextVar("correlation_id", default="")
+
+# Entry point (API controller, subscriber)
+def set_correlation_id(incoming_id: str | None = None) -> None:
+    correlation_id.set(incoming_id or str(uuid4()))
+```
+
+#### Key points
+
+- `contextvars.ContextVar` propagates automatically through asyncio tasks — no explicit parameter threading needed.
+- Set once per request at the entry point; read anywhere via `correlation_id.get()`.
+
+#### Don't
+
+- Thread `correlation_id` through function or handler signatures — use the `ContextVar` directly.
+- Read `correlation_id` from the domain event — domain events do not carry it.
+
+---
+
+### DomainEventHandler
+
+A `DomainEventHandler` reacts to a domain event inside the same transaction. It is the only place where integration events are published and background tasks are scheduled — never from the aggregate or the command handler.
+
+```python
+from seedwork.application import DomainEventHandler
+from .events import AccountOpened
+from .request_context import correlation_id as _correlation_id
+
+class AccountOpenedDomainEventHandler(DomainEventHandler[AccountOpened]):
+    def __init__(
+        self,
+        publisher: IntegrationEventPublisher,
+        task_scheduler: TaskScheduler,
+    ) -> None:
+        self._publisher = publisher
+        self._task_scheduler = task_scheduler
+
+    async def handle(self, event: AccountOpened) -> None:
+        ie = AccountOpenedIntegrationEvent.from_domain_event(event)
+        await self._publisher.publish([ie])
+        task = SendWelcomeEmailTask.from_domain_event(event)
+        await self._task_scheduler.schedule(task)
+```
+
+#### Key points
+
+- Runs synchronously inside the same transaction (dispatched by `DomainEventBus.dispatch()`).
+- Both `publish()` and `schedule()` write to the outbox inside the current transaction — actual delivery is eventual.
+- `_correlation_id.get()` reads from the ambient ContextVar — set once per request at the entry point.
+
+#### Don't
+
+- Inject a repository into a `DomainEventHandler` — it must not load or save aggregates.
+- Read `correlation_id` from the domain event — it does not carry it.
 
 ---
 
 ## Infrastructure layer
-
-### Repository implementation
-
-```python
-from __future__ import annotations
-from uuid import UUID
-from sqlalchemy.ext.asyncio import AsyncSession
-
-class SqlAlchemyBankAccountRepository:
-    def __init__(self, session: AsyncSession) -> None:
-        self._session = session
-
-    async def find_by_id(self, id: BankAccountId) -> BankAccount | None:
-        row = await self._session.get(AccountModel, str(id))
-        return _to_domain(row) if row else None
-
-    async def save(self, account: BankAccount) -> None:
-        model = _to_model(account)
-        await self._session.merge(model)
-```
 
 ### DomainEventPublishingRepository
 
@@ -522,8 +675,6 @@ command_bus = (
 
 ### InMemory implementations (tests)
 
-All InMemory types are in `seedwork.testing`, not `seedwork.infrastructure`:
-
 ```python
 from seedwork.testing import (
     InMemoryRepository,       # + RepositorySpy (all, reset)
@@ -574,46 +725,6 @@ assert len(scheduler.scheduled) == 0  # tasks were consumed
 | Repository (port) | `{Aggregate}Repository` | `BankAccountRepository` |
 | Repository (impl) | `{ORM}{Aggregate}Repository` | `SqlAlchemyBankAccountRepository` |
 | Module file | `snake_case.py` | `bank_account_repository.py` |
-
----
-
-## File / folder structure
-
-```text
-src/
-  domain/
-    bank_account.py          # AggregateRoot + domain logic
-    bank_account_id.py       # Value Object / NewType
-    money.py                 # Value Object
-    events/
-      account_opened.py      # DomainEvent + payload dataclass
-    errors.py
-    bank_account_repository.py  # Repository Protocol
-  application/
-    open_account/
-      open_account_command.py
-      open_account_handler.py
-    get_balance/
-      get_balance_query.py
-      get_balance_handler.py
-    account_opened_domain_event_handler.py
-    account_opened_integration_event.py
-    send_welcome_email/
-      send_welcome_email_task.py
-      send_welcome_email_task_handler.py
-    request_context.py        # ContextVar for correlationId
-  infrastructure/
-    sqlalchemy_bank_account_repository.py
-    outbox_integration_event_publisher.py
-    outbox_task_scheduler.py
-    composition_root.py
-tests/
-  unit/
-    domain/
-    application/
-  integration/
-    infrastructure/
-```
 
 ---
 

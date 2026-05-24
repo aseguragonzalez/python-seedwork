@@ -30,7 +30,7 @@ Commit messages are enforced by a `commit-msg` pre-commit hook using Conventiona
 
 This is a **library** (`src/seedwork/`), not an application. It ships DDD and Hexagonal Architecture building blocks. Consuming projects import from `seedwork` (everything is re-exported from the top-level `__init__.py`).
 
-The library is split into three layers that mirror DDD's dependency rule — domain has no outward imports, application depends only on domain, infrastructure depends on both:
+The library is split into three layers that enforce the dependency rule of Hexagonal Architecture — domain has no outward imports, application depends only on domain, infrastructure depends on both:
 
 ```text
 seedwork.domain        → pure Python, no framework
@@ -54,6 +54,8 @@ seedwork.infrastructure → concrete bus/repository implementations
 
 **`DomainEventPublishingRepository` is a repository decorator.** Do not publish events inside command handlers. Wrap the concrete repository at composition time; it reads `aggregate.domain_events` and calls `publisher.publish` after every `save`.
 
+**Domain events use a `create()` factory.** Domain event classes expose a `create()` classmethod that accepts plain data and constructs the payload internally. Aggregate methods call `EventClass.create(...)` rather than the constructor directly — this decouples the aggregate from the payload structure.
+
 ## Type-checking constraints
 
 - `pyright` runs in `typeCheckingMode = "strict"` — no `# type: ignore` in `src/` or `tests/`.
@@ -63,6 +65,7 @@ seedwork.infrastructure → concrete bus/repository implementations
 ## Testing patterns
 
 - Domain: unit-test aggregates and value objects directly — no mocks needed.
-- Command handlers: use `InMemoryRepository[TId, TAggregate]` (ships with the library) + a spy `DomainEventPublisher`.
+- Command handlers: use `InMemoryRepository[TId, TAggregate]` from `seedwork.testing` — assert on `repo.find_by_id()` and `aggregate.domain_events` directly.
 - Query handlers: use an inline in-memory read repository (a plain class satisfying the read `Protocol`).
+- Integration and task side-effects: use `InMemoryIntegrationEventPublisher` and `InMemoryTaskScheduler` from `seedwork.testing` — both expose spy attributes (`published`, `scheduled`) and a `reset()` method.
 - Coverage gate is 90% on `src/seedwork/` — running `make test` will fail if it drops below.
