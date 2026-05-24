@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from seedwork.domain.domain_event import BaseDomainEvent
@@ -11,4 +13,9 @@ class AccountCreditedPayload:
 
 @dataclass(frozen=True)
 class AccountCredited(BaseDomainEvent[AccountCreditedPayload]):
-    pass
+    @classmethod
+    def create(cls, amount: float, currency: str, aggregate_id: str) -> AccountCredited:
+        return cls(
+            payload=AccountCreditedPayload(amount=amount, currency=currency),
+            aggregate_id=aggregate_id,
+        )

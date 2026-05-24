@@ -40,10 +40,11 @@ from uuid import UUID
 from seedwork.domain import Entity
 
 AccountId = NewType("AccountId", UUID)
+UserId = NewType("UserId", UUID)
 
 @dataclass(frozen=True, eq=False, kw_only=True)
 class Account(Entity[AccountId]):
-    owner_id: AccountId
+    owner_id: UserId
     balance: int
 
     def validate(self) -> None:
@@ -293,7 +294,6 @@ A `Command` expresses an intent to change state — it carries the input data an
 ```python
 from __future__ import annotations
 from dataclasses import dataclass
-from uuid import UUID
 from seedwork.application import Command, CommandHandler
 from seedwork.domain import DomainError
 
@@ -306,6 +306,7 @@ class InvalidInitialBalanceError(DomainError):
 @dataclass(frozen=True, kw_only=True)
 class OpenAccountCommand(Command):
     account_id: str
+    owner_id: str
     initial_balance: float
     currency: str
 
@@ -320,7 +321,7 @@ class OpenAccountCommandHandler(CommandHandler[OpenAccountCommand]):
     async def handle(self, command: OpenAccountCommand) -> None:
         account = BankAccount.open(
             id=BankAccountId(command.account_id),
-            owner_id=BankAccountId(command.account_id),
+            owner_id=UserId(command.owner_id),
             initial_balance=Money(amount=command.initial_balance, currency=command.currency),
         )
         await self._repository.save(account)
@@ -347,7 +348,6 @@ A `Query` expresses an intent to read data — always read-only. A `QueryHandler
 ```python
 from __future__ import annotations
 from dataclasses import dataclass
-from uuid import UUID
 from seedwork.application import Query, QueryHandler
 
 @dataclass(frozen=True, kw_only=True)

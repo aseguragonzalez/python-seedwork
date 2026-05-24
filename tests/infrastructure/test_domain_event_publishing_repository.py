@@ -4,6 +4,7 @@ from dataclasses import replace as dataclass_replace
 from bank_account.domain.bank_account import BankAccount
 from bank_account.domain.bank_account_id import BankAccountId
 from bank_account.domain.money import Money
+from bank_account.domain.user_id import UserId
 
 from seedwork.application.domain_event_bus import DomainEventBusPublisher
 from seedwork.domain.domain_event import DomainEvent
@@ -40,7 +41,9 @@ async def test_save_publishes_domain_events() -> None:
     publisher = SpyPublisher()
     repo = DomainEventPublishingRepository(inner, publisher)
 
-    account = BankAccount.open(BankAccountId("acc-1"), Money(amount=100.0, currency="EUR"))
+    account = BankAccount.open(
+        BankAccountId("acc-1"), UserId("user-1"), Money(amount=100.0, currency="EUR")
+    )
     await repo.save(account)
 
     assert len(publisher.published) == 1
@@ -51,7 +54,9 @@ async def test_save_with_no_events_does_not_publish() -> None:
     publisher = SpyPublisher()
     repo = DomainEventPublishingRepository(inner, publisher)
 
-    account = BankAccount.open(BankAccountId("acc-4"), Money(amount=10.0, currency="EUR"))
+    account = BankAccount.open(
+        BankAccountId("acc-4"), UserId("user-1"), Money(amount=10.0, currency="EUR")
+    )
     account_no_events = dataclass_replace(account, domain_events=())
 
     await repo.save(account_no_events)
@@ -64,7 +69,9 @@ async def test_find_by_id_delegates_to_inner() -> None:
     publisher = SpyPublisher()
     repo = DomainEventPublishingRepository(inner, publisher)
 
-    account = BankAccount.open(BankAccountId("acc-2"), Money(amount=50.0, currency="EUR"))
+    account = BankAccount.open(
+        BankAccountId("acc-2"), UserId("user-1"), Money(amount=50.0, currency="EUR")
+    )
     await inner.save(account)
 
     found = await repo.find_by_id(BankAccountId("acc-2"))
@@ -85,7 +92,9 @@ async def test_delete_does_not_publish_events() -> None:
     publisher = SpyPublisher()
     repo = DomainEventPublishingRepository(inner, publisher)
 
-    account = BankAccount.open(BankAccountId("acc-3"), Money(amount=50.0, currency="EUR"))
+    account = BankAccount.open(
+        BankAccountId("acc-3"), UserId("user-1"), Money(amount=50.0, currency="EUR")
+    )
     await inner.save(account)
     await repo.delete_by_id(BankAccountId("acc-3"))
 

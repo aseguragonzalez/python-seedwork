@@ -11,7 +11,9 @@ async def test_compose_open_account_publishes_integration_event() -> None:
     command_bus, _ = compose(integration_publisher=publisher)
 
     await command_bus.dispatch(
-        OpenAccountCommand(account_id="acc-1", initial_balance=100.0, currency="EUR")
+        OpenAccountCommand(
+            account_id="acc-1", owner_id="user-1", initial_balance=100.0, currency="EUR"
+        )
     )
 
     assert len(publisher.published) == 1
@@ -27,7 +29,9 @@ async def test_compose_deposit_money() -> None:
     command_bus, _ = compose()
 
     await command_bus.dispatch(
-        OpenAccountCommand(account_id="acc-1", initial_balance=100.0, currency="EUR")
+        OpenAccountCommand(
+            account_id="acc-1", owner_id="user-1", initial_balance=100.0, currency="EUR"
+        )
     )
     result = await command_bus.dispatch(
         DepositMoneyCommand(account_id="acc-1", amount=50.0, currency="EUR")
@@ -40,7 +44,9 @@ async def test_compose_withdraw_money() -> None:
     command_bus, _ = compose()
 
     await command_bus.dispatch(
-        OpenAccountCommand(account_id="acc-1", initial_balance=200.0, currency="EUR")
+        OpenAccountCommand(
+            account_id="acc-1", owner_id="user-1", initial_balance=200.0, currency="EUR"
+        )
     )
     result = await command_bus.dispatch(
         WithdrawMoneyCommand(account_id="acc-1", amount=80.0, currency="EUR")

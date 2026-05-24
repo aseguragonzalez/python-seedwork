@@ -52,7 +52,9 @@ async def test_compose_open_account_schedules_welcome_email_task() -> None:
     command_bus, _ = compose(task_scheduler=scheduler)
 
     await command_bus.dispatch(
-        OpenAccountCommand(account_id="acc-1", initial_balance=100.0, currency="EUR")
+        OpenAccountCommand(
+            account_id="acc-1", owner_id="user-1", initial_balance=100.0, currency="EUR"
+        )
     )
 
     assert len(scheduler.scheduled) == 1

@@ -6,15 +6,18 @@ from bank_account.domain.events.account_credited import AccountCredited
 from bank_account.domain.events.account_debited import AccountDebited
 from bank_account.domain.events.account_opened import AccountOpened
 from bank_account.domain.money import Money
+from bank_account.domain.user_id import UserId
 
 
 def make_account(
     account_id: str = "acc-1",
+    owner_id: str = "user-1",
     amount: float = 100.0,
     currency: str = "EUR",
 ) -> BankAccount:
     return BankAccount.open(
         id=BankAccountId(account_id),
+        owner_id=UserId(owner_id),
         initial_balance=Money(amount=amount, currency=currency),
     )
 
