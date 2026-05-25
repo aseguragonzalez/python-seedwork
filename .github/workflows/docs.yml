@@ -58,3 +58,6 @@ jobs:
 
       - name: Deploy docs
         run: uv run mike deploy --push --update-aliases ${{ steps.version.outputs.value }} latest
+
+      - name: Set default version
+        run: uv run mike set-default --push latest
