@@ -365,6 +365,7 @@ sequenceDiagram
     participant IEP as IntegrationEventPublisher
     participant TS as TaskScheduler
 
+    Note over API: create command<br/>(domain values validated in __post_init__)
     API->>Bus: dispatch(command)
     Note over Bus: 1. begin transaction
     Bus->>Handler: handle(command)
@@ -397,6 +398,7 @@ sequenceDiagram
     participant Handler as QueryHandler
     participant ReadRepo as ReadRepository
 
+    Note over API: create query<br/>(domain values validated in __post_init__)
     API->>Bus: ask(query)
     Bus->>Handler: handle(query)
     Handler->>ReadRepo: find projection
