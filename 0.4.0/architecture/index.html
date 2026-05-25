@@ -1,0 +1,2743 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://aseguragonzalez.github.io/python-seedwork/0.4.0/architecture/">
+      
+      
+        <link rel="prev" href="../component-reference/">
+      
+      
+        <link rel="next" href="../best-practices/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Architecture - python-seedwork</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#service-architecture-building-blocks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="python-seedwork" class="md-header__button md-logo" aria-label="python-seedwork" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            python-seedwork
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aseguragonzalez/python-seedwork" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aseguragonzalez/python-seedwork
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../component-reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Component Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../best-practices/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Best Practices
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../coding-standards/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Coding Standards
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="python-seedwork" class="md-nav__button md-logo" aria-label="python-seedwork" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    python-seedwork
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aseguragonzalez/python-seedwork" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aseguragonzalez/python-seedwork
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../component-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Component Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-service-anatomy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Service Anatomy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-building-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Building Blocks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The Building Blocks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1 API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Database
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-subscriber" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Subscriber
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Subscriber">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-dlq-subscriber" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 DLQ Subscriber
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.4 DLQ Subscriber">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-publisher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Publisher
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.5 Publisher">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delivery-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Delivery strategies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retry-and-re-publication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retry and re-publication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Scheduler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6 Scheduler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Worker
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.7 Worker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execution-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution strategies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#strategy-a-in-process-polling-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy A — In-process polling (default)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strategy-b-delegated-to-an-external-task-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy B — Delegated to an external task queue
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-infrastructure-mechanisms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Infrastructure Mechanisms
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Infrastructure Mechanisms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-outbox-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Outbox Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 Outbox Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-unit-of-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Unit of Work
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 Unit of Work">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-inside-the-transaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is inside the transaction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-outside-the-transaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is outside the transaction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-idempotency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Idempotency
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 Idempotency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-deduplication-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard deduplication pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-points_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-retry-and-dlq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Retry and DLQ
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 Retry and DLQ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#retry-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retry policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dead-letter-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dead Letter Queue
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Observability
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Motivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-propagation-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Propagation Rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 Propagation Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-minimum-recommended-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Minimum Recommended Fields
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Minimum Recommended Fields">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#do_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coding-standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-service-anatomy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Service Anatomy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-building-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Building Blocks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The Building Blocks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1 API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Database
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-subscriber" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Subscriber
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Subscriber">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-dlq-subscriber" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 DLQ Subscriber
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.4 DLQ Subscriber">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-publisher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Publisher
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.5 Publisher">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delivery-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Delivery strategies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retry-and-re-publication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retry and re-publication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Scheduler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6 Scheduler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Worker
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.7 Worker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execution-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution strategies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#strategy-a-in-process-polling-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy A — In-process polling (default)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strategy-b-delegated-to-an-external-task-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy B — Delegated to an external task queue
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-infrastructure-mechanisms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Infrastructure Mechanisms
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Infrastructure Mechanisms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-outbox-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Outbox Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 Outbox Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-unit-of-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Unit of Work
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 Unit of Work">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-inside-the-transaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is inside the transaction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-outside-the-transaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is outside the transaction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-idempotency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Idempotency
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 Idempotency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-deduplication-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard deduplication pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-points_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-retry-and-dlq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Retry and DLQ
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 Retry and DLQ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#retry-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retry policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dead-letter-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dead Letter Queue
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Observability
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Motivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-propagation-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Propagation Rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 Propagation Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-minimum-recommended-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Minimum Recommended Fields
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Minimum Recommended Fields">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#do_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="service-architecture-building-blocks">Service Architecture — Building Blocks</h1>
+<blockquote>
+<p><strong>Key points reference.</strong> This document describes the standard building blocks of a service built on top of the seedwork packages. It is intentionally concise. For deeper context, see the <a href="#5-references">references</a> at the end.</p>
+</blockquote>
+<hr />
+<h2 id="1-service-anatomy">1. Service Anatomy</h2>
+<p>Not every service needs all seven blocks. Start with the API and the database. Add the remaining blocks only when the corresponding concern appears.</p>
+<pre class="mermaid"><code>graph TB
+    Client([HTTP Client])
+    Broker([Message Broker])
+    Cron([Cron Trigger])
+
+    subgraph Service
+        direction TB
+
+        subgraph Entry Points
+            API[API]
+            SUB[Subscriber]
+            DLQS[DLQ Subscriber]
+            SCH[Scheduler]
+        end
+
+        subgraph Application Layer
+            Bus[CommandBus / QueryBus]
+        end
+
+        DB[(Database\n+ Outbox)]
+
+        subgraph Background Processes
+            PUB[Publisher]
+            WRK[Worker]
+        end
+    end
+
+    Client --&gt;|HTTP request| API
+    Broker --&gt;|integration events| SUB
+    Broker --&gt;|failed messages| DLQS
+    Cron --&gt;|trigger| SCH
+
+    API --&gt; Bus
+    SUB --&gt; Bus
+    DLQS --&gt; Bus
+    SCH --&gt; Bus
+
+    Bus &lt;--&gt;|read / write + outbox| DB
+
+    DB --&gt;|integration event outbox| PUB
+    DB --&gt;|task outbox| WRK
+
+    PUB --&gt;|integration events| Broker</code></pre>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Responsibility</th>
+<th>Required when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>API</strong></td>
+<td>HTTP entry point</td>
+<td>Always</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>Primary store + outbox tables</td>
+<td>Always</td>
+</tr>
+<tr>
+<td><strong>Subscriber</strong></td>
+<td>Consumes incoming integration events</td>
+<td>Service reacts to external events</td>
+</tr>
+<tr>
+<td><strong>DLQ Subscriber</strong></td>
+<td>Processes failed subscriber messages</td>
+<td>Subscriber exists</td>
+</tr>
+<tr>
+<td><strong>Publisher</strong></td>
+<td>Publishes outgoing integration events from outbox</td>
+<td>Service emits integration events</td>
+</tr>
+<tr>
+<td><strong>Scheduler</strong></td>
+<td>Triggers cron jobs on a time schedule</td>
+<td>Service has periodic operations</td>
+</tr>
+<tr>
+<td><strong>Worker</strong></td>
+<td>Processes background tasks from outbox</td>
+<td>Service schedules background tasks</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-the-building-blocks">2. The Building Blocks</h2>
+<h3 id="21-api">2.1 API</h3>
+<p>The API is the <strong>synchronous HTTP entry point</strong>. Its only responsibility is to translate an HTTP request into a Command or Query, dispatch it through the bus, and map the result back to an HTTP response.</p>
+<h4 id="key-points">Key points</h4>
+<ul>
+<li>Stateless. No business logic, no domain knowledge.</li>
+<li>Commands and Queries are plain frozen dataclasses. Domain value validation is enforced in <code>__post_init__</code> of Value Objects and Entities — controllers do not validate.</li>
+<li>Dispatches to <code>CommandBus</code> for writes (returns <code>Result</code>) and <code>QueryBus</code> for reads (returns <code>TResult | None</code>).</li>
+<li>Maps <code>Result.failed</code> → 4xx. Maps <code>None</code> → 404. Infrastructure exceptions → 5xx via a global error handler.</li>
+</ul>
+<h4 id="do">Do</h4>
+<ul>
+<li>Keep controllers thin: parse → dispatch → map response.</li>
+<li>Let the bus stack handle validation, transactions, and domain event coordination.</li>
+</ul>
+<h4 id="dont">Don't</h4>
+<ul>
+<li>Put domain logic or repository calls in controllers.</li>
+<li>Return domain entities directly — map to DTOs at the response layer.</li>
+</ul>
+<hr />
+<h3 id="22-database">2.2 Database</h3>
+<p>The database is the <strong>primary store and the outbox</strong>. Both live in the same database, which is what makes the outbox guarantee possible.</p>
+<h4 id="key-points_1">Key points</h4>
+<ul>
+<li>Aggregate tables and outbox tables are in the same database. The transaction that saves an aggregate also writes the outbox record — atomically.</li>
+<li>Two outbox tables with independent lifecycles: <code>integration_event_outbox</code> and <code>task_outbox</code>.</li>
+<li>The Unit of Work manages the transaction boundary. No transaction spans more than one command.</li>
+<li>The database is the single source of truth for both business state and pending deliveries.</li>
+</ul>
+<h4 id="do_1">Do</h4>
+<ul>
+<li>Keep the outbox in the same database as the aggregates.</li>
+<li>Use separate outbox tables for integration events and background tasks.</li>
+</ul>
+<h4 id="dont_1">Don't</h4>
+<ul>
+<li>Write to the outbox outside of the command transaction.</li>
+<li>Share a transaction across multiple commands or aggregate roots.</li>
+</ul>
+<hr />
+<h3 id="23-subscriber">2.3 Subscriber</h3>
+<p>The Subscriber <strong>consumes incoming integration events from the message broker</strong> and translates them into commands that the service can process.</p>
+<h4 id="key-points_2">Key points</h4>
+<ul>
+<li>Maps each incoming integration event type to a Command and dispatches it through the <code>CommandBus</code>.</li>
+<li>Acknowledges the message to the broker <strong>only after</strong> successful processing (commit + no exception).</li>
+<li>On failure: does not acknowledge — the broker retries according to its retry policy.</li>
+<li>Must deduplicate by event ID. The same event may arrive more than once (at-least-once delivery).</li>
+<li>The subscriber is an infrastructure entry point — it is tightly coupled to the broker. It does not belong in the application or domain layers.</li>
+</ul>
+<h4 id="do_2">Do</h4>
+<ul>
+<li>Dedup by event ID before dispatching the command (store processed IDs in the database).</li>
+<li>Log the correlation ID and causation ID from the incoming event.</li>
+</ul>
+<h4 id="dont_2">Don't</h4>
+<ul>
+<li>Put domain logic in the subscriber.</li>
+<li>Acknowledge before the command completes successfully.</li>
+<li>Let one subscriber handle unrelated integration event types from different bounded contexts.</li>
+</ul>
+<hr />
+<h3 id="24-dlq-subscriber">2.4 DLQ Subscriber</h3>
+<p>The DLQ Subscriber <strong>processes messages that exhausted all retry attempts</strong> in the main subscriber.</p>
+<h4 id="key-points_3">Key points</h4>
+<ul>
+<li>Reads from the Dead Letter Queue (or equivalent) of the broker.</li>
+<li>Typical actions: log for human inspection, trigger an alert, attempt a corrective command, or discard after recording.</li>
+<li>Do not blindly re-queue into the main queue — investigate the failure reason first. A business-rule failure (e.g. duplicate command, invalid state) will fail again regardless of retries.</li>
+<li>Separates the concern of failed-message handling from the main processing loop.</li>
+</ul>
+<h4 id="do_3">Do</h4>
+<ul>
+<li>Distinguish between transient failures (safe to re-queue) and deterministic failures (require human intervention).</li>
+<li>Record the original event, failure reason, and attempt count for every DLQ message processed.</li>
+</ul>
+<h4 id="dont_3">Don't</h4>
+<ul>
+<li>Automatically re-queue all DLQ messages without inspection.</li>
+<li>Mix DLQ handling with the main subscriber logic.</li>
+</ul>
+<hr />
+<h3 id="25-publisher">2.5 Publisher</h3>
+<p>The Publisher <strong>reads pending records from the integration event outbox and delivers them to the message broker</strong>.</p>
+<h4 id="key-points_4">Key points</h4>
+<ul>
+<li>Runs as an independent background process. It has no knowledge of the business operation that created the outbox records.</li>
+<li>Reads records with status <code>pending</code>, publishes to the broker, then marks them <code>published</code>.</li>
+<li>Never modifies business state — it only moves records through the outbox lifecycle.</li>
+</ul>
+<h4 id="delivery-strategies">Delivery strategies</h4>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Mechanism</th>
+<th>Latency</th>
+<th>Infrastructure overhead</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Polling</strong></td>
+<td><code>SELECT … FOR UPDATE SKIP LOCKED</code> at a fixed interval</td>
+<td>Seconds</td>
+<td>None — works with any DB</td>
+</tr>
+<tr>
+<td><strong>CDC</strong></td>
+<td>Reads WAL/binlog via Debezium Server or equivalent</td>
+<td>Milliseconds</td>
+<td>Requires CDC tooling</td>
+</tr>
+<tr>
+<td><strong>Hybrid</strong></td>
+<td><code>pg_notify</code> / DB trigger as wake signal + polling as fallback</td>
+<td>Near-real-time</td>
+<td>Moderate</td>
+</tr>
+<tr>
+<td><strong>Native stream</strong></td>
+<td>DB-native change feed / listener (see below)</td>
+<td>Milliseconds</td>
+<td>None — built into the DB</td>
+</tr>
+</tbody>
+</table>
+<p>Default to polling. Only add CDC or a native stream when polling latency is a demonstrated bottleneck.</p>
+<blockquote>
+<p><strong>Native change streams.</strong> Several databases provide built-in mechanisms that eliminate the need for a separate polling loop or CDC tooling. When available, these are the lowest-overhead option:</p>
+<ul>
+<li><strong>MongoDB</strong> — Change Streams (<code>collection.watch()</code>): react to outbox inserts in real time, directly in application code.</li>
+<li><strong>Firestore / Firebase</strong> — <code>onWrite</code> Cloud Function triggers: the platform calls your code on every document change.</li>
+<li><strong>Azure Cosmos DB</strong> — Change Feed: a built-in, ordered stream of document changes consumable by a processor library.</li>
+<li><strong>DynamoDB</strong> — DynamoDB Streams + Lambda: captures item-level changes and invokes a function per record.</li>
+</ul>
+<p>In all cases the outbox table/collection still exists — the native stream is only the delivery mechanism that replaces the polling loop. The atomicity guarantee (outbox written in the same transaction as the aggregate) remains unchanged.</p>
+</blockquote>
+<h4 id="retry-and-re-publication">Retry and re-publication</h4>
+<ul>
+<li>On broker failure: retry with exponential backoff. Do not mark the record as <code>failed</code> on the first attempt.</li>
+<li>After a configurable number of retries: mark as <code>failed</code> and alert. Do not discard.</li>
+<li>Failed records must be re-publishable by an operator without reprocessing the original command.</li>
+<li>Use <code>SKIP LOCKED</code> in polling queries to allow multiple Publisher instances without contention.</li>
+</ul>
+<h4 id="do_4">Do</h4>
+<ul>
+<li>Run multiple Publisher instances for throughput — <code>SKIP LOCKED</code> handles concurrency safely.</li>
+<li>Monitor the outbox for records that remain <code>pending</code> beyond a threshold — it signals a Publisher failure.</li>
+</ul>
+<h4 id="dont_4">Don't</h4>
+<ul>
+<li>Delete outbox records immediately after publishing — retain them for a configurable period for auditability.</li>
+<li>Re-publish an already-published record. Use the <code>published</code> status check as a guard.</li>
+</ul>
+<hr />
+<h3 id="26-scheduler">2.6 Scheduler</h3>
+<p>The Scheduler <strong>triggers periodic operations on a time-based schedule (cron)</strong>. It translates a cron tick into a Command dispatched through the <code>CommandBus</code>.</p>
+<h4 id="key-points_5">Key points</h4>
+<ul>
+<li>Each scheduled job maps to one Command. The handler contains all the logic for that job.</li>
+<li>The Scheduler itself is stateless — it only fires the trigger. State lives in the aggregate and the database.</li>
+<li>Jobs must be idempotent. In distributed environments, multiple instances of the Scheduler may fire the same job concurrently. Use a distributed lock or a database-backed job record to prevent duplicate execution.</li>
+<li>Failures follow the same path as any command failure — <code>Result.failed</code> for domain errors, exceptions for infrastructure errors.</li>
+</ul>
+<h4 id="do_5">Do</h4>
+<ul>
+<li>Design scheduled commands to be idempotent (safe to run twice).</li>
+<li>Use a distributed lock or a database-backed lease to prevent concurrent execution of the same job.</li>
+</ul>
+<h4 id="dont_5">Don't</h4>
+<ul>
+<li>Put business logic in the Scheduler. It fires a command — the handler and the domain do the work.</li>
+<li>Assume the Scheduler fires exactly once. It may fire zero times (missed schedule) or more than once (overlapping instances).</li>
+</ul>
+<hr />
+<h3 id="27-worker">2.7 Worker</h3>
+<p>The Worker <strong>reads pending records from the task outbox and executes them by calling the appropriate <code>TaskHandler</code></strong>.</p>
+<h4 id="key-points_6">Key points</h4>
+<ul>
+<li>Mirrors the Publisher's structure but for internal background tasks instead of external integration events.</li>
+<li>Reads <code>TaskOutboxRecord</code> with status <code>pending</code>, calls the registered <code>TaskHandler</code>, marks as <code>delivered</code>.</li>
+<li><code>TaskHandler</code> implementations belong to the same service and codebase. No broker involved.</li>
+<li>Handlers must be idempotent — at-least-once execution is the delivery guarantee.</li>
+<li>On handler failure: retry with exponential backoff. After max retries: mark as <code>failed</code> and alert.</li>
+</ul>
+<h4 id="execution-strategies">Execution strategies</h4>
+<h5 id="strategy-a-in-process-polling-default">Strategy A — In-process polling (default)</h5>
+<p>The Worker polls the task outbox and calls the <code>TaskHandler</code> directly in the same process.</p>
+<div class="highlight"><pre><span></span><code>TaskOutbox (pending) → Worker (SKIP LOCKED) → TaskHandler → mark delivered
+</code></pre></div>
+<p>No extra infrastructure. The simplest option and the right default for most services.</p>
+<h5 id="strategy-b-delegated-to-an-external-task-queue">Strategy B — Delegated to an external task queue</h5>
+<p>A relay process reads the task outbox and <em>publishes</em> the task into the broker of an external task queue system (Redis, RabbitMQ, etc.). The task queue's own workers (Celery, BullMQ, Sidekiq, Laravel Horizon…) consume from that broker and invoke the <code>TaskHandler</code>.</p>
+<div class="highlight"><pre><span></span><code>TaskOutbox (pending) → Relay (SKIP LOCKED) → Task queue broker → Queue worker → TaskHandler → mark delivered
+</code></pre></div>
+<p>The relay is structurally identical to the Publisher — it reads from the outbox and publishes to a destination. The destination here is the task queue broker instead of the integration event broker.</p>
+<p>The outbox record is marked <code>delivered</code> once the task queue broker <strong>confirms the enqueue</strong> — not when the <code>TaskHandler</code> finishes. From that point, the task queue system owns the task and is responsible for its own delivery guarantees, retries, and DLQ. This is the same contract as the Publisher with integration events: the outbox's responsibility ends when the destination confirms receipt.</p>
+<p>Use Strategy B when you need features the simple polling loop cannot provide: advanced scheduling, priority queues, rate limiting, concurrency controls, or worker autoscaling.</p>
+<blockquote>
+<p>Do not bypass the outbox by publishing tasks directly into the queue from the command handler. The atomicity guarantee is lost if the service crashes after publishing but before committing the transaction.</p>
+</blockquote>
+<h4 id="do_6">Do</h4>
+<ul>
+<li>Register one <code>TaskHandler</code> per task type.</li>
+<li>Design handlers to be idempotent by task ID.</li>
+<li>In Strategy B, treat the task queue as a delivery mechanism only — the outbox is the durable store.</li>
+</ul>
+<h4 id="dont_6">Don't</h4>
+<ul>
+<li>Use the Worker to communicate with other services — that is the Publisher's responsibility.</li>
+<li>Perform fire-and-forget work without going through the outbox. Tasks not recorded in the outbox are lost on crash.</li>
+<li>In Strategy B, wait for the <code>TaskHandler</code> to complete before marking <code>delivered</code> — the queue system owns execution from the moment of successful enqueue.</li>
+</ul>
+<hr />
+<h2 id="3-infrastructure-mechanisms">3. Infrastructure Mechanisms</h2>
+<h3 id="31-outbox-pattern">3.1 Outbox Pattern</h3>
+<p>The outbox pattern <strong>guarantees atomicity between a business state change and the intent to deliver an event or task</strong>.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Handler as CommandHandler
+    participant DB as Database
+    participant Publisher as Publisher / Worker
+    participant Dest as Broker / TaskHandler
+
+    Note over Handler,DB: Inside transaction
+    Handler-&gt;&gt;DB: save aggregate
+    Handler-&gt;&gt;DB: insert outbox record (status = pending)
+    Note over Handler,DB: Commit
+
+    Publisher-&gt;&gt;DB: SELECT FOR UPDATE SKIP LOCKED (status = pending)
+    DB--&gt;&gt;Publisher: outbox record
+    Publisher-&gt;&gt;Dest: deliver
+    Dest--&gt;&gt;Publisher: ack
+    Publisher-&gt;&gt;DB: UPDATE status = published / delivered</code></pre>
+<h4 id="key-points_7">Key points</h4>
+<ul>
+<li>The outbox record is written in the same transaction as the aggregate. Either both commit or neither does — no lost events.</li>
+<li>The Publisher/Worker process is separate and runs independently of the command execution.</li>
+<li>At-least-once delivery: if the Publisher crashes after delivering but before marking <code>published</code>, the record will be re-delivered on restart. Consumers must be idempotent.</li>
+</ul>
+<hr />
+<h3 id="32-unit-of-work">3.2 Unit of Work</h3>
+<p>The Unit of Work defines the <strong>transaction boundary for a single command execution</strong>.</p>
+<h4 id="what-is-inside-the-transaction">What is inside the transaction</h4>
+<ul>
+<li><code>Repository.save</code> — aggregate state persisted.</li>
+<li><code>DomainEventBus.dispatch</code> — domain event handlers execute synchronously.</li>
+<li><code>IntegrationEventPublisher.publish</code> — outbox record written.</li>
+<li><code>TaskScheduler.schedule</code> — task outbox record written.</li>
+</ul>
+<h4 id="what-is-outside-the-transaction">What is outside the transaction</h4>
+<ul>
+<li>Actual broker delivery (Publisher process).</li>
+<li>Background task execution (Worker process).</li>
+<li>Read operations (<code>findById</code>, read repositories) — they participate in the transaction for consistency but do not require it for correctness.</li>
+</ul>
+<h4 id="do_7">Do</h4>
+<ul>
+<li>Let <code>TransactionalCommandBus</code> manage the transaction transparently — handlers never call commit/rollback directly.</li>
+</ul>
+<h4 id="dont_7">Don't</h4>
+<ul>
+<li>Span a transaction across multiple commands.</li>
+<li>Open a transaction in a query handler.</li>
+</ul>
+<hr />
+<h3 id="33-idempotency">3.3 Idempotency</h3>
+<p><strong>Every consumer of an at-least-once delivery channel must handle duplicates.</strong></p>
+<p>This applies to: Subscriber (incoming integration events), Worker (background tasks), and any downstream consumer of integration events your service publishes.</p>
+<h4 id="standard-deduplication-pattern">Standard deduplication pattern</h4>
+<ol>
+<li>Before processing: check if the event/task ID exists in a <code>processed_events</code> table.</li>
+<li>If found: acknowledge and return immediately (already processed).</li>
+<li>If not found: process + insert the ID into <code>processed_events</code> in the same transaction.</li>
+</ol>
+<h4 id="key-points_8">Key points</h4>
+<ul>
+<li>Use the event or task <code>id</code> as the deduplication key — it is a stable UUID generated at event creation time.</li>
+<li>The <code>processed_events</code> table can be pruned after a retention window (e.g. 30 days).</li>
+<li>Idempotency is the consumer's responsibility. Do not assume the producer will deduplicate.</li>
+</ul>
+<h4 id="do_8">Do</h4>
+<ul>
+<li>Implement deduplication at the subscriber and worker level.</li>
+<li>Make <code>TaskHandler</code> implementations idempotent by design, even if the outbox already provides some protection.</li>
+</ul>
+<h4 id="dont_8">Don't</h4>
+<ul>
+<li>Rely on message broker deduplication guarantees — they vary by broker and configuration.</li>
+<li>Use the event <code>occurred_at</code> timestamp as a deduplication key — timestamps are not unique.</li>
+</ul>
+<hr />
+<h3 id="34-retry-and-dlq">3.4 Retry and DLQ</h3>
+<p><strong>Not all failures are equal.</strong> The retry strategy must distinguish between failure types.</p>
+<table>
+<thead>
+<tr>
+<th>Failure type</th>
+<th>Origin</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transient (network, timeout, DB unavailable)</td>
+<td>Infrastructure</td>
+<td>Retry with exponential backoff</td>
+</tr>
+<tr>
+<td>Deterministic (business rule violation, invalid state)</td>
+<td>Domain</td>
+<td>Do not retry — send to DLQ or discard</td>
+</tr>
+<tr>
+<td>Poison message (malformed, unparseable)</td>
+<td>Data</td>
+<td>Send to DLQ immediately — retrying will never succeed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="retry-policy">Retry policy</h4>
+<ul>
+<li>Use exponential backoff with jitter to avoid thundering herd on recovery.</li>
+<li>Set a maximum retry count per consumer. After exhaustion: route to DLQ.</li>
+<li>Log each retry attempt with the failure reason, attempt number, and correlation ID.</li>
+</ul>
+<h4 id="dead-letter-queue">Dead Letter Queue</h4>
+<ul>
+<li>The DLQ is the last resort, not a recycle bin. Investigate before re-queuing.</li>
+<li>Every DLQ message should trigger an alert.</li>
+<li>Maintain a re-queue mechanism for messages that are safe to retry after a fix is deployed.</li>
+</ul>
+<h4 id="do_9">Do</h4>
+<ul>
+<li>Configure retry limits and DLQ routing explicitly for each subscriber.</li>
+<li>Treat DLQ messages as incidents that require investigation.</li>
+</ul>
+<h4 id="dont_9">Don't</h4>
+<ul>
+<li>Retry on <code>DomainError</code> — it is a deterministic failure.</li>
+<li>Leave DLQ messages unmonitored.</li>
+</ul>
+<hr />
+<h2 id="4-observability">4. Observability</h2>
+<h3 id="41-motivation">4.1 Motivation</h3>
+<p>A single user action can trigger a chain of commands, domain events, integration events, and background tasks across multiple processes and time boundaries. Without explicit traceability fields, reconstructing that chain after a failure is guesswork.</p>
+<p>Two fields make the chain reconstructable:</p>
+<ul>
+<li><strong><code>correlation_id</code></strong> — the ID of the originating operation (typically the first HTTP request or incoming integration event). Constant throughout the entire chain. Answers: <em>what user action caused this?</em></li>
+<li><strong><code>causation_id</code></strong> — the ID of the direct parent event, command, or task that caused this one. Changes at each step. Answers: <em>what immediately triggered this?</em></li>
+</ul>
+<h3 id="42-propagation-rules">4.2 Propagation Rules</h3>
+<div class="highlight"><pre><span></span><code>HTTP Request (correlation_id = X, causation_id = X)
+  └── Command dispatched
+        └── DomainEvent emitted        (correlation_id = X, causation_id = command.id)
+              └── IntegrationEvent published  (correlation_id = X, causation_id = domainEvent.id)
+                    └── BackgroundTask scheduled  (correlation_id = X, causation_id = domainEvent.id)
+</code></pre></div>
+<h4 id="rules">Rules</h4>
+<ul>
+<li><code>correlation_id</code> is <strong>always</strong> inherited from the parent — it never changes within a chain.</li>
+<li><code>causation_id</code> is the <code>id</code> of the immediate parent (the event, command, or task that triggered this one).</li>
+<li>If there is no parent (e.g. a cron job or a DLQ re-queue), generate a new <code>correlation_id</code> and set <code>causation_id</code> to the trigger ID.</li>
+</ul>
+<h3 id="43-minimum-recommended-fields">4.3 Minimum Recommended Fields</h3>
+<p>Every integration event, background task, and structured log entry should carry:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>UUID</td>
+<td>Unique identifier of this event/task/log entry</td>
+</tr>
+<tr>
+<td><code>correlation_id</code></td>
+<td>UUID</td>
+<td>Originating operation identifier</td>
+</tr>
+<tr>
+<td><code>causation_id</code></td>
+<td>UUID</td>
+<td>Direct parent identifier</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td>ISO-8601</td>
+<td>When the fact occurred</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>string</td>
+<td>Event or task type discriminator</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>Schema version (<code>"1"</code>, <code>"2"</code>)</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>string</td>
+<td>Service that emitted this event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="do_10">Do</h4>
+<ul>
+<li>Propagate <code>correlation_id</code> through every integration event, background task, and log statement in the chain.</li>
+<li>Use structured logging — log <code>correlation_id</code> and <code>causation_id</code> as indexed fields, not embedded in a message string.</li>
+</ul>
+<h4 id="dont_10">Don't</h4>
+<ul>
+<li>Generate a new <code>correlation_id</code> mid-chain.</li>
+<li>Omit <code>causation_id</code> — without it, the causal graph is incomplete.</li>
+</ul>
+<hr />
+<h2 id="5-references">5. References</h2>
+<ul>
+<li>Evans, E. (2003). <em>Domain-Driven Design: Tackling Complexity in the Heart of Software</em>. Addison-Wesley.</li>
+<li>Richardson, C. (2018). <em>Microservices Patterns</em>. Manning. <em>(Outbox pattern, Saga, CQRS)</em></li>
+<li>Hohpe, G. &amp; Woolf, B. (2003). <em>Enterprise Integration Patterns</em>. Addison-Wesley.</li>
+<li>Kleppmann, M. (2017). <em>Designing Data-Intensive Applications</em>. O'Reilly. <em>(CDC, at-least-once delivery, idempotency)</em></li>
+<li>Stopford, B. (2018). <em>Designing Event-Driven Systems</em>. O'Reilly.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.top", "content.code.annotate", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mermaid.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

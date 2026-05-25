@@ -1,0 +1,2964 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://aseguragonzalez.github.io/python-seedwork/0.4.0/coding-standards/">
+      
+      
+        <link rel="prev" href="../best-practices/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Coding Standards - python-seedwork</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#coding-standards" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="python-seedwork" class="md-header__button md-logo" aria-label="python-seedwork" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            python-seedwork
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Coding Standards
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aseguragonzalez/python-seedwork" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aseguragonzalez/python-seedwork
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../component-reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Component Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../best-practices/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Best Practices
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Coding Standards
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="python-seedwork" class="md-nav__button md-logo" aria-label="python-seedwork" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    python-seedwork
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aseguragonzalez/python-seedwork" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aseguragonzalez/python-seedwork
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../component-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Component Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#python-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python baseline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#do-dont-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do / Don't overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#domain-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Domain layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#value-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value Object
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Value Object">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aggregate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aggregate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Aggregate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Domain Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Repository">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Errors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Domain Errors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Application layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-and-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command and handler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command and handler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-and-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query and handler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query and handler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Result
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Result">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commandbus-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommandBus wiring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CommandBus wiring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#background-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background Tasks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Background Tasks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execution-context-correlationid-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution context — correlationId propagation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution context — correlationId propagation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domaineventhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DomainEventHandler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DomainEventHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infrastructure-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Infrastructure layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domaineventpublishingrepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DomainEventPublishingRepository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-wiring-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full wiring example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inmemory-implementations-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InMemory implementations (tests)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naming conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design decisions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Design decisions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#protocols-over-abcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocols over ABCs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typevar-variance-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TypeVar variance naming
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spy-interfaces-for-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spy interfaces for testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#python-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Python baseline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#do-dont-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do / Don't overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#domain-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Domain layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#value-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value Object
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Value Object">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aggregate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aggregate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Aggregate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Domain Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Repository">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Errors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Domain Errors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Application layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-and-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command and handler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command and handler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-and-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query and handler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query and handler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Result
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Result">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commandbus-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommandBus wiring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CommandBus wiring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#background-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background Tasks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Background Tasks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execution-context-correlationid-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution context — correlationId propagation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution context — correlationId propagation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domaineventhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DomainEventHandler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DomainEventHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-points_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Don't
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infrastructure-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Infrastructure layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domaineventpublishingrepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DomainEventPublishingRepository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-wiring-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full wiring example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inmemory-implementations-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InMemory implementations (tests)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naming conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design decisions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Design decisions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#protocols-over-abcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocols over ABCs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typevar-variance-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TypeVar variance naming
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spy-interfaces-for-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spy interfaces for testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="coding-standards">Coding Standards</h1>
+<blockquote>
+<p>These standards apply to projects <strong>built on top of this package</strong> (consuming bounded contexts). They describe how consumer code should use the seedwork building blocks, not how the seedwork library itself is implemented.</p>
+</blockquote>
+<h2 id="python-baseline">Python baseline</h2>
+<ul>
+<li>Python 3.12+. Use <code>from __future__ import annotations</code> in all files.</li>
+<li>Immutable value types: frozen dataclasses (<code>@dataclass(frozen=True)</code>).</li>
+<li>Async/await throughout application and infrastructure layers.</li>
+<li>Type hints everywhere. No <code>Any</code> in domain or application code.</li>
+<li><code>Protocol</code> for ports/contracts. <code>@dataclass</code> for data-carrying types.</li>
+<li><code>__post_init__</code> for validation in all dataclasses (Commands, Queries, Value Objects, and others).</li>
+</ul>
+<hr />
+<h2 id="do-dont-overview">Do / Don't overview</h2>
+<table>
+<thead>
+<tr>
+<th>Do</th>
+<th>Don't</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Protocol</code> for ports</td>
+<td><code>ABC</code> for ports (use only for base classes with shared logic)</td>
+</tr>
+<tr>
+<td>Frozen dataclass for immutability (VOs, Commands, Queries, Aggregates, Entities, ...)</td>
+<td><code>@dataclass</code> without <code>frozen=True</code></td>
+</tr>
+<tr>
+<td><code>__post_init__</code> for validation</td>
+<td>Dedicated validator classes or external validation layers</td>
+</tr>
+<tr>
+<td><code>T_co</code> / <code>T_contra</code> variance suffixes</td>
+<td>Plain <code>T</code> for covariant/contravariant TypeVars</td>
+</tr>
+<tr>
+<td>Publish integration events from <code>DomainEventHandler</code></td>
+<td>Publish integration events from aggregate</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="domain-layer">Domain layer</h2>
+<h3 id="entity">Entity</h3>
+<p>An <code>Entity</code> is a domain object with a durable identity — two instances with the same <code>id</code> are the same entity regardless of their other fields. <code>eq=False</code> on the dataclass delegates equality to the inherited <code>Entity.__eq__</code>, which compares by <code>id</code> only.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NewType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+
+<span class="n">AccountId</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;AccountId&quot;</span><span class="p">,</span> <span class="n">UUID</span><span class="p">)</span>
+<span class="n">UserId</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;UserId&quot;</span><span class="p">,</span> <span class="n">UUID</span><span class="p">)</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Account</span><span class="p">(</span><span class="n">Entity</span><span class="p">[</span><span class="n">AccountId</span><span class="p">]):</span>
+    <span class="n">owner_id</span><span class="p">:</span> <span class="n">UserId</span>
+    <span class="n">balance</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># add domain invariants here if needed</span>
+</code></pre></div>
+<h4 id="key-points">Key points</h4>
+<ul>
+<li><code>id</code> is inherited from <code>Entity[TId]</code> — do not re-declare it in the subclass.</li>
+<li><code>eq=False</code> is required — equality is by identity, not by field values.</li>
+<li>Domain logic (invariants, rules) lives in <code>validate()</code>, not in handlers.</li>
+<li>Use <code>NewType</code> for typed identifiers — catches mix-ups between <code>AccountId</code> and <code>UserId</code> at the type-checker level with zero runtime overhead.</li>
+</ul>
+<h4 id="dont">Don't</h4>
+<ul>
+<li>Re-declare <code>id</code> in the subclass.</li>
+<li>Put orchestration, I/O, or repository calls inside an entity.</li>
+</ul>
+<hr />
+<h3 id="value-object">Value Object</h3>
+<p>A Value Object models a domain concept with no identity — two instances with the same data are interchangeable. Immutability is enforced by <code>frozen=True</code>; validity is enforced at construction via <code>validate()</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainError</span><span class="p">,</span> <span class="n">ValueObject</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">NegativeAmountError</span><span class="p">(</span><span class="n">DomainError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Amount cannot be negative&quot;</span><span class="p">,</span> <span class="s2">&quot;NEGATIVE_AMOUNT&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Money</span><span class="p">(</span><span class="n">ValueObject</span><span class="p">):</span>
+    <span class="n">amount</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">amount</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NegativeAmountError</span><span class="p">()</span>
+</code></pre></div>
+<h4 id="key-points_1">Key points</h4>
+<ul>
+<li>Always <code>frozen=True</code> and <code>kw_only=True</code>.</li>
+<li><code>validate()</code> is called by <code>ValueObject.__post_init__</code>; subclasses override it to enforce invariants.</li>
+<li>Return new instances from transformation methods — never mutate in place.</li>
+</ul>
+<h4 id="do">Do</h4>
+<ul>
+<li>Raise <code>DomainError</code> subclasses in <code>validate()</code>.</li>
+</ul>
+<h4 id="dont_1">Don't</h4>
+<ul>
+<li>Raise <code>ValueError</code> or generic exceptions — always raise <code>DomainError</code> subclasses.</li>
+<li>Use a Value Object for a concept that needs to be tracked individually over time — that is an Entity.</li>
+</ul>
+<hr />
+<h3 id="aggregate">Aggregate</h3>
+<p><code>AggregateRoot</code> extends <code>Entity</code> and acts as the consistency boundary of the aggregate cluster — all external writes must go through it. It is a frozen dataclass: every state-change method must return a new instance via <code>_evolve(**kwargs)._record(*events)</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NewType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">AggregateRoot</span>
+
+<span class="n">UserId</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;UserId&quot;</span><span class="p">,</span> <span class="n">UUID</span><span class="p">)</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BankAccount</span><span class="p">(</span><span class="n">AggregateRoot</span><span class="p">[</span><span class="n">BankAccountId</span><span class="p">]):</span>
+    <span class="n">owner_id</span><span class="p">:</span> <span class="n">UserId</span>
+    <span class="n">balance</span><span class="p">:</span> <span class="n">Money</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">open</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">BankAccountId</span><span class="p">,</span> <span class="n">owner_id</span><span class="p">:</span> <span class="n">UserId</span><span class="p">,</span> <span class="n">initial_balance</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BankAccount</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="n">owner_id</span><span class="o">=</span><span class="n">owner_id</span><span class="p">,</span> <span class="n">balance</span><span class="o">=</span><span class="n">initial_balance</span><span class="p">)</span><span class="o">.</span><span class="n">_record</span><span class="p">(</span>
+            <span class="n">AccountOpened</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">initial_balance</span><span class="o">=</span><span class="n">initial_balance</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span>
+                <span class="n">currency</span><span class="o">=</span><span class="n">initial_balance</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
+                <span class="n">aggregate_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">deposit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="n">Money</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BankAccount</span><span class="p">:</span>
+        <span class="n">new_balance</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">balance</span><span class="o">.</span><span class="n">amount</span> <span class="o">+</span> <span class="n">amount</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">balance</span><span class="o">.</span><span class="n">currency</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolve</span><span class="p">(</span><span class="n">balance</span><span class="o">=</span><span class="n">new_balance</span><span class="p">)</span><span class="o">.</span><span class="n">_record</span><span class="p">(</span>
+            <span class="n">MoneyDeposited</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span>
+                <span class="n">aggregate_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+</code></pre></div>
+<h4 id="key-points_2">Key points</h4>
+<ul>
+<li><code>domain_events</code> is <code>tuple[DomainEvent, ...]</code> (immutable). <code>_record(*events)</code> returns a new instance with the events appended.</li>
+<li><code>id</code> is inherited from <code>Entity[TId]</code> — do not re-declare it in the subclass.</li>
+<li>The <code>DomainEventPublishingRepository</code> reads <code>domain_events</code> after each <code>save()</code>. The <code>DeferredDomainEventBus</code> deduplicates by <code>event.id</code> — no manual clearing needed.</li>
+</ul>
+<h4 id="do_1">Do</h4>
+<ul>
+<li>Use <code>_evolve(**kwargs)._record(*events)</code> for all state changes.</li>
+<li>Use class factory methods (<code>open</code>, <code>reconstitute</code>) — never expose the constructor directly to application code.</li>
+</ul>
+<h4 id="dont_2">Don't</h4>
+<ul>
+<li>Mutate state in place — <code>AggregateRoot</code> is frozen.</li>
+<li>Put orchestration, I/O, or repository calls inside the aggregate.</li>
+<li>Re-declare <code>id</code> in the subclass.</li>
+</ul>
+<hr />
+<h3 id="domain-events">Domain Events</h3>
+<p>A Domain Event represents something that happened in the domain — a meaningful business fact, not a technical operation. Events are always recorded by the aggregate root itself via <code>_record(*events)</code>; no external code creates or injects them.</p>
+<p>Use a frozen payload dataclass for the event fields. <code>BaseDomainEvent[TPayload]</code> provides <code>id</code> and <code>occurred_at</code> with defaults; <code>aggregate_id</code> is a <strong>required</strong> constructor argument — pass it explicitly to identify the emitting aggregate.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.domain.domain_event</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDomainEvent</span>
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountOpenedPayload</span><span class="p">:</span>
+    <span class="n">initial_balance</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountOpened</span><span class="p">(</span><span class="n">BaseDomainEvent</span><span class="p">[</span><span class="n">AccountOpenedPayload</span><span class="p">]):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">initial_balance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">aggregate_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AccountOpened</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">payload</span><span class="o">=</span><span class="n">AccountOpenedPayload</span><span class="p">(</span><span class="n">initial_balance</span><span class="o">=</span><span class="n">initial_balance</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">),</span>
+            <span class="n">aggregate_id</span><span class="o">=</span><span class="n">aggregate_id</span><span class="p">,</span>
+        <span class="p">)</span>
+</code></pre></div>
+<p>Usage from the aggregate:</p>
+<div class="highlight"><pre><span></span><code><span class="n">AccountOpened</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">initial_balance</span><span class="o">=</span><span class="n">initial_balance</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span>
+    <span class="n">currency</span><span class="o">=</span><span class="n">initial_balance</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
+    <span class="n">aggregate_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+<span class="p">)</span>
+</code></pre></div>
+<h4 id="key-points_3">Key points</h4>
+<ul>
+<li>Named in past tense: <code>AccountOpened</code>, <code>MoneyDeposited</code>.</li>
+<li>Keep payloads minimal — use a frozen payload dataclass with primitive or value object fields.</li>
+<li>Routing is done with <code>isinstance</code> / <code>type()</code> — no <code>type</code> or <code>version</code> fields needed.</li>
+</ul>
+<h4 id="do_2">Do</h4>
+<ul>
+<li>Use a <code>create()</code> classmethod as factory — callers pass plain data, the factory constructs the payload internally. This decouples the aggregate from the payload structure.</li>
+</ul>
+<h4 id="dont_3">Don't</h4>
+<ul>
+<li>Call the constructor directly from the aggregate — always go through <code>create()</code>.</li>
+<li>Add <code>type</code> or <code>version</code> fields — domain events are internal to the bounded context.</li>
+<li>Create domain events outside the aggregate — handlers and repositories must never instantiate events directly.</li>
+<li>Use domain events to communicate to other services — use Integration Events for that.</li>
+</ul>
+<blockquote>
+<p><strong>Deletion note.</strong> Deletion is not automatically a domain event. Use <code>delete_by_id</code> for technical removal with no business significance. If deletion is a meaningful domain occurrence (e.g. closing an account), model it as an aggregate behaviour (<code>account.close()</code>) that records the event — the handler then calls <code>save()</code> or <code>delete_by_id()</code> as appropriate. Never use <code>delete_by_id</code> when a domain event must be raised.</p>
+</blockquote>
+<hr />
+<h3 id="repository">Repository</h3>
+<p>A Repository is a domain port — defined in the domain layer as a <code>Protocol</code>, implemented in infrastructure. Its sole concern is the persistence of aggregates: it abstracts storage behind a collection-like interface so the domain never depends on a specific technology. Only aggregate roots have repositories; child entities and value objects are persisted as part of their aggregate, never independently.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.account</span><span class="w"> </span><span class="kn">import</span> <span class="n">BankAccount</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BankAccountRepository</span><span class="p">(</span><span class="n">Repository</span><span class="p">[</span><span class="n">BankAccountId</span><span class="p">,</span> <span class="n">BankAccount</span><span class="p">],</span> <span class="n">Protocol</span><span class="p">):</span>
+    <span class="k">pass</span>
+</code></pre></div>
+<h4 id="key-points_4">Key points</h4>
+<ul>
+<li>The interface is defined in the domain layer; the concrete implementation lives in infrastructure.</li>
+<li><code>Protocol</code> with <code>Repository[TId, TAgg]</code> as base — structural typing, no coupling between port and adapter.</li>
+<li>Method signatures (<code>find_by_id</code>, <code>save</code>, <code>delete_by_id</code>) are inherited from <code>Repository</code>; no need to redeclare them.</li>
+<li><code>pass</code> body is intentional — redeclaring methods is redundant and couples the port to the base class's naming.</li>
+</ul>
+<h4 id="dont_4">Don't</h4>
+<ul>
+<li>Add query methods (<code>find_by_email</code>, <code>find_by_status</code>) to the domain repository — define a read port in the application layer.</li>
+<li>Return ORM models from the repository — return domain types only.</li>
+</ul>
+<hr />
+<h3 id="domain-errors">Domain Errors</h3>
+<p>Domain errors represent business rule violations — named, typed, and defined in the domain layer. Each distinct invariant gets its own class extending <code>DomainError</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainError</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">InsufficientFundsError</span><span class="p">(</span><span class="n">DomainError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Insufficient funds&quot;</span><span class="p">,</span> <span class="s2">&quot;INSUFFICIENT_FUNDS&quot;</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountNotFoundError</span><span class="p">(</span><span class="n">DomainError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Account </span><span class="si">{</span><span class="n">account_id</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">,</span> <span class="s2">&quot;ACCOUNT_NOT_FOUND&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="key-points_5">Key points</h4>
+<ul>
+<li>The <code>code</code> string is the machine-readable identifier — bake it into <code>__init__</code> so call sites only supply domain-specific arguments.</li>
+<li>The <code>RegistryCommandBus</code> catches <code>DomainError</code> and wraps it in a failed <code>Result</code> automatically — handlers never catch them.</li>
+<li>Define one subclass per distinct business rule violation.</li>
+</ul>
+<h4 id="dont_5">Don't</h4>
+<ul>
+<li>Raise <code>ValueError</code> or generic exceptions for business rule violations.</li>
+<li>Catch <code>DomainError</code> in the handler — let the bus convert it to <code>Result.failed</code>.</li>
+</ul>
+<hr />
+<h2 id="application-layer">Application layer</h2>
+<h3 id="command-and-handler">Command and handler</h3>
+<p>A <code>Command</code> expresses an intent to change state — it carries the input data and validates it in <code>__post_init__</code>. A <code>CommandHandler</code> receives a guaranteed-valid command, loads or creates an aggregate, calls the domain method, and saves. No business logic lives in the handler.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.application</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainError</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidInitialBalanceError</span><span class="p">(</span><span class="n">DomainError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;initial_balance must be non-negative&quot;</span><span class="p">,</span> <span class="s2">&quot;INVALID_INITIAL_BALANCE&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenAccountCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+    <span class="n">account_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">owner_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">initial_balance</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_balance</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidInitialBalanceError</span><span class="p">()</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenAccountCommandHandler</span><span class="p">(</span><span class="n">CommandHandler</span><span class="p">[</span><span class="n">OpenAccountCommand</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repository</span><span class="p">:</span> <span class="n">BankAccountRepository</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span> <span class="o">=</span> <span class="n">repository</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">OpenAccountCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">account</span> <span class="o">=</span> <span class="n">BankAccount</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">BankAccountId</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">account_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">UserId</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">owner_id</span><span class="p">),</span>
+            <span class="n">initial_balance</span><span class="o">=</span><span class="n">Money</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">initial_balance</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">currency</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="key-points_6">Key points</h4>
+<ul>
+<li>The handler's sole responsibility: obtain aggregate (or create new) → call domain method → save. No business logic.</li>
+<li><code>__post_init__</code> validates the command before the handler runs — the handler receives a guaranteed-valid command.</li>
+<li><code>handle()</code> returns <code>None</code>. The bus wraps the outcome in <code>Result.ok()</code> on success or <code>Result.failed(errors)</code> on <code>DomainError</code>.</li>
+</ul>
+<h4 id="dont_6">Don't</h4>
+<ul>
+<li>Put business logic or domain conditions in the handler.</li>
+<li>Call <code>publish(aggregate.domain_events)</code> — <code>DomainEventPublishingRepository</code> does this automatically after <code>save()</code>.</li>
+<li>Return values from <code>handle()</code>.</li>
+</ul>
+<hr />
+<h3 id="query-and-handler">Query and handler</h3>
+<p>A <code>Query</code> expresses an intent to read data — always read-only. A <code>QueryHandler</code> returns <code>T | None</code> and never loads full aggregates nor triggers side effects.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.application</span><span class="w"> </span><span class="kn">import</span> <span class="n">Query</span><span class="p">,</span> <span class="n">QueryHandler</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GetAccountQuery</span><span class="p">(</span><span class="n">Query</span><span class="p">[</span><span class="n">AccountView</span><span class="p">]):</span>
+    <span class="n">account_id</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountView</span><span class="p">:</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">balance</span><span class="p">:</span> <span class="nb">float</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">GetAccountQueryHandler</span><span class="p">(</span><span class="n">QueryHandler</span><span class="p">[</span><span class="n">GetAccountQuery</span><span class="p">,</span> <span class="n">AccountView</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repository</span><span class="p">:</span> <span class="n">AccountReadRepository</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span> <span class="o">=</span> <span class="n">repository</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">GetAccountQuery</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AccountView</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="o">.</span><span class="n">find_view</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">account_id</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="key-points_7">Key points</h4>
+<ul>
+<li><code>Query[TResult]</code> is generic — declare the response type on each query subclass.</li>
+<li><code>handle()</code> returns <code>T | None</code> — return <code>None</code> for not-found cases.</li>
+<li>Use a <strong>read repository</strong> (application-layer port) that returns projections, not the domain repository.</li>
+</ul>
+<h4 id="dont_7">Don't</h4>
+<ul>
+<li>Load full aggregates just to extract a few fields.</li>
+<li>Trigger side effects from a query handler — no <code>save()</code>, no domain events.</li>
+<li>Return domain aggregates as query results.</li>
+</ul>
+<hr />
+<h3 id="result">Result</h3>
+<p><code>Result</code> is the return type of every command dispatch: <code>ok</code> on success, <code>failed</code> with typed errors on a domain rule violation. It eliminates unchecked exceptions from the application boundary.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Command bus returns Result — inspect at the entry point</span>
+<span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">command_bus</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_failed</span><span class="p">:</span>      <span class="c1"># @property bool</span>
+    <span class="k">return</span> <span class="n">error_response</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+
+<span class="c1"># also: result.is_ok</span>
+</code></pre></div>
+<h4 id="key-points_8">Key points</h4>
+<ul>
+<li><code>Result.ok()</code> — success. <code>Result.failed(errors)</code> — domain failure. Both are class methods.</li>
+<li><code>result.is_ok</code> and <code>result.is_failed</code> are <code>@property</code> on the dataclass (no parentheses).</li>
+</ul>
+<hr />
+<h3 id="commandbus-wiring">CommandBus wiring</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommandBusBuilder</span><span class="p">,</span> <span class="n">RegistryCommandBus</span>
+
+<span class="n">registry</span> <span class="o">=</span> <span class="n">RegistryCommandBus</span><span class="p">()</span>
+<span class="n">command_bus</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">CommandBusBuilder</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">OpenAccountCommand</span><span class="p">,</span> <span class="n">OpenAccountCommandHandler</span><span class="p">(</span><span class="n">repository</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">with_transaction</span><span class="p">(</span><span class="n">uow</span><span class="p">)</span>                      <span class="c1"># optional — TransactionalCommandBus</span>
+    <span class="o">.</span><span class="n">with_domain_event_coordination</span><span class="p">(</span><span class="n">event_bus</span><span class="p">)</span>  <span class="c1"># DomainEventCoordinatorCommandBus</span>
+    <span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="p">)</span>
+</code></pre></div>
+<h4 id="key-points_9">Key points</h4>
+<ul>
+<li>Order: <code>with_transaction</code> (outermost) → <code>with_domain_event_coordination</code> → registry (innermost).</li>
+<li><code>with_domain_event_coordination(event_bus)</code> calls <code>dispatch()</code> on success and <code>discard()</code> on failure.</li>
+</ul>
+<h4 id="do_3">Do</h4>
+<ul>
+<li>Always use <code>CommandBusBuilder</code> — never instantiate bus decorators manually.</li>
+</ul>
+<h4 id="dont_8">Don't</h4>
+<ul>
+<li>Place <code>with_domain_event_coordination()</code> outside <code>with_transaction()</code> — events must be dispatched within the open transaction.</li>
+</ul>
+<hr />
+<h3 id="integration-events">Integration Events</h3>
+<p>An Integration Event communicates a meaningful business fact from this bounded context to the outside world. Unlike domain events (internal, synchronous), integration events cross service boundaries and are delivered asynchronously. They carry a stable, versioned contract: once published, their schema must not break consumers.</p>
+<p><strong>Concrete event — use <code>BaseIntegrationEvent</code> and a <code>from_domain_event()</code> factory:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.application.integration_events</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseIntegrationEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">correlation_id</span> <span class="k">as</span> <span class="n">_correlation_id</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">AccountOpened</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountOpenedIntegrationEvent</span><span class="p">(</span><span class="n">BaseIntegrationEvent</span><span class="p">):</span>
+    <span class="n">TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bank_account.account_opened&quot;</span>
+    <span class="n">VERSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1.0&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_domain_event</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">AccountOpened</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AccountOpenedIntegrationEvent</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">TYPE</span><span class="p">,</span>
+            <span class="n">version</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">VERSION</span><span class="p">,</span>
+            <span class="n">aggregate_id</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">aggregate_id</span><span class="p">,</span>
+            <span class="n">payload</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;account_id&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">aggregate_id</span><span class="p">,</span>
+                <span class="s2">&quot;initial_balance&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">initial_balance</span><span class="p">,</span>
+                <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">correlation_id</span><span class="o">=</span><span class="n">_correlation_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())),</span>  <span class="c1"># from execution context</span>
+            <span class="n">causation_id</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>                              <span class="c1"># domain event that caused this</span>
+        <span class="p">)</span>
+</code></pre></div>
+<p><strong>Consumer side (Subscriber entrypoint):</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.application</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegrationEventHandler</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountOpenedIntegrationEventHandler</span><span class="p">(</span><span class="n">IntegrationEventHandler</span><span class="p">[</span><span class="n">AccountOpenedIntegrationEvent</span><span class="p">]):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">AccountOpenedIntegrationEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># React to an integration event from another bounded context</span>
+        <span class="o">...</span>
+</code></pre></div>
+<h4 id="key-points_10">Key points</h4>
+<ul>
+<li><code>TYPE</code> and <code>VERSION</code> are class-level constants passed to <code>BaseIntegrationEvent</code>.</li>
+<li><code>correlation_id</code> from execution context (<code>ContextVar</code>) — not from the domain event.</li>
+<li><code>causation_id</code> = <code>event.id</code> (the domain event that triggered this).</li>
+<li><code>publish()</code> takes a <code>Sequence[IntegrationEvent]</code> — pass <code>[event]</code> even for a single event.</li>
+</ul>
+<h4 id="do_4">Do</h4>
+<ul>
+<li>Version from day 1; bump on breaking payload changes.</li>
+<li>Use a <code>from_domain_event()</code> factory classmethod on the integration event class.</li>
+</ul>
+<h4 id="dont_9">Don't</h4>
+<ul>
+<li>Publish from the aggregate or the command handler — always publish from <code>DomainEventHandler</code>.</li>
+<li>Omit <code>correlation_id</code>.</li>
+<li>Mutate an existing integration event schema — introduce a new version instead.</li>
+</ul>
+<hr />
+<h3 id="background-tasks">Background Tasks</h3>
+<p>A Background Task defers work that must happen eventually but does not need to complete within the current request — sending emails, triggering webhooks, calling external APIs. Tasks are written to an outbox before the transaction commits, guaranteeing at-least-once execution by a worker even if the process crashes mid-flight.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.application.background_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseBackgroundTask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">correlation_id</span> <span class="k">as</span> <span class="n">_correlation_id</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">AccountOpened</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SendWelcomeEmailTask</span><span class="p">(</span><span class="n">BaseBackgroundTask</span><span class="p">):</span>
+    <span class="n">TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;send_welcome_email&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_domain_event</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">AccountOpened</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendWelcomeEmailTask</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">TYPE</span><span class="p">,</span>
+            <span class="n">payload</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;account_id&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">aggregate_id</span><span class="p">},</span>
+            <span class="n">correlation_id</span><span class="o">=</span><span class="n">_correlation_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())),</span>
+            <span class="n">causation_id</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SendWelcomeEmailTaskHandler</span><span class="p">(</span><span class="n">TaskHandler</span><span class="p">[</span><span class="n">SendWelcomeEmailTask</span><span class="p">]):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">SendWelcomeEmailTask</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># idempotent — may be retried</span>
+        <span class="o">...</span>
+</code></pre></div>
+<h4 id="key-points_11">Key points</h4>
+<ul>
+<li><code>TYPE</code> class attribute as discriminator for routing.</li>
+<li><code>correlation_id</code> from execution context — not from the domain event.</li>
+<li><code>causation_id</code> = <code>event.id</code> (the domain event that triggered this).</li>
+</ul>
+<h4 id="do_5">Do</h4>
+<ul>
+<li>Design handlers <strong>idempotent</strong> — the task runner may deliver more than once.</li>
+<li>Schedule from a <code>DomainEventHandler</code> via <code>await task_scheduler.schedule(task)</code>.</li>
+</ul>
+<h4 id="dont_10">Don't</h4>
+<ul>
+<li>Schedule tasks from the aggregate or the command handler.</li>
+<li>Omit <code>correlation_id</code>.</li>
+<li>Use background tasks to communicate with other services — use integration events for that.</li>
+</ul>
+<hr />
+<h3 id="execution-context-correlationid-propagation">Execution context — correlationId propagation</h3>
+<p><code>correlation_id</code> is a cross-cutting tracing concern set at the entry point. The <code>Command</code> does <strong>not</strong> carry it.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># shared module, e.g. request_context.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="n">correlation_id</span><span class="p">:</span> <span class="n">ContextVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;correlation_id&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Entry point (API controller, subscriber)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_correlation_id</span><span class="p">(</span><span class="n">incoming_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">correlation_id</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">incoming_id</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()))</span>
+</code></pre></div>
+<h4 id="key-points_12">Key points</h4>
+<ul>
+<li><code>contextvars.ContextVar</code> propagates automatically through asyncio tasks — no explicit parameter threading needed.</li>
+<li>Set once per request at the entry point; read anywhere via <code>correlation_id.get()</code>.</li>
+</ul>
+<h4 id="dont_11">Don't</h4>
+<ul>
+<li>Thread <code>correlation_id</code> through function or handler signatures — use the <code>ContextVar</code> directly.</li>
+<li>Read <code>correlation_id</code> from the domain event — domain events do not carry it.</li>
+</ul>
+<hr />
+<h3 id="domaineventhandler">DomainEventHandler</h3>
+<p>A <code>DomainEventHandler</code> reacts to a domain event inside the same transaction. It is the only place where integration events are published and background tasks are scheduled — never from the aggregate or the command handler.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.application</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainEventHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">AccountOpened</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.request_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">correlation_id</span> <span class="k">as</span> <span class="n">_correlation_id</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountOpenedDomainEventHandler</span><span class="p">(</span><span class="n">DomainEventHandler</span><span class="p">[</span><span class="n">AccountOpened</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">publisher</span><span class="p">:</span> <span class="n">IntegrationEventPublisher</span><span class="p">,</span>
+        <span class="n">task_scheduler</span><span class="p">:</span> <span class="n">TaskScheduler</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_publisher</span> <span class="o">=</span> <span class="n">publisher</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task_scheduler</span> <span class="o">=</span> <span class="n">task_scheduler</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">AccountOpened</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ie</span> <span class="o">=</span> <span class="n">AccountOpenedIntegrationEvent</span><span class="o">.</span><span class="n">from_domain_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_publisher</span><span class="o">.</span><span class="n">publish</span><span class="p">([</span><span class="n">ie</span><span class="p">])</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">SendWelcomeEmailTask</span><span class="o">.</span><span class="n">from_domain_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="key-points_13">Key points</h4>
+<ul>
+<li>Runs synchronously inside the same transaction (dispatched by <code>DomainEventBus.dispatch()</code>).</li>
+<li>Both <code>publish()</code> and <code>schedule()</code> write to the outbox inside the current transaction — actual delivery is eventual.</li>
+<li><code>_correlation_id.get()</code> reads from the ambient ContextVar — set once per request at the entry point.</li>
+</ul>
+<h4 id="dont_12">Don't</h4>
+<ul>
+<li>Inject a repository into a <code>DomainEventHandler</code> — it must not load or save aggregates.</li>
+<li>Read <code>correlation_id</code> from the domain event — it does not carry it.</li>
+</ul>
+<hr />
+<h2 id="infrastructure-layer">Infrastructure layer</h2>
+<h3 id="domaineventpublishingrepository">DomainEventPublishingRepository</h3>
+<p>Decorates a repository to publish domain events after each save:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainEventPublishingRepository</span>
+
+<span class="n">publishing_repo</span> <span class="o">=</span> <span class="n">DomainEventPublishingRepository</span><span class="p">(</span>
+    <span class="n">SqlAlchemyBankAccountRepository</span><span class="p">(</span><span class="n">session</span><span class="p">),</span>
+    <span class="n">event_bus</span><span class="p">,</span>  <span class="c1"># satisfies DomainEventBusPublisher</span>
+<span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>Takes <code>DomainEventBusPublisher</code> (the segregated interface).</li>
+<li>After <code>save()</code>, reads <code>aggregate.domain_events</code> and calls <code>event_bus.publish(events)</code>.</li>
+<li>The command handler remains unaware of event publishing.</li>
+</ul>
+<h3 id="full-wiring-example">Full wiring example</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CommandBusBuilder</span><span class="p">,</span>
+    <span class="n">DeferredDomainEventBus</span><span class="p">,</span>
+    <span class="n">DomainEventPublishingRepository</span><span class="p">,</span>
+    <span class="n">RegistryCommandBus</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.testing</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemoryIntegrationEventPublisher</span><span class="p">,</span> <span class="n">InMemoryTaskScheduler</span>
+
+<span class="n">event_bus</span> <span class="o">=</span> <span class="n">DeferredDomainEventBus</span><span class="p">()</span>
+
+<span class="n">publisher</span> <span class="o">=</span> <span class="n">InMemoryIntegrationEventPublisher</span><span class="p">()</span>   <span class="c1"># or OutboxIntegrationEventPublisher</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">InMemoryTaskScheduler</span><span class="p">()</span>               <span class="c1"># or OutboxTaskScheduler</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">SendWelcomeEmailTask</span><span class="o">.</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">SendWelcomeEmailTaskHandler</span><span class="p">())</span>
+
+<span class="n">event_bus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">AccountOpened</span><span class="p">,</span> <span class="n">AccountOpenedDomainEventHandler</span><span class="p">(</span><span class="n">publisher</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">))</span>
+
+<span class="n">account_repo</span> <span class="o">=</span> <span class="n">DomainEventPublishingRepository</span><span class="p">(</span>
+    <span class="n">SqlAlchemyBankAccountRepository</span><span class="p">(</span><span class="n">session</span><span class="p">),</span>
+    <span class="n">event_bus</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">registry</span> <span class="o">=</span> <span class="n">RegistryCommandBus</span><span class="p">()</span>
+<span class="n">command_bus</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">CommandBusBuilder</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">OpenAccountCommand</span><span class="p">,</span> <span class="n">OpenAccountCommandHandler</span><span class="p">(</span><span class="n">account_repo</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">with_transaction</span><span class="p">(</span><span class="n">uow</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">with_domain_event_coordination</span><span class="p">(</span><span class="n">event_bus</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><code>dispatch()</code> processes the buffered events; <code>discard()</code> clears without processing. The buffer is a <code>dict[str, DomainEvent]</code> keyed by <code>event.id</code> — saving the same aggregate twice does not duplicate events.</p>
+<h3 id="inmemory-implementations-tests">InMemory implementations (tests)</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.testing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">InMemoryRepository</span><span class="p">,</span>       <span class="c1"># + RepositorySpy (all, reset)</span>
+    <span class="n">InMemoryIntegrationEventPublisher</span><span class="p">,</span>  <span class="c1"># + IntegrationEventPublisherSpy (published, reset)</span>
+    <span class="n">InMemoryTaskScheduler</span><span class="p">,</span>    <span class="c1"># + TaskSchedulerSpy (scheduled, register, execute_scheduled, reset)</span>
+    <span class="n">InMemoryIntegrationEventOutboxRepository</span><span class="p">,</span>
+    <span class="n">InMemoryTaskOutboxRepository</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># spy usage in tests</span>
+<span class="n">publisher</span> <span class="o">=</span> <span class="n">InMemoryIntegrationEventPublisher</span><span class="p">()</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">InMemoryTaskScheduler</span><span class="p">()</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">SendWelcomeEmailTask</span><span class="o">.</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">SendWelcomeEmailTaskHandler</span><span class="p">())</span>
+
+<span class="k">await</span> <span class="n">command_bus</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">OpenAccountCommand</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">publisher</span><span class="o">.</span><span class="n">published</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="n">publisher</span><span class="o">.</span><span class="n">published</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;bank_account.account_opened&quot;</span>
+
+<span class="k">await</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">execute_scheduled</span><span class="p">()</span>   <span class="c1"># executes all scheduled tasks in-process</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">scheduler</span><span class="o">.</span><span class="n">scheduled</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>  <span class="c1"># tasks were consumed</span>
+</code></pre></div>
+<ul>
+<li><code>InMemoryIntegrationEventPublisher</code> is spy-only — do not execute, integration events target other bounded contexts.</li>
+<li><code>InMemoryTaskScheduler</code> supports both spy inspection (<code>scheduled</code>) and execution (<code>execute_scheduled()</code>).</li>
+<li><code>reset()</code> clears state between tests.</li>
+</ul>
+<hr />
+<h2 id="naming-conventions">Naming conventions</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Convention</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aggregate / Entity</td>
+<td><code>PascalCase</code></td>
+<td><code>BankAccount</code>, <code>Transaction</code></td>
+</tr>
+<tr>
+<td>Value Object</td>
+<td><code>PascalCase</code></td>
+<td><code>Money</code>, <code>BankAccountId</code></td>
+</tr>
+<tr>
+<td>Domain Event</td>
+<td>Past tense <code>PascalCase</code></td>
+<td><code>AccountOpened</code>, <code>MoneyDeposited</code></td>
+</tr>
+<tr>
+<td>Domain Event Payload</td>
+<td>Past tense + <code>Payload</code> suffix</td>
+<td><code>AccountOpenedPayload</code></td>
+</tr>
+<tr>
+<td>Integration Event</td>
+<td>Past tense + <code>IntegrationEvent</code> suffix</td>
+<td><code>AccountOpenedIntegrationEvent</code></td>
+</tr>
+<tr>
+<td>Command</td>
+<td>Imperative + <code>Command</code></td>
+<td><code>OpenAccountCommand</code></td>
+</tr>
+<tr>
+<td>Query</td>
+<td>Noun phrase + <code>Query</code></td>
+<td><code>GetBalanceQuery</code></td>
+</tr>
+<tr>
+<td>Command Handler</td>
+<td>Imperative + <code>Handler</code></td>
+<td><code>OpenAccountHandler</code></td>
+</tr>
+<tr>
+<td>Query Handler</td>
+<td>Noun phrase + <code>Handler</code></td>
+<td><code>GetBalanceHandler</code></td>
+</tr>
+<tr>
+<td>Domain Event Handler</td>
+<td>Noun phrase + <code>DomainEventHandler</code></td>
+<td><code>AccountOpenedDomainEventHandler</code></td>
+</tr>
+<tr>
+<td>Background Task</td>
+<td>Imperative + <code>Task</code></td>
+<td><code>SendWelcomeEmailTask</code></td>
+</tr>
+<tr>
+<td>Task Handler</td>
+<td>Imperative + <code>TaskHandler</code></td>
+<td><code>SendWelcomeEmailTaskHandler</code></td>
+</tr>
+<tr>
+<td>Repository (port)</td>
+<td><code>{Aggregate}Repository</code></td>
+<td><code>BankAccountRepository</code></td>
+</tr>
+<tr>
+<td>Repository (impl)</td>
+<td><code>{ORM}{Aggregate}Repository</code></td>
+<td><code>SqlAlchemyBankAccountRepository</code></td>
+</tr>
+<tr>
+<td>Module file</td>
+<td><code>snake_case.py</code></td>
+<td><code>bank_account_repository.py</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="design-decisions">Design decisions</h2>
+<h3 id="protocols-over-abcs">Protocols over ABCs</h3>
+<p>Python ABCs enforce implementation via <code>isinstance</code> checks. <code>Protocol</code> achieves structural subtyping — the implementor never imports the port. This is the correct dependency-inversion direction for hexagonal architecture.</p>
+<p>Use ABCs only when a base class carries shared, non-trivial logic (e.g., <code>BaseBackgroundTask</code>, <code>BaseDomainEvent</code>, <code>AggregateRoot</code>).</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Port — Protocol, zero coupling to domain</span>
+<span class="c1"># &#39;pass&#39; body: Repository[BankAccountId, BankAccount] already carries the contract</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BankAccountRepository</span><span class="p">(</span><span class="n">Repository</span><span class="p">[</span><span class="n">BankAccountId</span><span class="p">,</span> <span class="n">BankAccount</span><span class="p">],</span> <span class="n">Protocol</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="c1"># Adapter — no import of the Protocol required</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SqlAlchemyBankAccountRepository</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">find_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">BankAccountId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BankAccount</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<h3 id="typevar-variance-naming">TypeVar variance naming</h3>
+<p>When a generic <code>Protocol</code> is covariant or contravariant, name the TypeVar explicitly:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeVar</span>
+
+<span class="n">T_co</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_co&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">T_contra</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_contra&quot;</span><span class="p">,</span> <span class="n">contravariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">QueryHandler</span><span class="p">(</span><span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">T_co</span><span class="p">]):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span> <span class="o">...</span>
+</code></pre></div>
+<h3 id="spy-interfaces-for-testing">Spy interfaces for testing</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">runtime_checkable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.testing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RepositorySpy</span>
+
+<span class="c1"># RepositorySpy is @runtime_checkable — isinstance() works at runtime</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">RepositorySpy</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">repo</span><span class="o">.</span><span class="n">all</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+<span class="n">repo</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>  <span class="c1"># between tests</span>
+</code></pre></div>
+<p>Keep spy interfaces out of production code paths — import them only in tests and InMemory implementations.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.top", "content.code.annotate", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mermaid.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
