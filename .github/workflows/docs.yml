@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to deploy (e.g. v0.4.0)"
+        description: "Version to deploy (e.g. 0.4.0)"
         required: true
 
 permissions:
@@ -48,12 +48,13 @@ jobs:
         id: version
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "value=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            raw="${{ github.event.inputs.version }}"
           elif [ "${{ github.ref_type }}" = "tag" ]; then
-            echo "value=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            raw="${{ github.ref_name }}"
           else
-            echo "value=$(uv run python -m semantic_release version --print-last-released)" >> $GITHUB_OUTPUT
+            raw="$(uv run python -m semantic_release version --print-last-released)"
           fi
+          echo "value=${raw#v}" >> $GITHUB_OUTPUT
 
       - name: Deploy docs
         run: uv run mike deploy --push --update-aliases ${{ steps.version.outputs.value }} latest
