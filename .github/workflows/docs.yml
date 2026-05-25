@@ -7,6 +7,11 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - main
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
   workflow_dispatch:
     inputs:
       version:
@@ -39,7 +44,16 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-      - name: Deploy docs
+      - name: Resolve version
+        id: version
         run: |
-          VERSION="${{ github.event.inputs.version || github.ref_name }}"
-          uv run mike deploy --push --update-aliases "$VERSION" latest
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "value=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "value=$(uv run python -m semantic_release version --print-last-released)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy docs
+        run: uv run mike deploy --push --update-aliases ${{ steps.version.outputs.value }} latest
