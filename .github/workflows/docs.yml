@@ -1,0 +1,60 @@
+name: Docs
+
+# NOTE: The gh-pages branch must exist and GitHub Pages must be enabled in
+# repo Settings → Pages → Source: Deploy from branch `gh-pages`.
+
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - main
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to deploy (e.g. 0.4.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Configure git identity
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            raw="${{ github.event.inputs.version }}"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            raw="${{ github.ref_name }}"
+          else
+            raw="$(uv run python -m semantic_release version --print-last-released)"
+          fi
+          echo "value=${raw#v}" >> $GITHUB_OUTPUT
+
+      - name: Deploy docs
+        run: uv run mike deploy --push --update-aliases ${{ steps.version.outputs.value }} latest

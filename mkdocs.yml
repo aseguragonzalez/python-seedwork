@@ -1,0 +1,40 @@
+site_name: python-seedwork
+site_url: https://aseguragonzalez.github.io/python-seedwork/
+repo_url: https://github.com/aseguragonzalez/python-seedwork
+repo_name: aseguragonzalez/python-seedwork
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.annotate
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra_javascript:
+  - javascripts/mermaid.js
+  - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+
+plugins:
+  - search
+  - mike:
+      version_selector: true
+
+extra:
+  version:
+    provider: mike
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Component Reference: component-reference.md
+  - Architecture: architecture.md
+  - Best Practices: best-practices.md
+  - Coding Standards: coding-standards.md
