@@ -157,7 +157,7 @@ A repository is the **outbound domain port for aggregate persistence**. It abstr
 
 #### Key points
 
-- Only identity-based operations: `findById`, `save`, `deleteById`.
+- Only identity-based operations: `find_by_id`, `save`, `delete_by_id`.
 - Returns full domain aggregates — not DTOs, not raw rows.
 - One repository per aggregate root.
 - The interface is defined in the domain layer; the implementation lives in infrastructure.
@@ -165,7 +165,7 @@ A repository is the **outbound domain port for aggregate persistence**. It abstr
 #### Do
 
 - Keep the repository interface minimal — only what the domain actually needs.
-- Return `null`/`None` (or `Maybe`) from `findById` when not found — let the caller decide.
+- Return `None` from `find_by_id` when not found — let the caller decide.
 
 #### Don't
 
@@ -207,7 +207,7 @@ A command expresses **intent to change state**. The handler orchestrates the ope
 #### Key points
 
 - One command per write use case.
-- Commands carry the data needed to perform the operation and validate their own input.
+- Commands are plain frozen dataclasses — they carry the data needed to perform the operation.
 - The handler's responsibility is orchestration only: load aggregate → call domain method → save. No business logic in handlers.
 - The handler returns nothing — outcome is communicated via `Result` by the command bus.
 
@@ -228,7 +228,7 @@ A query is a **request for data with no side effects**.
 
 #### Key points
 
-- Returns `Maybe<TResult>` — either a result or nothing.
+- Returns `TResult | None` — a result or `None` when absent.
 - Query handlers are strictly read-only. No state changes, no command dispatching.
 - Use **read repositories** (ad-hoc ports defined in the application layer), not the domain repository. The domain repository loads full aggregates; queries often need projections.
 - Returns DTOs (plain data objects with primitive fields) — never domain entities.
@@ -236,7 +236,7 @@ A query is a **request for data with no side effects**.
 #### Do
 
 - Define a dedicated read port per query when the projection differs from the aggregate.
-- Return `nothing()` for both not-found and unauthorized — do not reveal resource existence to unauthorized callers.
+- Return `None` for both not-found and unauthorized — do not reveal resource existence to unauthorized callers.
 
 #### Don't
 
@@ -324,38 +324,16 @@ Two outbound ports at the application layer manage **eventual side effects**:
 
 ---
 
-### 3.6 Maybe
-
-`Maybe` is the **value-based absence contract for queries**.
-
-#### Key points
-
-- Two states: `just(value)` (found) and `nothing()` (absent).
-- Replaces `null`/`None` returns with an explicit type that forces the caller to handle absence.
-- Use `nothing()` for both not-found and unauthorized — identical response, no information leak.
-
-#### Do
-
-- Check `isNothing()` at the entry point before accessing the value.
-
-#### Don't
-
-- Use `Maybe` for command results — that is `Result`'s responsibility.
-- Use `just(null)` — if the value is absent, return `nothing()`.
-
----
-
-### 3.7 Error Handling
+### 3.6 Error Handling
 
 | Error type | Origin | Handling |
 |---|---|---|
-| `DomainError` | Aggregate / domain service | Caught by command bus → `Result.fail` |
-| `ValidationErrors` | Command / Query `validate()` | Thrown before the handler executes |
+| `DomainError` | Aggregate / domain service | Caught by command bus → `Result.failed` |
 | Infrastructure exception | Repository, external adapter | Propagates — do not catch or wrap |
 
 #### Key points
 
-- The entry point (controller) only needs to handle `Result` for domain failures and `ValidationErrors` for input failures. It never catches `DomainError`.
+- The entry point (controller) only needs to handle `Result` for domain failures. It never catches `DomainError`.
 - Infrastructure exceptions bubble up to a global error handler.
 - Never use exceptions for flow control within the domain — that is what `DomainError` → `Result` is for.
 
@@ -366,19 +344,19 @@ Two outbound ports at the application layer manage **eventual side effects**:
 #### Don't
 
 - Catch `DomainError` in handlers.
-- Return `Result.fail` for infrastructure failures.
+- Return `Result.failed` for infrastructure failures.
 - Use generic exception types for domain errors.
 
 ---
 
-### 3.8 Operation Flows
+### 3.7 Operation Flows
 
 #### Write operation
 
 ```mermaid
 sequenceDiagram
     participant API
-    participant Bus as CommandBus stack<br/>(validation → transaction → coordinator → registry)
+    participant Bus as CommandBus stack<br/>(transaction → coordinator → registry)
     participant Handler as CommandHandler
     participant Agg as Aggregate
     participant PubRepo as DomainEventPublishingRepository
@@ -388,10 +366,9 @@ sequenceDiagram
     participant TS as TaskScheduler
 
     API->>Bus: dispatch(command)
-    Note over Bus: 1. validate input
-    Note over Bus: 2. begin transaction
+    Note over Bus: 1. begin transaction
     Bus->>Handler: handle(command)
-    Handler->>PubRepo: findById(id)
+    Handler->>PubRepo: find_by_id(id)
     PubRepo-->>Handler: aggregate
     Handler->>Agg: behaviourMethod(...)
     Agg-->>Handler: new aggregate + domain events
@@ -399,7 +376,7 @@ sequenceDiagram
     PubRepo->>DeferredBus: publish(domainEvents)
     Note over DeferredBus: events buffered — not dispatched yet
     Handler-->>Bus: (returns)
-    Note over Bus: 3. dispatch deferred events<br/>(DomainEventCoordinatorCommandBus)
+    Note over Bus: 2. dispatch deferred events<br/>(DomainEventCoordinatorCommandBus)
     Bus->>DeferredBus: dispatch()
     DeferredBus->>EH: handle(event)
     EH->>IEP: publish(integrationEvent)
@@ -407,7 +384,7 @@ sequenceDiagram
     EH->>TS: schedule(task)
     Note over TS: written to outbox (same TX)
     EH-->>Bus: (returns)
-    Note over Bus: 4. commit transaction
+    Note over Bus: 3. commit transaction
     Bus-->>API: Result
 ```
 
@@ -421,12 +398,11 @@ sequenceDiagram
     participant ReadRepo as ReadRepository
 
     API->>Bus: ask(query)
-    Note over Bus: validate input
     Bus->>Handler: handle(query)
     Handler->>ReadRepo: find projection
-    ReadRepo-->>Handler: DTO | null
-    Handler-->>Bus: Maybe<DTO>
-    Bus-->>API: Maybe<DTO>
+    ReadRepo-->>Handler: DTO | None
+    Handler-->>Bus: TResult | None
+    Bus-->>API: TResult | None
 ```
 
 ---
@@ -449,7 +425,7 @@ A domain event is an **in-process fact within the same bounded context**.
 #### Key points
 
 - Processed by `DomainEventHandler` implementations registered on the `DomainEventBus`.
-- Handlers run within the same transaction as the command — if the transaction rolls back, handlers did not execute.
+- Handlers run within the same transaction as the command — if the transaction rolls back, their effects are not persisted.
 - The `DomainEventPublishingRepository` decorator publishes events automatically after `save`. Handlers are unaware of the publishing mechanism.
 - The deferred bus (`DeferredDomainEventBus`) buffers events and dispatches them after the command handler completes but before the transaction commits. Idempotent by event ID — saving the same aggregate twice in one transaction does not duplicate events.
 
@@ -478,7 +454,7 @@ An integration event is a **public notification that something relevant happened
 #### Key points
 
 - Published via `IntegrationEventPublisher`. The outbox pattern guarantees atomicity: the event record is written in the same transaction as the aggregate.
-- Carries `type`, `version`, `correlationId`, and optionally `causationId`. These fields are mandatory because integration events are a **public, versioned contract**.
+- Carries `type`, `version`, `correlation_id`, and optionally `causation_id`. These fields are mandatory because integration events are a **public, versioned contract**.
 - Schema evolution: add optional fields (backwards-compatible). Never rename, remove, or change the type of existing fields.
 - Consumers must be idempotent — at-least-once delivery is the default guarantee of any message broker.
 
@@ -486,7 +462,7 @@ An integration event is a **public notification that something relevant happened
 
 - Publish integration events from domain event handlers (reacting to a domain fact).
 - Version integration events from day one. Even `v1` is a version.
-- Include `correlationId` from the originating command.
+- Include `correlation_id` from the originating command.
 
 #### Don't
 
@@ -516,7 +492,7 @@ A background task is **deferred work within the same service**.
 
 #### Do
 
-- Include `correlationId` (and `causationId` when applicable) in every task.
+- Include `correlation_id` (and `causation_id` when applicable) in every task.
 - Design `TaskHandler` implementations to be idempotent by task ID.
 
 #### Don't
@@ -560,7 +536,7 @@ Did something meaningful happen in the domain?
 
 **Idempotency** — at-least-once delivery is the default. Every domain event handler, integration event consumer, and task handler must handle duplicates. Use the event/task `id` as the deduplication key.
 
-**Traceability** — propagate `correlationId` from the originating command through every downstream event and task. Use `causationId` to record the ID of the event or command that directly caused this one. These two fields are what make distributed traces reconstructable.
+**Traceability** — propagate `correlation_id` from the originating command through every downstream event and task. Use `causation_id` to record the ID of the event or command that directly caused this one. These two fields are what make distributed traces reconstructable.
 
 ---
 

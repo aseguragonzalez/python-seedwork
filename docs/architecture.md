@@ -75,9 +75,9 @@ The API is the **synchronous HTTP entry point**. Its only responsibility is to t
 #### Key points
 
 - Stateless. No business logic, no domain knowledge.
-- Input validation happens inside the Command or Query (`validate()`), not in the controller.
-- Dispatches to `CommandBus` for writes (returns `Result`) and `QueryBus` for reads (returns `Maybe`).
-- Maps `Result.failed` → 4xx. Maps `Maybe.nothing()` → 404. Infrastructure exceptions → 5xx via a global error handler.
+- Commands and Queries are plain frozen dataclasses. Domain value validation is enforced in `__post_init__` of Value Objects and Entities — controllers do not validate.
+- Dispatches to `CommandBus` for writes (returns `Result`) and `QueryBus` for reads (returns `TResult | None`).
+- Maps `Result.failed` → 4xx. Maps `None` → 404. Infrastructure exceptions → 5xx via a global error handler.
 
 #### Do
 
@@ -375,7 +375,7 @@ This applies to: Subscriber (incoming integration events), Worker (background ta
 #### Don't
 
 - Rely on message broker deduplication guarantees — they vary by broker and configuration.
-- Use the event `occurredAt` timestamp as a deduplication key — timestamps are not unique.
+- Use the event `occurred_at` timestamp as a deduplication key — timestamps are not unique.
 
 ---
 
@@ -421,24 +421,24 @@ A single user action can trigger a chain of commands, domain events, integration
 
 Two fields make the chain reconstructable:
 
-- **`correlationId`** — the ID of the originating operation (typically the first HTTP request or incoming integration event). Constant throughout the entire chain. Answers: *what user action caused this?*
-- **`causationId`** — the ID of the direct parent event, command, or task that caused this one. Changes at each step. Answers: *what immediately triggered this?*
+- **`correlation_id`** — the ID of the originating operation (typically the first HTTP request or incoming integration event). Constant throughout the entire chain. Answers: *what user action caused this?*
+- **`causation_id`** — the ID of the direct parent event, command, or task that caused this one. Changes at each step. Answers: *what immediately triggered this?*
 
 ### 4.2 Propagation Rules
 
 ```text
-HTTP Request (correlationId = X, causationId = X)
+HTTP Request (correlation_id = X, causation_id = X)
   └── Command dispatched
-        └── DomainEvent emitted        (correlationId = X, causationId = command.id)
-              └── IntegrationEvent published  (correlationId = X, causationId = domainEvent.id)
-                    └── BackgroundTask scheduled  (correlationId = X, causationId = domainEvent.id)
+        └── DomainEvent emitted        (correlation_id = X, causation_id = command.id)
+              └── IntegrationEvent published  (correlation_id = X, causation_id = domainEvent.id)
+                    └── BackgroundTask scheduled  (correlation_id = X, causation_id = domainEvent.id)
 ```
 
 #### Rules
 
-- `correlationId` is **always** inherited from the parent — it never changes within a chain.
-- `causationId` is the `id` of the immediate parent (the event, command, or task that triggered this one).
-- If there is no parent (e.g. a cron job or a DLQ re-queue), generate a new `correlationId` and set `causationId` to the trigger ID.
+- `correlation_id` is **always** inherited from the parent — it never changes within a chain.
+- `causation_id` is the `id` of the immediate parent (the event, command, or task that triggered this one).
+- If there is no parent (e.g. a cron job or a DLQ re-queue), generate a new `correlation_id` and set `causation_id` to the trigger ID.
 
 ### 4.3 Minimum Recommended Fields
 
@@ -447,22 +447,22 @@ Every integration event, background task, and structured log entry should carry:
 | Field | Type | Description |
 |---|---|---|
 | `id` | UUID | Unique identifier of this event/task/log entry |
-| `correlationId` | UUID | Originating operation identifier |
-| `causationId` | UUID | Direct parent identifier |
-| `occurredAt` | ISO-8601 | When the fact occurred |
+| `correlation_id` | UUID | Originating operation identifier |
+| `causation_id` | UUID | Direct parent identifier |
+| `occurred_at` | ISO-8601 | When the fact occurred |
 | `type` | string | Event or task type discriminator |
 | `version` | string | Schema version (`"1"`, `"2"`) |
 | `source` | string | Service that emitted this event |
 
 #### Do
 
-- Propagate `correlationId` through every integration event, background task, and log statement in the chain.
-- Use structured logging — log `correlationId` and `causationId` as indexed fields, not embedded in a message string.
+- Propagate `correlation_id` through every integration event, background task, and log statement in the chain.
+- Use structured logging — log `correlation_id` and `causation_id` as indexed fields, not embedded in a message string.
 
 #### Don't
 
-- Generate a new `correlationId` mid-chain.
-- Omit `causationId` — without it, the causal graph is incomplete.
+- Generate a new `correlation_id` mid-chain.
+- Omit `causation_id` — without it, the causal graph is incomplete.
 
 ---
 
