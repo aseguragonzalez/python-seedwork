@@ -1,0 +1,44 @@
+name: Docs
+
+# NOTE: The gh-pages branch must exist and GitHub Pages must be enabled in
+# repo Settings → Pages → Source: Deploy from branch `gh-pages`.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to deploy (e.g. v0.4.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install docs dependencies
+        run: pip install mkdocs-material mike
+
+      - name: Configure git identity
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Deploy docs
+        run: |
+          VERSION="${{ github.event.inputs.version || github.ref_name }}"
+          mike deploy --push --update-aliases "$VERSION" latest

@@ -103,5 +103,7 @@ dev = [
     "hatch>=1.13",
     "python-semantic-release>=9.0",
     "pre-commit>=4.0",
+    "mkdocs-material>=9.5",
+    "mike>=2.0",
 ]
 
