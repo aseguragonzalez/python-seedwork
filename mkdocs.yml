@@ -18,6 +18,10 @@ markdown_extensions:
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
 
+extra_javascript:
+  - javascripts/mermaid.js
+  - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+
 plugins:
   - search
   - mike:
