@@ -25,13 +25,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Setup UV
+        uses: astral-sh/setup-uv@v4
         with:
           python-version: "3.12"
+          enable-cache: true
 
-      - name: Install docs dependencies
-        run: pip install mkdocs-material mike
+      - name: Install dependencies
+        run: uv sync
 
       - name: Configure git identity
         run: |
@@ -41,4 +42,4 @@ jobs:
       - name: Deploy docs
         run: |
           VERSION="${{ github.event.inputs.version || github.ref_name }}"
-          mike deploy --push --update-aliases "$VERSION" latest
+          uv run mike deploy --push --update-aliases "$VERSION" latest
