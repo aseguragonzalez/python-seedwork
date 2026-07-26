@@ -42,6 +42,9 @@ tag_format = "v{version}"
 commit_message = "chore: release v{version} [skip ci]"
 major_on_zero = false
 allow_zero_version = true
+# never bump the version for automated dependency-bump commits (fix/perf scoped to
+# deps or deps-dev), matching the convention used across this org's *-seedwork repos
+commit_parser = "tools/release_commit_parser.py:DepsScopedCommitParser"
 
 [tool.semantic_release.branches.main]
 match = "main"
