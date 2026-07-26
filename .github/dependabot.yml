@@ -9,9 +9,16 @@ updates:
       dev-dependencies:
         dependency-type: development
     target-branch: main
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     target-branch: main
+    commit-message:
+      prefix: "chore"
+      include: "scope"
