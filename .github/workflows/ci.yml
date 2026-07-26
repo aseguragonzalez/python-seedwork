@@ -15,20 +15,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
       - name: Setup UV
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           python-version: "3.12"
 
       - name: Cache virtual environment
         id: venv-cache
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .venv
           key: venv-3.12-${{ hashFiles('uv.lock') }}
-      
+
       - name: Sync dependencies
         if: steps.venv-cache.outputs.cache-hit != 'true'
         run: uv sync
@@ -38,17 +38,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
       - name: Setup UV
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           python-version: "3.12"
           enable-cache: true
-      
+
       - name: Restore virtual environment cache
         id: venv-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .venv
           key: venv-3.12-${{ hashFiles('uv.lock') }}
@@ -68,25 +68,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
       - name: Setup UV
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           python-version: "3.12"
           enable-cache: true
-      
+
       - name: Restore virtual environment cache
         id: venv-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .venv
           key: venv-3.12-${{ hashFiles('uv.lock') }}
-      
+
       - name: Sync dependencies
         if: steps.venv-cache.outputs.cache-hit != 'true'
         run: uv sync
-      
+
       - name: Run Pyright
         run: uv run pyright
 
@@ -98,30 +98,30 @@ jobs:
         python-version: ["3.12", "3.13"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
       - name: Setup UV
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
-      
+
       - name: Restore virtual environment cache
         id: venv-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .venv
           key: venv-${{ matrix.python-version }}-${{ hashFiles('uv.lock') }}
-      
+
       - name: Sync dependencies
         if: steps.venv-cache.outputs.cache-hit != 'true'
         run: uv sync
-      
+
       - name: Run tests
         run: uv run pytest --tb=short -q --cov=src/seedwork --cov-report=xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
