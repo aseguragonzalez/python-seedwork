@@ -21,6 +21,7 @@ jobs:
         uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           python-version: "3.12"
+          ignore-nothing-to-cache: true
 
       - name: Cache virtual environment
         id: venv-cache
@@ -45,6 +46,7 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: true
+          ignore-nothing-to-cache: true
 
       - name: Restore virtual environment cache
         id: venv-cache
@@ -52,11 +54,11 @@ jobs:
         with:
           path: .venv
           key: venv-3.12-${{ hashFiles('uv.lock') }}
-      
+
       - name: Sync dependencies
         if: steps.venv-cache.outputs.cache-hit != 'true'
         run: uv sync
-      
+
       - name: Run Ruff check
         run: uv run ruff check src tests docs/examples
 
@@ -75,6 +77,7 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: true
+          ignore-nothing-to-cache: true
 
       - name: Restore virtual environment cache
         id: venv-cache
@@ -105,6 +108,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
+          ignore-nothing-to-cache: true
 
       - name: Restore virtual environment cache
         id: venv-cache
