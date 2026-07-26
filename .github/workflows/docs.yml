@@ -9,9 +9,6 @@ on:
       - "v*"
     branches:
       - main
-    paths:
-      - "docs/**"
-      - "mkdocs.yml"
   workflow_dispatch:
     inputs:
       version:
@@ -30,21 +27,41 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Determine whether to deploy
+        id: gate
+        run: |
+          # Tag pushes and manual dispatches always deploy. A plain push to
+          # main only deploys if it actually touched the docs sources — the
+          # top-level `paths` filter can't express this OR condition together
+          # with the `tags` trigger, since GitHub ANDs all filters within a
+          # single `on.push` block.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "${{ github.event.before }}" "${{ github.event.after }}" | grep -qE '^(docs/|mkdocs\.yml$)'; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup UV
+        if: steps.gate.outputs.deploy == 'true'
         uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4
         with:
           python-version: "3.12"
           enable-cache: true
 
       - name: Install dependencies
+        if: steps.gate.outputs.deploy == 'true'
         run: uv sync
 
       - name: Configure git identity
+        if: steps.gate.outputs.deploy == 'true'
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
       - name: Resolve version
+        if: steps.gate.outputs.deploy == 'true'
         id: version
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -57,7 +74,9 @@ jobs:
           echo "value=${raw#v}" >> $GITHUB_OUTPUT
 
       - name: Deploy docs
+        if: steps.gate.outputs.deploy == 'true'
         run: uv run mike deploy --push --update-aliases ${{ steps.version.outputs.value }} latest
 
       - name: Set default version
+        if: steps.gate.outputs.deploy == 'true'
         run: uv run mike set-default --push latest
