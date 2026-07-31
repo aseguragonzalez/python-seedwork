@@ -95,4 +95,9 @@ seedwork.infrastructure → concrete bus/repository implementations
 
 ## Claude Code skills for this repo
 
-No project-scoped skills exist yet under `.claude/skills/`. Candidates worth adding as recurring maintenance tasks come up: one covering the devcontainer check cycle end-to-end (`make all` inside the container), and one for verifying a PR's release-readiness (correct title prefix, linked issue, CI green) before requesting review.
+Two project-scoped skills live under `.claude/skills/`:
+
+- **`repo-issue-to-pr`** — runs the full maintenance workflow: analyze → open issue (right template/labels) → branch → implement → PR linked to the issue.
+- **`repo-pr-release-readiness`** — checks an open PR's title prefix, linked issue, labels, and CI status before requesting review, since the PR title is what drives the squash-merge release.
+
+`.claude/settings.json` (committed, shared across contributors) holds the permissions allowlist for the common `make`/`uv`/`git`/`gh` commands these workflows use; personal or exploratory permissions belong in each contributor's own `.claude/settings.local.json` instead.
