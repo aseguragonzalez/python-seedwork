@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(devcontainer up --workspace-folder .)",
+      "Bash(devcontainer exec --workspace-folder . make *)",
+      "Bash(devcontainer exec --workspace-folder . uv *)",
+      "Bash(devcontainer exec --workspace-folder . pre-commit run *)",
+      "Bash(make *)",
+      "Bash(uv run *)",
+      "Bash(uv sync*)",
+      "Bash(uv build*)",
+      "Bash(pre-commit run*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(gh label list*)",
+      "Bash(gh issue list*)",
+      "Bash(gh issue view*)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr view*)",
+      "Bash(gh pr checks*)",
+      "Bash(gh run list*)",
+      "Bash(gh run view*)"
+    ]
+  }
+}

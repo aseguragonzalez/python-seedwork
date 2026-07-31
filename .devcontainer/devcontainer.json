@@ -2,7 +2,7 @@
   "name": "python-seedwork",
   "image": "mcr.microsoft.com/devcontainers/python:3.13",
   "features": {
-    "ghcr.io/astral-sh/uv": {}
+    "ghcr.io/va-h/devcontainers-features/uv:1": {}
   },
   "postCreateCommand": "make install",
   "customizations": {
