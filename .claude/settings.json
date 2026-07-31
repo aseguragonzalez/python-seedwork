@@ -1,6 +1,10 @@
 {
   "permissions": {
     "allow": [
+      "Bash(devcontainer up --workspace-folder .)",
+      "Bash(devcontainer exec --workspace-folder . make *)",
+      "Bash(devcontainer exec --workspace-folder . uv *)",
+      "Bash(devcontainer exec --workspace-folder . pre-commit run *)",
       "Bash(make *)",
       "Bash(uv run *)",
       "Bash(uv sync*)",

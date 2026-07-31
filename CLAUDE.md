@@ -164,7 +164,10 @@ Skills under `.claude/skills/`:
 - **`bug-triage`** — the analyze → confirm → issue flow for bug reports.
 
 `.claude/settings.json` (committed, shared across contributors) holds a conservative,
-mostly-read-only permissions allowlist (`make *`, `uv run/sync/build`, `git status/diff/log/show/branch`,
-read-only `gh`) for these workflows — it deliberately excludes `git commit`/`push` and
-`gh issue`/`pr create`, which always prompt. Personal or exploratory permissions belong in
-each contributor's own `.claude/settings.local.json` instead.
+mostly-read-only permissions allowlist for these workflows: `devcontainer up`/`devcontainer
+exec ... make|uv|pre-commit`, plus bare `make *`/`uv run/sync/build`/`pre-commit run`
+for environments where the devcontainer can't be built (e.g. no network to fetch its
+features) but the host already has a working toolchain, `git status/diff/log/show/branch`,
+and read-only `gh`. It deliberately excludes `git commit`/`push` and `gh issue`/`pr
+create`, which always prompt. Personal or exploratory permissions belong in each
+contributor's own `.claude/settings.local.json` instead.
