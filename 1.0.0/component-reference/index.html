@@ -510,10 +510,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#domainevent-domaineventrecordtpayload" class="md-nav__link">
+  <a href="#domainevent-basedomaineventtpayload" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DomainEvent / DomainEventRecord[TPayload]
+        DomainEvent / BaseDomainEvent[TPayload]
       
     </span>
   </a>
@@ -885,10 +885,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#domainevent-domaineventrecordtpayload" class="md-nav__link">
+  <a href="#domainevent-basedomaineventtpayload" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DomainEvent / DomainEventRecord[TPayload]
+        DomainEvent / BaseDomainEvent[TPayload]
       
     </span>
   </a>
@@ -1141,21 +1141,25 @@
 <li><strong>Role:</strong> Immutable domain concept defined entirely by its attributes. Subclass as <code>@dataclass(frozen=True, kw_only=True)</code>. Equality and hashing are structural — delegated to the dataclass.</li>
 <li><strong>Usage:</strong> Declare fields directly on the subclass. Use <code>__post_init__</code> for validation; raise a <code>DomainError</code> subclass on invalid input (co-located in the same file). All fields are keyword-only.</li>
 </ul>
-<h3 id="domainevent-domaineventrecordtpayload"><code>DomainEvent</code> / <code>DomainEventRecord[TPayload]</code></h3>
+<h3 id="domainevent-basedomaineventtpayload"><code>DomainEvent</code> / <code>BaseDomainEvent[TPayload]</code></h3>
 <ul>
-<li><code>DomainEvent</code> — Protocol defining the structural interface for domain events: <code>id: str</code> and <code>occurred_at: datetime</code>.</li>
-<li><code>DomainEventRecord[TPayload]</code> — frozen dataclass; declares <code>payload: TPayload</code> first, then <code>id: str</code> (default UUID) and <code>occurred_at: datetime</code> (default UTC now).</li>
-<li><strong>Pattern:</strong> define a frozen dataclass <code>Payload</code>, then a frozen dataclass event extending <code>DomainEventRecord[Payload]</code>. Name events in past tense. Keep payload fields primitive (serializable).</li>
+<li><code>DomainEvent</code> — Protocol defining the structural interface for domain events: <code>id: str</code>, <code>occurred_at: datetime</code> and <code>aggregate_id: str</code>.</li>
+<li><code>BaseDomainEvent[TPayload]</code> — frozen, keyword-only dataclass. Declares <code>payload: TPayload</code> and <code>aggregate_id: str</code> (both <strong>required</strong>, no defaults), then <code>id: str</code> (defaults to a UUID) and <code>occurred_at: datetime</code> (defaults to UTC now).</li>
+<li><strong>Pattern:</strong> define a frozen payload dataclass, then a frozen event extending <code>BaseDomainEvent[Payload]</code> with a <code>create()</code> classmethod that takes plain data and builds the payload internally. Name events in past tense. Keep payload fields primitive (serializable).</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">MoneyDepositedPayload</span><span class="p">:</span>
-    <span class="n">account_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">amount</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span>
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">MoneyDeposited</span><span class="p">(</span><span class="n">DomainEventRecord</span><span class="p">[</span><span class="n">MoneyDepositedPayload</span><span class="p">]):</span>
-    <span class="k">pass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MoneyDeposited</span><span class="p">(</span><span class="n">BaseDomainEvent</span><span class="p">[</span><span class="n">MoneyDepositedPayload</span><span class="p">]):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">aggregate_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MoneyDeposited&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">payload</span><span class="o">=</span><span class="n">MoneyDepositedPayload</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">),</span>
+            <span class="n">aggregate_id</span><span class="o">=</span><span class="n">aggregate_id</span><span class="p">,</span>
+        <span class="p">)</span>
 </code></pre></div>
 <h3 id="repositorytid-taggregate"><code>Repository[TId, TAggregate]</code></h3>
 <ul>
@@ -1174,19 +1178,21 @@
 <h2 id="application-layer">Application layer</h2>
 <h3 id="result-resulterror"><code>Result</code> / <code>ResultError</code></h3>
 <ul>
-<li><code>Result.succeeded()</code> / <code>Result.failed(errors: list[ResultError])</code>. Check with <code>result.ok: bool</code>. <code>.errors: tuple[ResultError, ...]</code> (immutable).</li>
+<li><code>Result.ok()</code> / <code>Result.failed(errors: Sequence[ResultError])</code> — both class methods. <code>.errors: tuple[ResultError, ...]</code> (immutable).</li>
+<li>Check with the <code>is_ok</code> and <code>is_failed</code> <strong>properties</strong> — no parentheses: <code>if result.is_failed: ...</code></li>
+<li>Do not write <code>if result.ok:</code> — <code>ok</code> is the class method that <em>builds</em> a success, so the expression is always truthy and every failure reads as success.</li>
 <li>Use for expected domain failures at the application boundary; let infrastructure exceptions propagate.</li>
 </ul>
 <h3 id="command-commandbus-commandhandlertcommand"><code>Command</code> / <code>CommandBus</code> / <code>CommandHandler[TCommand]</code></h3>
 <ul>
 <li><code>Command</code> — frozen dataclass base. Subclass as <code>@dataclass(frozen=True, kw_only=True)</code> and declare fields directly.</li>
-<li><code>CommandHandler[TCommand]</code> — Protocol. <code>execute(self, command: TCommand) -&gt; None</code> (async).</li>
+<li><code>CommandHandler[TCommand]</code> — Protocol. <code>handle(self, command: TCommand) -&gt; None</code> (async).</li>
 <li><code>CommandBus</code> — Protocol. <code>dispatch(self, command: Command) -&gt; Result</code> (async).</li>
 </ul>
 <h3 id="querytresult-querybus-queryhandlertquery-tresult"><code>Query[TResult]</code> / <code>QueryBus</code> / <code>QueryHandler[TQuery, TResult]</code></h3>
 <ul>
 <li><code>Query[TResult]</code> — generic frozen dataclass base. Subclass as <code>@dataclass(frozen=True, kw_only=True)</code> and declare the result type as a type parameter: <code>class MyQuery(Query[MyResponse])</code>.</li>
-<li><code>QueryHandler[TQuery, TResult]</code> — Protocol. <code>execute(self, query: TQuery) -&gt; TResult | None</code> (async). Return <code>None</code> to signal absence.</li>
+<li><code>QueryHandler[TQuery, TResult]</code> — Protocol. <code>handle(self, query: TQuery) -&gt; TResult | None</code> (async). Return <code>None</code> to signal absence.</li>
 <li><code>QueryBus</code> — Protocol. <code>ask(self, query: Query[TResult]) -&gt; TResult | None</code> (async). The return type is inferred from the query's type parameter — no <code>Any</code>, no cast at the call site.</li>
 </ul>
 <h3 id="domaineventpublisher"><code>DomainEventPublisher</code></h3>
