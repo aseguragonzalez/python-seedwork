@@ -2,9 +2,63 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Environment
+DDD and Hexagonal Architecture building blocks for Python. **This is a library of
+abstractions, not a domain application.** Every class is imported/subclassed/composed by
+downstream projects — design decisions here are public contracts.
 
-All commands below must be run inside the project's `.devcontainer/` (image `mcr.microsoft.com/devcontainers/python:3.13`, `uv` pre-installed, `postCreateCommand: make install`), not directly on the host. This keeps the Python version, `uv` version, and tool versions identical to CI. If you're not already inside the devcontainer, open/rebuild it before running any `make` target or `uv run` command.
+**All work happens inside the devcontainer.** Every command in this document assumes it
+runs there, so tool versions match CI exactly. Start it once with:
+
+```bash
+devcontainer up --workspace-folder .
+```
+
+Then run any `make` target via:
+
+```bash
+devcontainer exec --workspace-folder . make <target>
+```
+
+(The host also happens to have `uv`/Python available in this environment, but don't rely
+on that — the devcontainer is the source of truth for versions, and other environments
+running this repo may not have a usable host toolchain at all.)
+
+## Workflow
+
+Every change goes through three stages — never skip straight to code:
+
+1. **Analyze and open the issue.** Understand the request, confirm the understanding with
+   the requester, then open (or confirm) a GitHub issue using the matching
+   `.github/ISSUE_TEMPLATE/*` with clear, testable acceptance criteria. No PR without a
+   linked issue (e.g. `Closes #N`).
+2. **Plan before implementing.** Re-read the issue and draft an implementation plan that
+   separates **code**, **tests**, and **documentation** as independent tracks built against
+   the same agreed contracts (Protocols/signatures decided up front), so the tracks don't
+   conflict with each other.
+3. **Implement in parallel.** Execute the plan using parallel agents for code, tests, and
+   documentation (see `.claude/agents/`) against the contracts fixed in step 2. Subagents
+   don't share context with the main conversation or each other — include the fixed
+   contract explicitly in every agent's prompt, don't assume they can infer it from one
+   another's work.
+
+Additional rules that apply throughout:
+
+- All documentation and GitHub artifacts — issues, PRs, commit messages, code comments —
+  are written in English, regardless of the language used in conversation, and are
+  **direct and concise**: state the what/why/how, never the conversation or reasoning
+  process that led to it. No narrative, no TL;DR filler.
+- While analyzing any request, check whether nearby code could be improved. If so, do not
+  bundle the improvement into the current change — open a separate issue for it (see the
+  `boy-scout` skill).
+- For bug reports, analyze the problem and propose a solution before opening an issue for
+  it (see the `bug-triage` skill).
+- PR review comments (yours or a bot reviewer's) are answered in English, as a reply in the
+  same review-comment thread — never a new top-level PR comment.
+- This repo only **squash-merges** (`squash_merge_commit_title: PR_TITLE`,
+  `squash_merge_commit_message: BLANK`), so **the PR title is the only text that becomes
+  the commit message on `main`** — see "Commit and PR conventions" below.
+- See `.claude/skills/gh-workflow/SKILL.md` for label taxonomy, identity, reviewer, and
+  issue/PR mechanics.
 
 ## Commands
 
@@ -29,37 +83,36 @@ uv run pytest tests/domain/test_entity.py
 uv run pytest tests/domain/test_entity.py::test_equality_by_id
 ```
 
-## Maintenance workflow
+## Commit and PR conventions
 
-1. **Analyze** — before writing code, understand the gap or bug and confirm scope.
-2. **Open an issue** — use the matching `.github/ISSUE_TEMPLATE/*` (bug report, feature request, question) and apply the labels that match its content (`gh label list` for the current set).
-3. **Branch from `main`**, implement the change, keep it scoped to the issue.
-4. **Open a PR against `main`** that links the issue (e.g. `Closes #123`), following the description structure in the global git/GitHub conventions (What/Why/How/How to test).
-5. **Wait for CI to pass**, then merge — this repo only **squash-merges** (`squash_merge_commit_title: PR_TITLE`, `squash_merge_commit_message: BLANK`).
+`python-semantic-release` reads the PR title (the only text that reaches `main`, since the
+repo squash-merges) to decide whether — and what kind of — a release ships. Getting the
+type wrong is not cosmetic: it either ships a spurious release or silently swallows one
+that should have shipped.
 
-### PR title / release policy
-
-Because the repo only squash-merges, **the PR title is the only text that becomes the commit message on `main`**, and `python-semantic-release` parses that message to decide whether/how to bump the version (`feat` → minor, `fix`/`perf` → patch, breaking change footer → major, everything else → no release). The title must:
-
-- Use a Conventional Commits prefix from `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`, `revert` — enforced by `.github/workflows/pr-title-lint.yml`.
-- Be chosen deliberately based on whether the change should trigger a release, not out of habit — a docs-only or tooling change should be `docs:`/`chore:`/`ci:`, not `fix:`/`feat:`.
-- Stay in sync with the allowed types in `.pre-commit-config.yaml`'s `conventional-pre-commit` hook, which enforces the same prefixes on individual commit messages via the local `commit-msg` hook (this matters for local development discipline even though only the PR title reaches `main`).
-
-## Documentation language
-
-All documentation in this repo — `CLAUDE.md`, `README.md`, `CONTRIBUTING.md`, `docs/`, code comments, commit and PR text — is written in **English**, regardless of the language used in the conversation that produced a change.
+- The type **must match the layer actually changed**: `docs:` for changes limited to
+  `docs/` or `CLAUDE.md`, `ci:` for pipeline-only changes, `chore:`/`build:` for tooling
+  (`Makefile`, `.claude/`, dependency bumps), `fix:`/`feat:` only when `src/seedwork/`
+  behaviour changes.
+- Use a prefix from `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`,
+  `ci`, `build`, `revert` — enforced by `.github/workflows/pr-title-lint.yml` and, for
+  individual commits, `.pre-commit-config.yaml`'s `conventional-pre-commit` hook.
+- Breaking changes need a `BREAKING CHANGE:` footer (not just `feat!:`/`fix!:` in the
+  title) — see the commit-type table in `.claude/skills/gh-workflow/SKILL.md` for the full
+  mapping and worked examples.
+- Refactors use `refactor:` and must never carry behaviour changes — a refactor must not
+  trigger a release.
 
 ## Architecture
 
 This is a **library** (`src/seedwork/`), not an application. It ships DDD and Hexagonal Architecture building blocks. Consuming projects import from `seedwork` (everything is re-exported from the top-level `__init__.py`).
 
-The library is split into three layers that enforce the dependency rule of Hexagonal Architecture — domain has no outward imports, application depends only on domain, infrastructure depends on both:
+The library is split into four layers that enforce the dependency rule of Hexagonal Architecture — domain has no outward imports, application depends only on domain, infrastructure depends on both, testing is a separate consumer-facing toolkit:
 
-```text
-seedwork.domain        → pure Python, no framework
-seedwork.application   → CQRS contracts + Result
-seedwork.infrastructure → concrete bus/repository implementations
-```
+- **`src/seedwork/domain/`** — `Entity`, `ValueObject`, `AggregateRoot`, `DomainEvent`, `Repository`, `UnitOfWork`, `DomainError`. Pure Python, no framework, no outward imports.
+- **`src/seedwork/application/`** — `Command`/`CommandBus`/`CommandHandler`, `Query[TResult]`/`QueryBus`/`QueryHandler`, `DomainEventBus`, `IntegrationEvent`/`IntegrationEventPublisher`, `BackgroundTask`/`TaskScheduler`, `Result`/`ResultError`, `ValidationErrors`. Depends only on domain.
+- **`src/seedwork/infrastructure/`** — `RegistryCommandBus`/`RegistryQueryBus`, `CommandBusBuilder`/`QueryBusBuilder`, `TransactionalCommandBus`, `DomainEventCoordinatorCommandBus`, `DeferredDomainEventBus`, `DomainEventPublishingRepository`, `OutboxIntegrationEventPublisher`, `OutboxTaskScheduler`, `IntegrationEventOutboxRepository`, `TaskOutboxRepository`. Concrete bus/repository implementations; the only layer that may use `Any` at adapter boundaries.
+- **`src/seedwork/testing/`** — `InMemoryRepository`, `InMemoryIntegrationEventPublisher`, `InMemoryTaskScheduler`, `InMemoryIntegrationEventOutboxRepository`, `InMemoryTaskOutboxRepository`, and their `*Spy` variants. For use in consumer tests only — never imported from production code.
 
 `docs/examples/bank_account/` is the canonical reference implementation — a complete bounded context that exercises every building block. Tests in `tests/` exercise the seedwork internals; `docs/examples/` is consumed by those tests as fixtures.
 
@@ -93,11 +146,25 @@ seedwork.infrastructure → concrete bus/repository implementations
 - Integration and task side-effects: use `InMemoryIntegrationEventPublisher` and `InMemoryTaskScheduler` from `seedwork.testing` — both expose spy attributes (`published`, `scheduled`) and a `reset()` method.
 - Coverage gate is 90% on `src/seedwork/` — running `make test` will fail if it drops below.
 
-## Claude Code skills for this repo
+## Claude Code agents and skills for this repo
 
-Two project-scoped skills live under `.claude/skills/`:
+Agents under `.claude/agents/` implement the parallel code/test/docs tracks from
+"Workflow" above, plus two cross-cutting agents:
 
-- **`repo-issue-to-pr`** — runs the full maintenance workflow: analyze → open issue (right template/labels) → branch → implement → PR linked to the issue.
-- **`repo-pr-release-readiness`** — checks an open PR's title prefix, linked issue, labels, and CI status before requesting review, since the PR title is what drives the squash-merge release.
+- **`python-implementer`** — the `src/seedwork/` track, against a fixed contract.
+- **`python-test-writer`** — the `tests/` track, against the same contract.
+- **`docs-aligner`** — the `docs/` track, against the same contract.
+- **`boy-scout`** — finds and either executes or files refactoring opportunities.
+- **`bug-analyst`** — investigates a reported defect and proposes a fix before any issue is opened.
 
-`.claude/settings.json` (committed, shared across contributors) holds the permissions allowlist for the common `make`/`uv`/`git`/`gh` commands these workflows use; personal or exploratory permissions belong in each contributor's own `.claude/settings.local.json` instead.
+Skills under `.claude/skills/`:
+
+- **`gh-workflow`** — the full issue-first workflow: identity, label taxonomy, reviewer, commit-type table, and PR release-readiness checks.
+- **`boy-scout`** — when/how to apply the boy-scout rule (execute inline vs. separate issue).
+- **`bug-triage`** — the analyze → confirm → issue flow for bug reports.
+
+`.claude/settings.json` (committed, shared across contributors) holds a conservative,
+mostly-read-only permissions allowlist (`make *`, `uv run/sync/build`, `git status/diff/log/show/branch`,
+read-only `gh`) for these workflows — it deliberately excludes `git commit`/`push` and
+`gh issue`/`pr create`, which always prompt. Personal or exploratory permissions belong in
+each contributor's own `.claude/settings.local.json` instead.
