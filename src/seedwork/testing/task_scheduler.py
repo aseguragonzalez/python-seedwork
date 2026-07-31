@@ -7,7 +7,7 @@ from seedwork.application.background_tasks import BackgroundTask, TaskHandler, T
 @runtime_checkable
 class TaskSchedulerSpy(TaskScheduler, Protocol):
     @property
-    def scheduled(self) -> Sequence[BackgroundTask]: ...
+    def scheduled(self) -> Sequence[BackgroundTask[Any]]: ...
 
     def register(self, task_type: str, handler: TaskHandler[Any]) -> None: ...
 
@@ -18,17 +18,17 @@ class TaskSchedulerSpy(TaskScheduler, Protocol):
 
 class InMemoryTaskScheduler:
     def __init__(self) -> None:
-        self._scheduled: list[BackgroundTask] = []
+        self._scheduled: list[BackgroundTask[Any]] = []
         self._handlers: dict[str, TaskHandler[Any]] = {}
 
     @property
-    def scheduled(self) -> Sequence[BackgroundTask]:
+    def scheduled(self) -> Sequence[BackgroundTask[Any]]:
         return list(self._scheduled)
 
     def register(self, task_type: str, handler: TaskHandler[Any]) -> None:
         self._handlers[task_type] = handler
 
-    async def schedule(self, task: BackgroundTask) -> None:
+    async def schedule(self, task: BackgroundTask[Any]) -> None:
         self._scheduled.append(task)
 
     async def execute_scheduled(self) -> None:

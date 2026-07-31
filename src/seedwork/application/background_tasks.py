@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
-from typing import Any, Protocol, TypeVar
+from typing import Any, Protocol
 from uuid import uuid4
 
 
-class BackgroundTask(Protocol):
+class BackgroundTask[TPayload_co](Protocol):
     @property
     def id(self) -> str: ...
 
@@ -11,7 +11,7 @@ class BackgroundTask(Protocol):
     def type(self) -> str: ...
 
     @property
-    def payload(self) -> dict[str, Any]: ...
+    def payload(self) -> TPayload_co: ...
 
     @property
     def correlation_id(self) -> str: ...
@@ -24,9 +24,9 @@ class BackgroundTask(Protocol):
 
 
 @dataclass(frozen=True, kw_only=True)
-class BaseBackgroundTask:
+class BaseBackgroundTask[TPayload_co]:
     type: str
-    payload: dict[str, Any]
+    payload: TPayload_co
     correlation_id: str
     causation_id: str | None = None
     metadata: dict[str, str] | None = None
@@ -34,11 +34,8 @@ class BaseBackgroundTask:
 
 
 class TaskScheduler(Protocol):
-    async def schedule(self, task: BackgroundTask) -> None: ...
+    async def schedule(self, task: BackgroundTask[Any]) -> None: ...
 
 
-TTask_contra = TypeVar("TTask_contra", bound=BackgroundTask, contravariant=True)
-
-
-class TaskHandler(Protocol[TTask_contra]):
+class TaskHandler[TTask_contra: BackgroundTask[Any]](Protocol):
     async def handle(self, task: TTask_contra) -> None: ...

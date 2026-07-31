@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, TypedDict
 from uuid import uuid4
 
 from bank_account.application.request_context import correlation_id as _correlation_id
@@ -11,7 +11,11 @@ if TYPE_CHECKING:
     from bank_account.domain.events.account_opened import AccountOpened
 
 
-class SendWelcomeEmailTask(BaseBackgroundTask):
+class SendWelcomeEmailTaskPayload(TypedDict):
+    account_id: str
+
+
+class SendWelcomeEmailTask(BaseBackgroundTask[SendWelcomeEmailTaskPayload]):
     TYPE: ClassVar[str] = "send_welcome_email"
 
     @classmethod

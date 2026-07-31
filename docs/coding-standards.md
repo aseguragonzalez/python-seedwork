@@ -436,11 +436,13 @@ command_bus = (
 
 An Integration Event communicates a meaningful business fact from this bounded context to the outside world. Unlike domain events (internal, synchronous), integration events cross service boundaries and are delivered asynchronously. They carry a stable, versioned contract: once published, their schema must not break consumers.
 
-**Concrete event — use `BaseIntegrationEvent` and a `from_domain_event()` factory:**
+**Concrete event — use `BaseIntegrationEvent[TPayload]` and a `from_domain_event()` factory:**
+
+`BaseIntegrationEvent` is generic over its `payload` type (`TPayload`, no default). Declare a `TypedDict` (or frozen dataclass) for the payload shape and parametrize the base class with it — this gives typed, autocompletable access to `event.payload.account_id` instead of an untyped `dict[str, Any]`.
 
 ```python
 from __future__ import annotations
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, TypedDict
 from uuid import uuid4
 
 from seedwork.application.integration_events import BaseIntegrationEvent
@@ -450,7 +452,13 @@ if TYPE_CHECKING:
     from .events import AccountOpened
 
 
-class AccountOpenedIntegrationEvent(BaseIntegrationEvent):
+class AccountOpenedIntegrationEventPayload(TypedDict):
+    account_id: str
+    initial_balance: float
+    currency: str
+
+
+class AccountOpenedIntegrationEvent(BaseIntegrationEvent[AccountOpenedIntegrationEventPayload]):
     TYPE: ClassVar[str] = "bank_account.account_opened"
     VERSION: ClassVar[str] = "1.0"
 
@@ -486,7 +494,7 @@ class AccountOpenedIntegrationEventHandler(IntegrationEventHandler[AccountOpened
 - `TYPE` and `VERSION` are class-level constants passed to `BaseIntegrationEvent`.
 - `correlation_id` from execution context (`ContextVar`) — not from the domain event.
 - `causation_id` = `event.id` (the domain event that triggered this).
-- `publish()` takes a `Sequence[IntegrationEvent]` — pass `[event]` even for a single event.
+- `publish()` takes a `Sequence[IntegrationEvent[Any]]` — pass `[event]` even for a single event.
 
 #### Do
 
@@ -505,9 +513,11 @@ class AccountOpenedIntegrationEventHandler(IntegrationEventHandler[AccountOpened
 
 A Background Task defers work that must happen eventually but does not need to complete within the current request — sending emails, triggering webhooks, calling external APIs. Tasks are written to an outbox before the transaction commits, guaranteeing at-least-once execution by a worker even if the process crashes mid-flight.
 
+`BaseBackgroundTask` is likewise generic over its `payload` type (`TPayload`, no default) — parametrize it the same way as `BaseIntegrationEvent`.
+
 ```python
 from __future__ import annotations
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, TypedDict
 from uuid import uuid4
 
 from seedwork.application.background_tasks import BaseBackgroundTask
@@ -517,7 +527,11 @@ if TYPE_CHECKING:
     from .events import AccountOpened
 
 
-class SendWelcomeEmailTask(BaseBackgroundTask):
+class SendWelcomeEmailTaskPayload(TypedDict):
+    account_id: str
+
+
+class SendWelcomeEmailTask(BaseBackgroundTask[SendWelcomeEmailTaskPayload]):
     TYPE: ClassVar[str] = "send_welcome_email"
 
     @classmethod
@@ -718,12 +732,14 @@ assert len(scheduler.scheduled) == 0  # tasks were consumed
 | Domain Event | Past tense `PascalCase` | `AccountOpened`, `MoneyDeposited` |
 | Domain Event Payload | Past tense + `Payload` suffix | `AccountOpenedPayload` |
 | Integration Event | Past tense + `IntegrationEvent` suffix | `AccountOpenedIntegrationEvent` |
+| Integration Event Payload | Past tense + `IntegrationEventPayload` suffix | `AccountOpenedIntegrationEventPayload` |
 | Command | Imperative + `Command` | `OpenAccountCommand` |
 | Query | Noun phrase + `Query` | `GetBalanceQuery` |
 | Command Handler | Imperative + `Handler` | `OpenAccountHandler` |
 | Query Handler | Noun phrase + `Handler` | `GetBalanceHandler` |
 | Domain Event Handler | Noun phrase + `DomainEventHandler` | `AccountOpenedDomainEventHandler` |
 | Background Task | Imperative + `Task` | `SendWelcomeEmailTask` |
+| Background Task Payload | Imperative + `TaskPayload` suffix | `SendWelcomeEmailTaskPayload` |
 | Task Handler | Imperative + `TaskHandler` | `SendWelcomeEmailTaskHandler` |
 | Repository (port) | `{Aggregate}Repository` | `BankAccountRepository` |
 | Repository (impl) | `{ORM}{Aggregate}Repository` | `SqlAlchemyBankAccountRepository` |

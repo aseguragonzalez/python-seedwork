@@ -2,15 +2,15 @@ from seedwork.application.background_tasks import BaseBackgroundTask, TaskHandle
 from seedwork.testing import InMemoryTaskScheduler
 
 
-class SpyTaskHandler(TaskHandler[BaseBackgroundTask]):
+class SpyTaskHandler(TaskHandler[BaseBackgroundTask[dict[str, str]]]):
     def __init__(self) -> None:
-        self.handled: list[BaseBackgroundTask] = []
+        self.handled: list[BaseBackgroundTask[dict[str, str]]] = []
 
-    async def handle(self, task: BaseBackgroundTask) -> None:
+    async def handle(self, task: BaseBackgroundTask[dict[str, str]]) -> None:
         self.handled.append(task)
 
 
-def make_task(task_type: str = "domain.send_email") -> BaseBackgroundTask:
+def make_task(task_type: str = "domain.send_email") -> BaseBackgroundTask[dict[str, str]]:
     return BaseBackgroundTask(
         type=task_type,
         payload={"key": "val"},
