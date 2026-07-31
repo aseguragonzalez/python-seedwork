@@ -1,6 +1,8 @@
 # Coding Standards
 
 > These standards apply to projects **built on top of this package** (consuming bounded contexts). They describe how consumer code should use the seedwork building blocks, not how the seedwork library itself is implemented.
+>
+> When this document and `docs/examples/` disagree, the example is authoritative — it is compiled and tested by CI. Please open an issue so the discrepancy gets fixed.
 
 ## Python baseline
 
@@ -35,12 +37,11 @@ An `Entity` is a domain object with a durable identity — two instances with th
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import NewType
-from uuid import UUID
 
 from seedwork.domain import Entity
 
-AccountId = NewType("AccountId", UUID)
-UserId = NewType("UserId", UUID)
+AccountId = NewType("AccountId", str)
+UserId = NewType("UserId", str)
 
 @dataclass(frozen=True, eq=False, kw_only=True)
 class Account(Entity[AccountId]):
@@ -115,12 +116,11 @@ class Money(ValueObject):
 ```python
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import NewType
-from uuid import UUID
+from typing import NewType, Self
 
 from seedwork.domain import AggregateRoot
 
-UserId = NewType("UserId", UUID)
+UserId = NewType("UserId", str)
 
 @dataclass(frozen=True, eq=False, kw_only=True)
 class BankAccount(AggregateRoot[BankAccountId]):
@@ -131,7 +131,7 @@ class BankAccount(AggregateRoot[BankAccountId]):
         pass
 
     @classmethod
-    def open(cls, id: BankAccountId, owner_id: UserId, initial_balance: Money) -> BankAccount:
+    def open(cls, id: BankAccountId, owner_id: UserId, initial_balance: Money) -> Self:
         return cls(id=id, owner_id=owner_id, balance=initial_balance)._record(
             AccountOpened.create(
                 initial_balance=initial_balance.amount,
@@ -140,7 +140,7 @@ class BankAccount(AggregateRoot[BankAccountId]):
             )
         )
 
-    def deposit(self, amount: Money) -> BankAccount:
+    def deposit(self, amount: Money) -> Self:
         new_balance = Money(amount=self.balance.amount + amount.amount, currency=self.balance.currency)
         return self._evolve(balance=new_balance)._record(
             MoneyDeposited.create(
@@ -314,7 +314,7 @@ class OpenAccountCommand(Command):
         if self.initial_balance < 0:
             raise InvalidInitialBalanceError()
 
-class OpenAccountCommandHandler(CommandHandler[OpenAccountCommand]):
+class OpenAccountHandler(CommandHandler[OpenAccountCommand]):
     def __init__(self, repository: BankAccountRepository) -> None:
         self._repository = repository
 
@@ -410,7 +410,7 @@ from seedwork.infrastructure import CommandBusBuilder, RegistryCommandBus
 registry = RegistryCommandBus()
 command_bus = (
     CommandBusBuilder(registry)
-    .register(OpenAccountCommand, OpenAccountCommandHandler(repository))
+    .register(OpenAccountCommand, OpenAccountHandler(repository))
     .with_transaction(uow)                      # optional — TransactionalCommandBus
     .with_domain_event_coordination(event_bus)  # DomainEventCoordinatorCommandBus
     .build()
@@ -667,7 +667,7 @@ account_repo = DomainEventPublishingRepository(
 registry = RegistryCommandBus()
 command_bus = (
     CommandBusBuilder(registry)
-    .register(OpenAccountCommand, OpenAccountCommandHandler(account_repo))
+    .register(OpenAccountCommand, OpenAccountHandler(account_repo))
     .with_transaction(uow)
     .with_domain_event_coordination(event_bus)
     .build()

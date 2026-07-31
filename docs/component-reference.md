@@ -24,22 +24,26 @@ All components are exported from the package root (`seedwork`).
 - **Role:** Immutable domain concept defined entirely by its attributes. Subclass as `@dataclass(frozen=True, kw_only=True)`. Equality and hashing are structural — delegated to the dataclass.
 - **Usage:** Declare fields directly on the subclass. Use `__post_init__` for validation; raise a `DomainError` subclass on invalid input (co-located in the same file). All fields are keyword-only.
 
-### `DomainEvent` / `DomainEventRecord[TPayload]`
+### `DomainEvent` / `BaseDomainEvent[TPayload]`
 
-- `DomainEvent` — Protocol defining the structural interface for domain events: `id: str` and `occurred_at: datetime`.
-- `DomainEventRecord[TPayload]` — frozen dataclass; declares `payload: TPayload` first, then `id: str` (default UUID) and `occurred_at: datetime` (default UTC now).
-- **Pattern:** define a frozen dataclass `Payload`, then a frozen dataclass event extending `DomainEventRecord[Payload]`. Name events in past tense. Keep payload fields primitive (serializable).
+- `DomainEvent` — Protocol defining the structural interface for domain events: `id: str`, `occurred_at: datetime` and `aggregate_id: str`.
+- `BaseDomainEvent[TPayload]` — frozen, keyword-only dataclass. Declares `payload: TPayload` and `aggregate_id: str` (both **required**, no defaults), then `id: str` (defaults to a UUID) and `occurred_at: datetime` (defaults to UTC now).
+- **Pattern:** define a frozen payload dataclass, then a frozen event extending `BaseDomainEvent[Payload]` with a `create()` classmethod that takes plain data and builds the payload internally. Name events in past tense. Keep payload fields primitive (serializable).
 
 ```python
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class MoneyDepositedPayload:
-    account_id: str
     amount: float
     currency: str
 
 @dataclass(frozen=True)
-class MoneyDeposited(DomainEventRecord[MoneyDepositedPayload]):
-    pass
+class MoneyDeposited(BaseDomainEvent[MoneyDepositedPayload]):
+    @classmethod
+    def create(cls, amount: float, currency: str, aggregate_id: str) -> "MoneyDeposited":
+        return cls(
+            payload=MoneyDepositedPayload(amount=amount, currency=currency),
+            aggregate_id=aggregate_id,
+        )
 ```
 
 ### `Repository[TId, TAggregate]`
@@ -61,19 +65,21 @@ class MoneyDeposited(DomainEventRecord[MoneyDepositedPayload]):
 
 ### `Result` / `ResultError`
 
-- `Result.succeeded()` / `Result.failed(errors: list[ResultError])`. Check with `result.ok: bool`. `.errors: tuple[ResultError, ...]` (immutable).
+- `Result.ok()` / `Result.failed(errors: Sequence[ResultError])` — both class methods. `.errors: tuple[ResultError, ...]` (immutable).
+- Check with the `is_ok` and `is_failed` **properties** — no parentheses: `if result.is_failed: ...`
+- Do not write `if result.ok:` — `ok` is the class method that *builds* a success, so the expression is always truthy and every failure reads as success.
 - Use for expected domain failures at the application boundary; let infrastructure exceptions propagate.
 
 ### `Command` / `CommandBus` / `CommandHandler[TCommand]`
 
 - `Command` — frozen dataclass base. Subclass as `@dataclass(frozen=True, kw_only=True)` and declare fields directly.
-- `CommandHandler[TCommand]` — Protocol. `execute(self, command: TCommand) -> None` (async).
+- `CommandHandler[TCommand]` — Protocol. `handle(self, command: TCommand) -> None` (async).
 - `CommandBus` — Protocol. `dispatch(self, command: Command) -> Result` (async).
 
 ### `Query[TResult]` / `QueryBus` / `QueryHandler[TQuery, TResult]`
 
 - `Query[TResult]` — generic frozen dataclass base. Subclass as `@dataclass(frozen=True, kw_only=True)` and declare the result type as a type parameter: `class MyQuery(Query[MyResponse])`.
-- `QueryHandler[TQuery, TResult]` — Protocol. `execute(self, query: TQuery) -> TResult | None` (async). Return `None` to signal absence.
+- `QueryHandler[TQuery, TResult]` — Protocol. `handle(self, query: TQuery) -> TResult | None` (async). Return `None` to signal absence.
 - `QueryBus` — Protocol. `ask(self, query: Query[TResult]) -> TResult | None` (async). The return type is inferred from the query's type parameter — no `Any`, no cast at the call site.
 
 ### `DomainEventPublisher`
