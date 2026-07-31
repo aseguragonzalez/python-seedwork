@@ -4,7 +4,7 @@ from seedwork.infrastructure.outbox import OutboxIntegrationEventPublisher, Outb
 from seedwork.testing import InMemoryIntegrationEventOutboxRepository, InMemoryTaskOutboxRepository
 
 
-def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent:
+def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent[dict[str, str]]:
     return BaseIntegrationEvent(
         type="bank.account.opened",
         version="1.0",
@@ -14,7 +14,7 @@ def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent:
     )
 
 
-def make_task(task_type: str = "domain.send_email") -> BaseBackgroundTask:
+def make_task(task_type: str = "domain.send_email") -> BaseBackgroundTask[dict[str, str]]:
     return BaseBackgroundTask(
         type=task_type,
         payload={"key": "value"},

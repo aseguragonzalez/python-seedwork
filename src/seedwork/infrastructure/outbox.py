@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Literal, Protocol
+from typing import Any, Literal, Protocol
 
 from seedwork.application.background_tasks import BackgroundTask
 from seedwork.application.integration_events import IntegrationEvent
@@ -13,7 +13,7 @@ TaskOutboxStatus = Literal["pending", "delivered", "failed"]
 @dataclass(frozen=True, kw_only=True)
 class IntegrationEventOutboxRecord:
     id: str
-    event: IntegrationEvent
+    event: IntegrationEvent[Any]
     status: OutboxStatus
     attempts: int
     created_at: datetime
@@ -22,7 +22,7 @@ class IntegrationEventOutboxRecord:
 
 
 class IntegrationEventOutboxRepository(Protocol):
-    async def save(self, event: IntegrationEvent) -> None: ...
+    async def save(self, event: IntegrationEvent[Any]) -> None: ...
 
     async def find_pending(self, limit: int = 100) -> Sequence[IntegrationEventOutboxRecord]: ...
 
@@ -35,7 +35,7 @@ class OutboxIntegrationEventPublisher:
     def __init__(self, repository: IntegrationEventOutboxRepository) -> None:
         self._repository = repository
 
-    async def publish(self, events: Sequence[IntegrationEvent]) -> None:
+    async def publish(self, events: Sequence[IntegrationEvent[Any]]) -> None:
         for event in events:
             await self._repository.save(event)
 
@@ -43,7 +43,7 @@ class OutboxIntegrationEventPublisher:
 @dataclass(frozen=True, kw_only=True)
 class TaskOutboxRecord:
     id: str
-    task: BackgroundTask
+    task: BackgroundTask[Any]
     status: TaskOutboxStatus
     attempts: int
     created_at: datetime
@@ -52,7 +52,7 @@ class TaskOutboxRecord:
 
 
 class TaskOutboxRepository(Protocol):
-    async def save(self, task: BackgroundTask) -> None: ...
+    async def save(self, task: BackgroundTask[Any]) -> None: ...
 
     async def find_pending(self, limit: int = 100) -> Sequence[TaskOutboxRecord]: ...
 
@@ -65,5 +65,5 @@ class OutboxTaskScheduler:
     def __init__(self, repository: TaskOutboxRepository) -> None:
         self._repository = repository
 
-    async def schedule(self, task: BackgroundTask) -> None:
+    async def schedule(self, task: BackgroundTask[Any]) -> None:
         await self._repository.save(task)

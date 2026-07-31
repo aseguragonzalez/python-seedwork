@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, TypedDict
 from uuid import uuid4
 
 from bank_account.application.request_context import correlation_id as _correlation_id
@@ -11,7 +11,13 @@ if TYPE_CHECKING:
     from bank_account.domain.events.account_opened import AccountOpened
 
 
-class AccountOpenedIntegrationEvent(BaseIntegrationEvent):
+class AccountOpenedIntegrationEventPayload(TypedDict):
+    account_id: str
+    initial_balance: float
+    currency: str
+
+
+class AccountOpenedIntegrationEvent(BaseIntegrationEvent[AccountOpenedIntegrationEventPayload]):
     TYPE: ClassVar[str] = "bank_account.account_opened"
     VERSION: ClassVar[str] = "1.0"
 

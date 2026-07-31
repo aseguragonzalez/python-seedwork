@@ -2,7 +2,7 @@ from seedwork.application.integration_events import BaseIntegrationEvent
 from seedwork.testing import InMemoryIntegrationEventPublisher, IntegrationEventPublisherSpy
 
 
-def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent:
+def make_event(correlation_id: str = "corr-1") -> BaseIntegrationEvent[dict[str, str]]:
     return BaseIntegrationEvent(
         type="bank.account.opened",
         version="1.0",

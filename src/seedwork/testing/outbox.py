@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from dataclasses import replace
 from datetime import UTC, datetime
-from typing import Protocol
+from typing import Any, Protocol
 from uuid import uuid4
 
 from seedwork.application.background_tasks import BackgroundTask
@@ -29,7 +29,7 @@ class InMemoryIntegrationEventOutboxRepository:
     def all(self) -> Sequence[IntegrationEventOutboxRecord]:
         return list(self._records.values())
 
-    async def save(self, event: IntegrationEvent) -> None:
+    async def save(self, event: IntegrationEvent[Any]) -> None:
         record = IntegrationEventOutboxRecord(
             id=str(uuid4()),
             event=event,
@@ -74,7 +74,7 @@ class InMemoryTaskOutboxRepository:
     def all(self) -> Sequence[TaskOutboxRecord]:
         return list(self._records.values())
 
-    async def save(self, task: BackgroundTask) -> None:
+    async def save(self, task: BackgroundTask[Any]) -> None:
         record = TaskOutboxRecord(
             id=str(uuid4()),
             task=task,
