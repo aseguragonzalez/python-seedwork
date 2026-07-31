@@ -30,6 +30,9 @@ pre-commit: ## Run all pre-commit hooks against all files
 
 all: check pre-commit ## Run all validations (lint, typecheck, tests, pre-commit hooks)
 
+build: ## Build the wheel and sdist into dist/
+	uv build
+
 clean: ## Remove build artifacts and caches
 	rm -rf dist .coverage .pytest_cache .ruff_cache
 	find . -type d -name __pycache__ -exec rm -rf {} +
