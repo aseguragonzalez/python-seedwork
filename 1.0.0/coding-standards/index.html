@@ -2533,9 +2533,10 @@
 <hr />
 <h3 id="integration-events">Integration Events</h3>
 <p>An Integration Event communicates a meaningful business fact from this bounded context to the outside world. Unlike domain events (internal, synchronous), integration events cross service boundaries and are delivered asynchronously. They carry a stable, versioned contract: once published, their schema must not break consumers.</p>
-<p><strong>Concrete event — use <code>BaseIntegrationEvent</code> and a <code>from_domain_event()</code> factory:</strong></p>
+<p><strong>Concrete event — use <code>BaseIntegrationEvent[TPayload]</code> and a <code>from_domain_event()</code> factory:</strong></p>
+<p><code>BaseIntegrationEvent</code> is generic over its <code>payload</code> type (<code>TPayload</code>, no default). Declare a <code>TypedDict</code> (or frozen dataclass) for the payload shape and parametrize the base class with it — this gives typed, autocompletable access to <code>event.payload.account_id</code> instead of an untyped <code>dict[str, Any]</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">TypedDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.application.integration_events</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseIntegrationEvent</span>
@@ -2545,7 +2546,13 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">AccountOpened</span>
 
 
-<span class="k">class</span><span class="w"> </span><span class="nc">AccountOpenedIntegrationEvent</span><span class="p">(</span><span class="n">BaseIntegrationEvent</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountOpenedIntegrationEventPayload</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">account_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">initial_balance</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AccountOpenedIntegrationEvent</span><span class="p">(</span><span class="n">BaseIntegrationEvent</span><span class="p">[</span><span class="n">AccountOpenedIntegrationEventPayload</span><span class="p">]):</span>
     <span class="n">TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bank_account.account_opened&quot;</span>
     <span class="n">VERSION</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1.0&quot;</span>
 
@@ -2577,7 +2584,7 @@
 <li><code>TYPE</code> and <code>VERSION</code> are class-level constants passed to <code>BaseIntegrationEvent</code>.</li>
 <li><code>correlation_id</code> from execution context (<code>ContextVar</code>) — not from the domain event.</li>
 <li><code>causation_id</code> = <code>event.id</code> (the domain event that triggered this).</li>
-<li><code>publish()</code> takes a <code>Sequence[IntegrationEvent]</code> — pass <code>[event]</code> even for a single event.</li>
+<li><code>publish()</code> takes a <code>Sequence[IntegrationEvent[Any]]</code> — pass <code>[event]</code> even for a single event.</li>
 </ul>
 <h4 id="do_4">Do</h4>
 <ul>
@@ -2593,8 +2600,9 @@
 <hr />
 <h3 id="background-tasks">Background Tasks</h3>
 <p>A Background Task defers work that must happen eventually but does not need to complete within the current request — sending emails, triggering webhooks, calling external APIs. Tasks are written to an outbox before the transaction commits, guaranteeing at-least-once execution by a worker even if the process crashes mid-flight.</p>
+<p><code>BaseBackgroundTask</code> is likewise generic over its <code>payload</code> type (<code>TPayload</code>, no default) — parametrize it the same way as <code>BaseIntegrationEvent</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">TypedDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">seedwork.application.background_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseBackgroundTask</span>
@@ -2604,7 +2612,11 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">AccountOpened</span>
 
 
-<span class="k">class</span><span class="w"> </span><span class="nc">SendWelcomeEmailTask</span><span class="p">(</span><span class="n">BaseBackgroundTask</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SendWelcomeEmailTaskPayload</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">account_id</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SendWelcomeEmailTask</span><span class="p">(</span><span class="n">BaseBackgroundTask</span><span class="p">[</span><span class="n">SendWelcomeEmailTaskPayload</span><span class="p">]):</span>
     <span class="n">TYPE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;send_welcome_email&quot;</span>
 
     <span class="nd">@classmethod</span>
@@ -2807,6 +2819,11 @@
 <td><code>AccountOpenedIntegrationEvent</code></td>
 </tr>
 <tr>
+<td>Integration Event Payload</td>
+<td>Past tense + <code>IntegrationEventPayload</code> suffix</td>
+<td><code>AccountOpenedIntegrationEventPayload</code></td>
+</tr>
+<tr>
 <td>Command</td>
 <td>Imperative + <code>Command</code></td>
 <td><code>OpenAccountCommand</code></td>
@@ -2835,6 +2852,11 @@
 <td>Background Task</td>
 <td>Imperative + <code>Task</code></td>
 <td><code>SendWelcomeEmailTask</code></td>
+</tr>
+<tr>
+<td>Background Task Payload</td>
+<td>Imperative + <code>TaskPayload</code> suffix</td>
+<td><code>SendWelcomeEmailTaskPayload</code></td>
 </tr>
 <tr>
 <td>Task Handler</td>
