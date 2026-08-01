@@ -27,14 +27,18 @@ running this repo may not have a usable host toolchain at all.)
 
 Every change goes through three stages — never skip straight to code:
 
-1. **Analyze and open the issue.** Understand the request, confirm the understanding with
-   the requester, then open (or confirm) a GitHub issue using the matching
-   `.github/ISSUE_TEMPLATE/*` with clear, testable acceptance criteria. No PR without a
-   linked issue (e.g. `Closes #N`).
+1. **Analyze and open the issue(s).** Understand the request, confirm the understanding
+   with the requester, then open (or confirm) a GitHub issue using the matching
+   `.github/ISSUE_TEMPLATE/*` with clear, testable acceptance criteria. A request that
+   bundles unrelated concerns splits into more than one issue — one per independently
+   shippable concern — rather than one issue standing in for all of them. No PR without at
+   least one linked issue (`Closes #N` or `Relates to #N` — see
+   `.claude/skills/gh-workflow/SKILL.md`).
 2. **Plan before implementing.** Re-read the issue and draft an implementation plan that
    separates **code**, **tests**, and **documentation** as independent tracks built against
    the same agreed contracts (Protocols/signatures decided up front), so the tracks don't
-   conflict with each other.
+   conflict with each other. A large or naturally incremental issue may be delivered
+   through more than one PR; decide this up front rather than mid-implementation.
 3. **Implement in parallel.** Execute the plan using parallel agents for code, tests, and
    documentation (see `.claude/agents/`) against the contracts fixed in step 2. Subagents
    don't share context with the main conversation or each other — include the fixed
