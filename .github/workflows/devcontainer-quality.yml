@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.devcontainer/**'
+      - '.github/workflows/devcontainer-quality.yml'
 
 permissions:
   contents: read
