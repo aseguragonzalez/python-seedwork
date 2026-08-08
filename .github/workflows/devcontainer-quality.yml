@@ -13,7 +13,8 @@ permissions:
 jobs:
   devcontainer-quality:
     name: Install and check (inside devcontainer)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     permissions:
       contents: read
 
@@ -24,6 +25,8 @@ jobs:
       - name: Run quality gate inside devcontainer
         uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3
         with:
+          cacheFrom: ghcr.io/aseguragonzalez/python-seedwork-devcontainer
+          push: never
           runCmd: |
             make install
             make check
