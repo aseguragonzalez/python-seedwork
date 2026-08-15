@@ -16,6 +16,10 @@ class DeferredDomainEventBus:
         )
 
     def _pending_events(self) -> dict[str, DomainEvent]:
+        # A task spawned after _pending is set inherits a reference to the
+        # same dict, not a copy. Mutating it in place would leak across
+        # contexts, so every write below replaces it via ContextVar.set(...)
+        # instead of mutating this returned dict.
         try:
             return self._pending.get()
         except LookupError:
@@ -31,18 +35,18 @@ class DeferredDomainEventBus:
         self._handlers[event_type].append(handler)  # type: ignore[arg-type]
 
     async def publish(self, events: Sequence[DomainEvent]) -> None:
-        pending = self._pending_events()
+        pending = dict(self._pending_events())
         for event in events:
             if event.id not in pending:
                 pending[event.id] = event
+        self._pending.set(pending)
 
     async def dispatch(self) -> None:
-        pending = self._pending_events()
-        events = list(pending.values())
-        pending.clear()
+        events = list(self._pending_events().values())
+        self._pending.set({})
         for event in events:
             for handler in self._handlers.get(type(event), []):
                 await handler.handle(event)
 
     def discard(self) -> None:
-        self._pending_events().clear()
+        self._pending.set({})

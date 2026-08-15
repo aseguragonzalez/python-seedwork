@@ -192,3 +192,26 @@ async def test_fresh_task_context_sees_no_pending_events_from_other_context() ->
     await asyncio.gather(other_task, fresh_task)
 
     assert handler.received == []
+
+
+async def test_child_task_spawned_after_publish_cannot_drain_parent_buffer() -> None:
+    """A child task spawned after the parent already published inherits a
+    reference to the parent's pending dict via contextvars. discard()/
+    dispatch() must never mutate that dict in place, or the child could wipe
+    out the parent's still-undispatched events.
+    """
+    bus = DeferredDomainEventBus()
+    handler = SpyHandler()
+    bus.subscribe(OrderPlaced, handler)
+
+    event = OrderPlaced(aggregate_id="o-1", payload=OrderPlacedPayload(order_id="o-1"))
+    await bus.publish([event])
+
+    async def child() -> None:
+        bus.discard()
+
+    await asyncio.create_task(child())
+
+    await bus.dispatch()
+
+    assert handler.received == [event]
