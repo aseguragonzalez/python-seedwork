@@ -688,7 +688,7 @@ command_bus = (
 )
 ```
 
-`dispatch()` processes the buffered events; `discard()` clears without processing. The buffer is a `dict[str, DomainEvent]` keyed by `event.id` — saving the same aggregate twice does not duplicate events.
+`dispatch()` processes the buffered events; `discard()` clears without processing. The buffer is a `dict[str, DomainEvent]` keyed by `event.id` — saving the same aggregate twice does not duplicate events. The buffer is isolated per `contextvars` context (lazily created on first use), so a single `DeferredDomainEventBus` instance can be safely constructed once and reused across concurrent `asyncio` tasks or threads — e.g. a process-level singleton reused across warm invocations of a serverless function — without events from one invocation leaking into another's `dispatch()`/`discard()`. `_handlers` registered via `subscribe()` remain shared across all contexts, since they are static wiring, not per-request state.
 
 ### InMemory implementations (tests)
 

@@ -1,3 +1,4 @@
+import asyncio
 from dataclasses import dataclass
 
 from seedwork.application.domain_event_bus import DomainEventHandler
@@ -116,3 +117,78 @@ async def test_dispatch_clears_pending_so_second_dispatch_is_noop() -> None:
     await bus.dispatch()
 
     assert len(handler.received) == 1
+
+
+async def test_concurrent_tasks_do_not_share_pending_events() -> None:
+    """Two interleaved asyncio tasks sharing one bus instance must not see
+    each other's pending events: task A publishes, then task B publishes and
+    dispatches, then task A dispatches — each dispatch must only ever deliver
+    the event published by its own task's context.
+    """
+    bus = DeferredDomainEventBus()
+    handler = SpyHandler()
+    bus.subscribe(OrderPlaced, handler)
+
+    a_published = asyncio.Event()
+    b_done = asyncio.Event()
+
+    task_a_received: list[DomainEvent] = []
+    task_b_received: list[DomainEvent] = []
+
+    event_a = OrderPlaced(aggregate_id="a", payload=OrderPlacedPayload(order_id="a"))
+    event_b = OrderPlaced(aggregate_id="b", payload=OrderPlacedPayload(order_id="b"))
+
+    async def task_a() -> None:
+        await bus.publish([event_a])
+        a_published.set()
+        await b_done.wait()
+        before = len(handler.received)
+        await bus.dispatch()
+        task_a_received.extend(handler.received[before:])
+
+    async def task_b() -> None:
+        await a_published.wait()
+        await bus.publish([event_b])
+        before = len(handler.received)
+        await bus.dispatch()
+        task_b_received.extend(handler.received[before:])
+        b_done.set()
+
+    await asyncio.gather(task_a(), task_b())
+
+    assert task_a_received == [event_a]
+    assert task_b_received == [event_b]
+    assert handler.received.count(event_a) == 1
+    assert handler.received.count(event_b) == 1
+    assert len(handler.received) == 2
+
+
+async def test_fresh_task_context_sees_no_pending_events_from_other_context() -> None:
+    """A brand-new asyncio task that never published anything must see an
+    empty pending set on dispatch()/discard(), even while a sibling
+    context/task on the same bus instance has unrelated pending events that
+    have not been dispatched yet.
+    """
+    bus = DeferredDomainEventBus()
+    handler = SpyHandler()
+    bus.subscribe(OrderPlaced, handler)
+
+    other_published = asyncio.Event()
+    event = OrderPlaced(aggregate_id="o-1", payload=OrderPlacedPayload(order_id="o-1"))
+
+    async def other_context() -> None:
+        await bus.publish([event])
+        other_published.set()
+        # deliberately never dispatch/discard: leaves pending events
+        # buffered in this context only.
+
+    async def fresh_context() -> None:
+        await other_published.wait()
+        await bus.dispatch()
+        bus.discard()
+
+    other_task = asyncio.create_task(other_context())
+    fresh_task = asyncio.create_task(fresh_context())
+    await asyncio.gather(other_task, fresh_task)
+
+    assert handler.received == []

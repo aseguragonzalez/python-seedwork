@@ -429,7 +429,7 @@ A domain event is an **in-process fact within the same bounded context**.
 - Processed by `DomainEventHandler` implementations registered on the `DomainEventBus`.
 - Handlers run within the same transaction as the command — if the transaction rolls back, their effects are not persisted.
 - The `DomainEventPublishingRepository` decorator publishes events automatically after `save`. Handlers are unaware of the publishing mechanism.
-- The deferred bus (`DeferredDomainEventBus`) buffers events and dispatches them after the command handler completes but before the transaction commits. Idempotent by event ID — saving the same aggregate twice in one transaction does not duplicate events.
+- The deferred bus (`DeferredDomainEventBus`) buffers events and dispatches them after the command handler completes but before the transaction commits. Idempotent by event ID — saving the same aggregate twice in one transaction does not duplicate events. The buffer is isolated per `contextvars` context, so one `DeferredDomainEventBus` instance is safe to share across concurrent invocations (e.g. a process-level singleton in a serverless function).
 
 #### Do
 
