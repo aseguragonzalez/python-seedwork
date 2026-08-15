@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "python-seedwork"
-version = "1.1.0"
+version = "1.1.1"
 description = "DDD and Hexagonal Architecture building blocks for Python"
 readme = "README.md"
 license = { file = "LICENSE" }
