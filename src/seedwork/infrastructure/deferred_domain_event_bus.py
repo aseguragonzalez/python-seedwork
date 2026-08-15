@@ -16,10 +16,6 @@ class DeferredDomainEventBus:
         )
 
     def _pending_events(self) -> dict[str, DomainEvent]:
-        # A task spawned after _pending is set inherits a reference to the
-        # same dict, not a copy. Mutating it in place would leak across
-        # contexts, so every write below replaces it via ContextVar.set(...)
-        # instead of mutating this returned dict.
         try:
             return self._pending.get()
         except LookupError:

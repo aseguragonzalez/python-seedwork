@@ -120,11 +120,6 @@ async def test_dispatch_clears_pending_so_second_dispatch_is_noop() -> None:
 
 
 async def test_concurrent_tasks_do_not_share_pending_events() -> None:
-    """Two interleaved asyncio tasks sharing one bus instance must not see
-    each other's pending events: task A publishes, then task B publishes and
-    dispatches, then task A dispatches — each dispatch must only ever deliver
-    the event published by its own task's context.
-    """
     bus = DeferredDomainEventBus()
     handler = SpyHandler()
     bus.subscribe(OrderPlaced, handler)
@@ -164,11 +159,6 @@ async def test_concurrent_tasks_do_not_share_pending_events() -> None:
 
 
 async def test_fresh_task_context_sees_no_pending_events_from_other_context() -> None:
-    """A brand-new asyncio task that never published anything must see an
-    empty pending set on dispatch()/discard(), even while a sibling
-    context/task on the same bus instance has unrelated pending events that
-    have not been dispatched yet.
-    """
     bus = DeferredDomainEventBus()
     handler = SpyHandler()
     bus.subscribe(OrderPlaced, handler)
@@ -179,8 +169,6 @@ async def test_fresh_task_context_sees_no_pending_events_from_other_context() ->
     async def other_context() -> None:
         await bus.publish([event])
         other_published.set()
-        # deliberately never dispatch/discard: leaves pending events
-        # buffered in this context only.
 
     async def fresh_context() -> None:
         await other_published.wait()
@@ -195,11 +183,6 @@ async def test_fresh_task_context_sees_no_pending_events_from_other_context() ->
 
 
 async def test_child_task_spawned_after_publish_cannot_drain_parent_buffer() -> None:
-    """A child task spawned after the parent already published inherits a
-    reference to the parent's pending dict via contextvars. discard()/
-    dispatch() must never mutate that dict in place, or the child could wipe
-    out the parent's still-undispatched events.
-    """
     bus = DeferredDomainEventBus()
     handler = SpyHandler()
     bus.subscribe(OrderPlaced, handler)
