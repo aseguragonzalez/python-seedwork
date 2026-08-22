@@ -239,7 +239,7 @@ publisher = OutboxIntegrationEventPublisher(repository=my_outbox_repository)
 
 ## Testing layer
 
-Exported from `seedwork.testing`, not the top-level `seedwork` package. For use in consumer tests only — never import it from production code. Every in-memory implementation has a matching `*Spy` structural `Protocol` (runtime-checkable) documenting the shape consumers can assert against: an `all`/`published`/`scheduled` collection plus a `reset()` method.
+Exported from `seedwork.testing`, not the top-level `seedwork` package. For use in consumer tests only — never import it from production code. Every in-memory implementation has a matching `*Spy` structural `Protocol` documenting the shape consumers can assert against: an `all`/`published`/`scheduled` collection plus a `reset()` method. `RepositorySpy`, `IntegrationEventPublisherSpy`, and `TaskSchedulerSpy` are `@runtime_checkable`; `IntegrationEventOutboxRepositorySpy` and `TaskOutboxRepositorySpy` are plain `Protocol`s (no `isinstance()` checks against them).
 
 ### `InMemoryRepository[TId, TAggregate]` / `RepositorySpy`
 

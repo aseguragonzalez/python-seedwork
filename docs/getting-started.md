@@ -279,7 +279,7 @@ query_bus = (
 )
 ```
 
-`my_event_bus` must satisfy `DomainEventBusPublisher` (`publish(events) -> None`). See [Component Reference](component-reference.md#domaineventbus-family) for the full domain-event coordination story — pairing `DeferredDomainEventBus` with `CommandBusBuilder.with_domain_event_coordination` so events only dispatch after a command succeeds.
+`my_event_bus` must satisfy `DomainEventBusPublisher` (`async def publish(events) -> None`) — `DomainEventPublishingRepository` awaits it, so a synchronous implementation fails at runtime. See [Component Reference](component-reference.md#domaineventbus-family) for the full domain-event coordination story — pairing `DeferredDomainEventBus` with `CommandBusBuilder.with_domain_event_coordination` so events only dispatch after a command succeeds.
 
 ## 10. Dispatch
 
