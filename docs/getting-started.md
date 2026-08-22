@@ -12,7 +12,7 @@ Requires Python 3.12+.
 
 ## 2. Define value objects
 
-Value objects are immutable domain concepts identified entirely by their attributes. Subclass `ValueObject` as a frozen dataclass and use `__post_init__` to enforce invariants.
+Value objects are immutable domain concepts identified entirely by their attributes. Subclass `ValueObject` as a frozen dataclass and override `validate()` to enforce invariants — `ValueObject.__post_init__` calls it automatically.
 
 ```python
 from dataclasses import dataclass
@@ -34,7 +34,7 @@ class Money(ValueObject):
     amount: float
     currency: str
 
-    def __post_init__(self) -> None:
+    def validate(self) -> None:
         if self.amount < 0:
             raise NegativeAmountError()
         if not self.currency:
@@ -65,42 +65,51 @@ class AccountNotFoundError(DomainError):
 
 ## 4. Define domain events
 
-Domain events record meaningful state changes. Define a typed payload dataclass, then extend `DomainEventRecord` with it. Name events in past tense.
+Domain events record meaningful state changes. Define a typed payload dataclass, then extend `BaseDomainEvent[TPayload]` with a `create()` classmethod that takes plain data and builds the payload internally — the aggregate calls `create()`, never the constructor directly. Name events in past tense.
 
 ```python
 from dataclasses import dataclass
-from seedwork.domain import DomainEventRecord
+from typing import Self
+from seedwork.domain import BaseDomainEvent
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class AccountOpenedPayload:
-    account_id: str
     initial_balance: float
     currency: str
 
 
 @dataclass(frozen=True)
-class AccountOpened(DomainEventRecord[AccountOpenedPayload]):
-    pass
+class AccountOpened(BaseDomainEvent[AccountOpenedPayload]):
+    @classmethod
+    def create(cls, initial_balance: float, currency: str, aggregate_id: str) -> Self:
+        return cls(
+            payload=AccountOpenedPayload(initial_balance=initial_balance, currency=currency),
+            aggregate_id=aggregate_id,
+        )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class MoneyDepositedPayload:
-    account_id: str
     amount: float
     currency: str
 
 
 @dataclass(frozen=True)
-class MoneyDeposited(DomainEventRecord[MoneyDepositedPayload]):
-    pass
+class MoneyDeposited(BaseDomainEvent[MoneyDepositedPayload]):
+    @classmethod
+    def create(cls, amount: float, currency: str, aggregate_id: str) -> Self:
+        return cls(
+            payload=MoneyDepositedPayload(amount=amount, currency=currency),
+            aggregate_id=aggregate_id,
+        )
 ```
 
-`id` (UUID) and `occurred_at` (UTC timestamp) are generated automatically.
+`aggregate_id` is required — every event must be traceable back to the aggregate that raised it. `id` (UUID) and `occurred_at` (UTC timestamp) are generated automatically.
 
 ## 5. Build an aggregate root
 
-Aggregate roots are frozen dataclasses. All state-change methods return a new instance — aggregates are fully immutable. Use `_evolve(**changes)._record(*events)` to produce new instances with updated state and appended events.
+Aggregate roots are frozen dataclasses. All state-change methods return a new instance — aggregates are fully immutable. Use `_evolve(**changes)._record(*events)` to produce new instances with updated state and appended events. `Entity.validate()` is abstract, so every aggregate must override it — return `None` if there's nothing to check.
 
 Two factory patterns apply: a named constructor (`open`, `create`) for new aggregates, and `reconstitute` for loading from persistence.
 
@@ -117,20 +126,17 @@ BankAccountId = NewType("BankAccountId", str)
 class BankAccount(AggregateRoot[BankAccountId]):
     balance: Money
 
+    def validate(self) -> None:
+        pass
+
     @classmethod
     def open(cls, id: BankAccountId, initial_balance: Money) -> Self:
-        return cls(
-            id=id,
-            balance=initial_balance,
-            domain_events=(
-                AccountOpened(
-                    payload=AccountOpenedPayload(
-                        account_id=id,
-                        initial_balance=initial_balance.amount,
-                        currency=initial_balance.currency,
-                    )
-                ),
-            ),
+        return cls(id=id, balance=initial_balance)._record(
+            AccountOpened.create(
+                initial_balance=initial_balance.amount,
+                currency=initial_balance.currency,
+                aggregate_id=str(id),
+            )
         )
 
     @classmethod
@@ -138,18 +144,15 @@ class BankAccount(AggregateRoot[BankAccountId]):
         return cls(id=id, balance=balance)  # no domain_events — already published
 
     def deposit(self, amount: Money) -> Self:
-        return self._evolve(
-            balance=Money(
-                amount=self.balance.amount + amount.amount,
-                currency=self.balance.currency,
-            )
-        )._record(
-            MoneyDeposited(
-                payload=MoneyDepositedPayload(
-                    account_id=self.id,
-                    amount=amount.amount,
-                    currency=amount.currency,
-                )
+        new_balance = Money(
+            amount=self.balance.amount + amount.amount,
+            currency=self.balance.currency,
+        )
+        return self._evolve(balance=new_balance)._record(
+            MoneyDeposited.create(
+                amount=amount.amount,
+                currency=amount.currency,
+                aggregate_id=str(self.id),
             )
         )
 
@@ -178,7 +181,7 @@ class BankAccountRepository(Repository[BankAccountId, BankAccount]):
 
 ## 7. Define commands and handlers
 
-Commands represent write intentions. The handler's job is orchestration only: load the aggregate, call the domain method, save the returned instance.
+Commands represent write intentions. The handler's job is orchestration only: load the aggregate, call the domain method, save the returned instance. `CommandHandler` is a structural `Protocol` — the method must be named `handle`.
 
 ```python
 from dataclasses import dataclass
@@ -196,7 +199,7 @@ class DepositMoneyHandler(CommandHandler[DepositMoneyCommand]):
     def __init__(self, repository: BankAccountRepository) -> None:
         self._repository = repository
 
-    async def execute(self, command: DepositMoneyCommand) -> None:
+    async def handle(self, command: DepositMoneyCommand) -> None:
         account_id = BankAccountId(command.account_id)
         account = await self._repository.find_by_id(account_id)
         if account is None:
@@ -209,7 +212,7 @@ class DepositMoneyHandler(CommandHandler[DepositMoneyCommand]):
 
 ## 8. Define queries and handlers
 
-Queries are read-only. Each query declares its return type as a type parameter — `QueryBus.ask` is fully typed at the call site with no casts.
+Queries are read-only. Each query declares its return type as a type parameter — `QueryBus.ask` is fully typed at the call site with no casts. `QueryHandler` is also a structural `Protocol` — the method must be named `handle`.
 
 Define a dedicated read repository as an ad-hoc `Protocol` in the application layer. Never pass a domain `Repository` to a query handler.
 
@@ -239,28 +242,30 @@ class GetBalanceHandler(QueryHandler[GetBalanceQuery, BalanceResponse]):
     def __init__(self, repository: BankAccountReadRepository) -> None:
         self._repository = repository
 
-    async def execute(self, query: GetBalanceQuery) -> BalanceResponse | None:
+    async def handle(self, query: GetBalanceQuery) -> BalanceResponse | None:
         return await self._repository.find_balance(query.account_id)
 ```
 
 ## 9. Wire the buses
 
-Use the builders to assemble the bus stack at the composition root. Wrap the repository with `DomainEventPublishingRepository` so events are published transparently after every `save`.
+Use the builders to assemble the bus stack at the composition root. Both builders take the underlying registry — `RegistryCommandBus` / `RegistryQueryBus` — as a constructor argument. Wrap the repository with `DomainEventPublishingRepository` so events are published transparently after every `save`. `InMemoryRepository` lives in `seedwork.testing` — it's meant for tests and prototyping, not production code.
 
 ```python
 from seedwork.infrastructure import (
     CommandBusBuilder,
     DomainEventPublishingRepository,
-    InMemoryRepository,
     QueryBusBuilder,
+    RegistryCommandBus,
+    RegistryQueryBus,
 )
+from seedwork.testing import InMemoryRepository
 
 # Write side — InMemoryRepository is useful for tests and prototyping
 repo: InMemoryRepository[BankAccountId, BankAccount] = InMemoryRepository()
-publishing_repo = DomainEventPublishingRepository(repo, my_event_publisher)
+publishing_repo = DomainEventPublishingRepository(repo, my_event_bus)
 
 command_bus = (
-    CommandBusBuilder()
+    CommandBusBuilder(RegistryCommandBus())
     .register(DepositMoneyCommand, DepositMoneyHandler(publishing_repo))
     .with_transaction(uow)
     .build()
@@ -268,11 +273,13 @@ command_bus = (
 
 # Read side
 query_bus = (
-    QueryBusBuilder()
+    QueryBusBuilder(RegistryQueryBus())
     .register(GetBalanceQuery, GetBalanceHandler(read_repo))
     .build()
 )
 ```
+
+`my_event_bus` must satisfy `DomainEventBusPublisher` (`async def publish(events) -> None`) — `DomainEventPublishingRepository` awaits it, so a synchronous implementation fails at runtime. See [Component Reference](component-reference.md#domaineventbus-family) for the full domain-event coordination story — pairing `DeferredDomainEventBus` with `CommandBusBuilder.with_domain_event_coordination` so events only dispatch after a command succeeds.
 
 ## 10. Dispatch
 
@@ -281,7 +288,7 @@ query_bus = (
 result = await command_bus.dispatch(
     DepositMoneyCommand(account_id="acc-1", amount=50.0, currency="EUR")
 )
-if not result.ok:
+if result.is_failed:
     for error in result.errors:
         print(error.code, error.description)
 
