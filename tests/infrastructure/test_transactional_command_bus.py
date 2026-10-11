@@ -3,13 +3,13 @@ from typing import Self
 
 import pytest
 
-from seedwork.application.commands import Command, CommandHandler
-from seedwork.infrastructure.registry_command_bus import RegistryCommandBus
+from seedwork.application.commands import Command, Result, ResultError
 from seedwork.infrastructure.transactional_command_bus import TransactionalCommandBus
 
 
 class SpyUnitOfWork:
-    def __init__(self) -> None:
+    def __init__(self, *, fail_commit: bool = False) -> None:
+        self._fail_commit = fail_commit
         self.sessions = 0
         self.commits = 0
         self.rollbacks = 0
@@ -24,47 +24,75 @@ class SpyUnitOfWork:
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
-        if exc_type is None:
-            self.commits += 1
-        else:
+        if exc_type is not None:
             self.rollbacks += 1
+            return
+        self.commits += 1
+        if self._fail_commit:
+            raise ConnectionError("commit failed")
 
 
-class OkCommand(Command): ...
+class AnyCommand(Command): ...
 
 
-class FailCommand(Command): ...
+class StubCommandBus:
+    def __init__(self, result: Result) -> None:
+        self._result = result
+
+    async def dispatch(self, command: Command) -> Result:
+        return self._result
 
 
-class OkHandler(CommandHandler[OkCommand]):
-    async def handle(self, command: OkCommand) -> None:
-        pass
-
-
-class FailHandler(CommandHandler[FailCommand]):
-    async def handle(self, command: FailCommand) -> None:
+class RaisingCommandBus:
+    async def dispatch(self, command: Command) -> Result:
         raise RuntimeError("boom")
 
 
-async def test_successful_command_commits() -> None:
+async def test_ok_result_commits() -> None:
     uow = SpyUnitOfWork()
-    registry = RegistryCommandBus()
-    registry.register(OkCommand, OkHandler())
-    bus = TransactionalCommandBus(registry, uow)
-    result = await bus.dispatch(OkCommand())
-    assert result.is_ok
+    ok = Result.ok()
+    bus = TransactionalCommandBus(StubCommandBus(ok), uow)
+
+    result = await bus.dispatch(AnyCommand())
+
+    assert result is ok
     assert uow.sessions == 1
     assert uow.commits == 1
     assert uow.rollbacks == 0
 
 
-async def test_failing_command_rolls_back() -> None:
+async def test_failed_result_rolls_back_and_returns_the_same_result() -> None:
     uow = SpyUnitOfWork()
-    registry = RegistryCommandBus()
-    registry.register(FailCommand, FailHandler())
-    bus = TransactionalCommandBus(registry, uow)
-    with pytest.raises(RuntimeError):
-        await bus.dispatch(FailCommand())
+    failed = Result.failed([ResultError(code="err", description="fail")])
+    bus = TransactionalCommandBus(StubCommandBus(failed), uow)
+
+    result = await bus.dispatch(AnyCommand())
+
+    assert result is failed
     assert uow.sessions == 1
     assert uow.commits == 0
     assert uow.rollbacks == 1
+
+
+async def test_inner_exception_rolls_back_and_is_reraised() -> None:
+    uow = SpyUnitOfWork()
+    bus = TransactionalCommandBus(RaisingCommandBus(), uow)
+
+    with pytest.raises(RuntimeError, match="boom"):
+        await bus.dispatch(AnyCommand())
+
+    assert uow.sessions == 1
+    assert uow.commits == 0
+    assert uow.rollbacks == 1
+
+
+async def test_commit_exception_is_reraised() -> None:
+    uow = SpyUnitOfWork(fail_commit=True)
+    bus = TransactionalCommandBus(StubCommandBus(Result.ok()), uow)
+
+    with pytest.raises(ConnectionError, match="commit failed"):
+        await bus.dispatch(AnyCommand())
+
+    assert uow.sessions == 1
+    assert uow.commits == 1
+    assert uow.rollbacks == 0

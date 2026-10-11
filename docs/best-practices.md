@@ -255,6 +255,7 @@ The Unit of Work defines the **transaction boundary** for a command execution.
 - Wraps the entire command handler execution: aggregate load, domain method call, save, domain event dispatch — all inside one transaction.
 - On commit: all changes persist and domain event handlers execute.
 - On rollback: no state persisted, no events published.
+- If the command handler raises `DomainError`, the bus converts it to `Result.failed()`, domain events are discarded, and the transaction rolls back — any write the handler made before the rejection is not persisted. The caller still receives the failed `Result`, not an exception.
 - The transaction boundary is the command. Never let a transaction span multiple commands.
 
 #### Do
@@ -385,7 +386,7 @@ sequenceDiagram
     EH->>TS: schedule(task)
     Note over TS: written to outbox (same TX)
     EH-->>Bus: (returns)
-    Note over Bus: 3. commit transaction
+    Note over Bus: 3. commit transaction<br/>(rollback on Result.failed or exception)
     Bus-->>API: Result
 ```
 

@@ -53,7 +53,7 @@ class MoneyDeposited(BaseDomainEvent[MoneyDepositedPayload]):
 
 ### `UnitOfWork`
 
-- **Protocol** (structural — no inheritance required). Implementations must provide `__aenter__(self) -> Self` and `__aexit__(self, exc_type, exc_val, exc_tb) -> None`. `__aexit__` should commit when `exc_type is None` and roll back otherwise — `TransactionalCommandBus` relies on this contract.
+- **Protocol** (structural — no inheritance required). Implementations must provide `__aenter__(self) -> Self` and `__aexit__(self, exc_type, exc_val, exc_tb) -> None`. `__aexit__` should commit when `exc_type is None` and roll back otherwise — `TransactionalCommandBus` relies on this contract. If the commit itself fails, `__aexit__` is responsible for rolling back before raising; the exception propagates to the caller.
 
 ### `DomainError`
 
@@ -149,11 +149,15 @@ balance = await bus.ask(GetBalanceQuery(account_id="acc-1"))
 
 ### `TransactionalCommandBus`
 
-- Decorator. Wraps dispatch in the `UnitOfWork` context manager (`async with unit_of_work`). Commit and rollback are the context manager's responsibility.
+- Decorator. Wraps dispatch in the `UnitOfWork` context manager (`async with unit_of_work`) and commits only when the command succeeds:
+  - `Result.ok()` → commit (`__aexit__` receives no exception). If the commit raises, the exception propagates.
+  - `Result.failed()` → rollback (`__aexit__` receives an exception); the same failed `Result` is returned, not raised. Writes made before the domain rejection are never persisted.
+  - Exception from the inner bus → rollback, then re-raise.
 
 ```python
 bus = TransactionalCommandBus(inner=registry_bus, unit_of_work=uow)
 # Every dispatch runs inside: async with uow: inner.dispatch(command)
+# A failed Result rolls the unit of work back and is returned to the caller.
 ```
 
 ### `DomainEventCoordinatorCommandBus`

@@ -421,6 +421,7 @@ command_bus = (
 
 - Order: `with_transaction` (outermost) → `with_domain_event_coordination` → registry (innermost).
 - `with_domain_event_coordination(event_bus)` calls `dispatch()` on success and `discard()` on failure.
+- `with_transaction(uow)` commits only on `Result.ok()`. A `Result.failed()` (a `DomainError` raised by the handler) or any exception rolls the transaction back, so a rejected command never leaves partial writes.
 
 #### Do
 
