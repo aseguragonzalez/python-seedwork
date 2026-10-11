@@ -53,7 +53,7 @@ class MoneyDeposited(BaseDomainEvent[MoneyDepositedPayload]):
 
 ### `UnitOfWork`
 
-- **Protocol** (structural — no inheritance required). Implementations must provide `__aenter__(self) -> Self` and `__aexit__(self, exc_type, exc_val, exc_tb) -> None`. `__aexit__` should commit when `exc_type is None` and roll back otherwise — `TransactionalCommandBus` relies on this contract. If the commit itself fails, `__aexit__` is responsible for rolling back before raising; the exception propagates to the caller.
+- **Protocol** (structural — no inheritance required). Implementations must provide `__aenter__(self) -> Self` and `__aexit__(self, exc_type, exc_val, exc_tb) -> None`. `__aexit__` should commit when `exc_type is None` and roll back otherwise — `TransactionalCommandBus` relies on this contract. If the commit itself fails, the exception propagates to the caller.
 
 ### `DomainError`
 
