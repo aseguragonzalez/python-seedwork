@@ -13,9 +13,6 @@
           "run": "make lint"
         },
         "typecheck": {
-          "env": {
-            "PYRIGHT_PYTHON_NODE_VERSION": "lts"
-          },
           "run": "make typecheck"
         },
         "unit": {
@@ -36,8 +33,7 @@
       "The repository only squash-merges with the pull request title as the commit message, and python-semantic-release reads that title on every push to main to cut a release and publish it to PyPI, so the title's type must follow the commit-type table.",
       "The repository's own docs (CLAUDE.md, .claude/skills/gh-workflow/SKILL.md, .github/CONTRIBUTING.md and the pull request template) still use `Closes #N`; agents reference issues with `Relates to #N` instead.",
       "`make install` and `make all` run pre-commit, which needs git and fails in a worktree's container; the hooks (ruff, pyright, markdownlint, conventional-pre-commit) run on the host with `pre-commit run`.",
-      "In the container pyright downloads Node.js through nodeenv, which fails on a Node.js pre-release unless `PYRIGHT_PYTHON_NODE_VERSION=lts` is set.",
-      "Besides the required checks, main's ruleset blocks merging on CodeQL alerts of high severity or more, code quality warnings, unresolved review threads and a missing code owner approval."
+      "Besides the required checks, main's ruleset blocks merging on CodeQL security alerts of high severity or more and on CodeQL error or warning alerts, requires the branch to be up to date with main (strict status checks), resolved review threads and a code owner approval."
     ],
     "requiredChecks": [
       "lint",
@@ -46,7 +42,11 @@
       "test (3.13)",
       "title-lint"
     ],
-    "signedCommits": true
+    "signedCommits": true,
+    "labels": [
+      "python:uv",
+      "github_actions"
+    ]
   },
   "delivery": {
     "done": "published",
